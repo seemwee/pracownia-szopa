@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +9,21 @@
     <link rel="icon" type="image/png" href="icon.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Copse&family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Copse&family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&display=swap"
+        rel="stylesheet">
 
-<link rel="stylesheet" href="styles.css?v=1.2">
+    <link rel="stylesheet" href="styles.css?v=1.2">
 
-<script type="module" src="firebase-init.js"></script>
+    <script type="module" src="firebase-init.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="script.js?v=1.2.1"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="script.js?v=1.2.1"></script>
 
 </head>
+
 <body>
     <header>
 
@@ -53,250 +57,454 @@
     <section class="hero-full-mosaic" id="start">
         <div class="mosaic-grid">
             <div class="mosaic-item"><img src="pics/rabbit.png" alt="Witraż Królik"></div>
-            <div class="mosaic-item"><img src="pics/dragonfly.png" alt="Witraż Ważka"></div>
+            <div class="mosaic-item"><img src="pics/dragonfly.jpg" alt="Witraż Ważka"></div>
             <div class="mosaic-item"><img src="pics/cat.png" alt="Witraż Kot"></div>
         </div>
-        
+
         <div class="center-badge">
             <div class="badge-glow"></div>
             <img class="badge-logo" src="pics/icon.png" alt="Pracownia Szopa">
         </div>
-    
+
         <div class="mosaic-overlay">
             <h1>Pracownia Szopa</h1>
             <p>Unikalne witraże szklane tworzone z pasją</p>
-            <a href="#shop"><button class="mosaic-btn">Dalej</button></a>
+            <a href="#shop-target"><button class="mosaic-btn">Dalej</button></a>
         </div>
     </section>
 
-<!-- TARGET SECTION (Z-Timeline Overlay) -->
-<section id="shop-target" class="vitrage-timeline">
-    <div class="timeline-header">
-        <h2>Dla kogo tworzymy magię w szkle?</h2>
-        <span class="timeline-paw">🐾</span>
-    </div>
+    <!-- TARGET SECTION (Z-Timeline Overlay) -->
+    <section id="shop-target" class="vitrage-timeline">
+        <div class="timeline-header">
+            <h2>Dla kogo tworzymy magię w szkle?</h2>
 
-    <div class="timeline-grid">
-        
-        <!-- BLOCK 1: Królik (Left) -->
-        <div class="timeline-item item-left">
-            <div class="item-img-box">
-                <img src="pics/psiak.png" alt="Witraż Szklany Królik">
+            <div class="paws-path">
+                <div class="paw-print-1"><img src="pics/paw.png" alt=""></div>
+                <div class="paw-print-2"><img src="pics/paw.png" alt=""></div>
+                <div class="paw-print-3"><img src="pics/paw.png" alt=""></div>
+                <div class="paw-print-4"><img src="pics/paw.png" alt=""></div>
             </div>
-            <div class="item-text-pure">
-                <h3>Dla miłośników zwierząt</h3>
-                <p>Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła ozdoba, to kawałek Twojej duszy na oknie.</p>
-            </div>
-        </div>
 
-        <!-- BLOCK 2: Ważka (Right) -->
-        <div class="timeline-item item-right">
-            <div class="item-text-pure">
-                <h3>Na wyjątkowy prezent</h3>
-                <p>Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś bliskiego, kto kocha zwierzęta.</p>
-            </div>
-            <div class="item-img-box">
-                <img src="pics/piwonia.png" alt="Witraż Szklany Ważka">
+            <div class="timeline-glass-box">
+                <p class="timeline-intro">
+                    Tworzę witraże w tradycyjnej technice Tiffany, które stanowią wyjątkową dekorację dla Twojego domu
+                    lub przestrzeni biznesowej.
+                    Każdy projekt powstaje z dbałością o detale i indywidualny charakter, łącząc rzemiosło artystyczne z
+                    ponadczasową elegancją.
+                </p>
             </div>
         </div>
 
-        <!-- BLOCK 3: Kot (Left) -->
-        <div class="timeline-item item-cat item-left">
-            <div class="item-img-box">
-                <img src="pics/moon.png" alt="Witraż Szklany Kot">
-            </div>
-            <div class="item-text-pure">
-                <span class="head-emoji">✨</span>
-                <h3>Piękna pamiątka na lata</h3>
-                <p>Dla tych, którzy chcą zachować wspomnienie ukochanego zwierzaka. Dla tych, którzy tęsknią i chcą mieć blisko to, co było najważniejsze.</p>
-            </div>
-        </div>
+        <div class="timeline-grid">
 
-    </div>
-</section>
-
-<!-- SHOP SECTION -->
-<section id="shop" class="vitrage-shop">
-    <div class="shop-header">
-        <h2>Sklep z witrażami</h2>
-        <p>Wybierz gotowe dzieło od ręki lub zainspiruj się do stworzenia własnego zamówienia</p>
-    </div>
-
-    <!-- БЛОК 1: ГОТОВЫЕ ТОВАРЫ (Dostępne od ręki) -->
-    <div class="shop-section-block">
-        <h3 class="shop-section-title">Gotowe witraże <span>(Dostępne od ręki)</span></h3>
-        <div class="shop-grid id-ready-products">
-            
-            <!-- Карточка 1 (Готовая) -->
-            <div class="product-card">
-                <div class="product-img-box">
-                    <img src="pics/cat.png" alt="Witraż Kot w kapeluszu">
-                    <span class="product-badge badge-ready">Dostępny</span>
+            <!-- BLOCK 1: Królik (Left) -->
+            <div class="timeline-item item-left">
+                <div class="item-img-box">
+                    <img src="pics/husky_dog1.jpg" alt="Witraż Szklany Królik">
                 </div>
-                <div class="product-info">
-                    <h3>Witraż "Kot w kapeluszu"</h3>
-                    <p class="product-desc">Ręcznie robiony witraż z wysokiej jakości szkła spektralnego. Gotowy do wysyłki.</p>
-                    <div class="product-footer">
-                        <span class="product-price">150 PLN</span>
-                        <button class="product-btn" onclick="openOrderModal('Kot w kapeluszu')">Kup teraz</button>
+                <div class="item-text-pure">
+                    <h3>Dla miłośników zwierząt</h3>
+                    <p>Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła ozdoba, to kawałek Twojej duszy na
+                        oknie.</p>
+                </div>
+            </div>
+
+            <div class="pc-prezent">
+            <!-- BLOCK 2: Ważka (Right) -->
+            <div class="timeline-item">
+                <div class="item-text-pure">
+                    <h3>Na wyjątkowy prezent</h3>
+                    <p>Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś
+                        bliskiego, kto kocha zwierzęta.</p>
+                </div>
+                <div class="item-img-box">
+                    <img src="pics/husky.jpg" alt="Witraż Szklany Ważka">
+                </div>
+            </div>
+            </div>
+
+            <div class="mobile-prezent">
+            <!-- BLOCK 2: Ważka (Right) -->
+            <div class="timeline-item">
+                <div class="item-text-pure">
+                    <div class="item-img-box">
+                    <img src="pics/husky.jpg" alt="Witraż Szklany Ważka">
+                </div>
+                    <h3>Na wyjątkowy prezent</h3>
+                    <p>Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś
+                        bliskiego, kto kocha zwierzęta.</p>
+                </div>
+            </div>
+            </div>
+
+            <!-- BLOCK 3: Kot (Left) -->
+            <div class="timeline-item item-cat item-left">
+                <div class="item-img-box">
+                    <img src="pics/moon.png" alt="Witraż Szklany Kot">
+                </div>
+                <div class="item-text-pure">
+                    <span class="head-emoji">✨</span>
+                    <h3>Piękna pamiątka na lata</h3>
+                    <p>Dla tych, którzy chcą zachować wspomnienie ukochanego zwierzaka. Dla tych, którzy tęsknią i chcą
+                        mieć blisko to, co było najważniejsze.</p>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="timeline-outro-block">
+            <p class="outro-text">
+                Suncatchery witrażowe w stylu Tiffany (Łapacze słońca) to dekoracyjne zawieszki ze szkła, które łapią
+                światło słoneczne i tworzą w domu piękne refleksy i kolory. Każdy suncatcher wykonany jest ręcznie,
+                łącząc kawałki szkła taśmą miedzianą i cyną, co daje unikalne wzory. Idealne na okna, do wnętrz lub jako
+                wyjątkowy prezent — lekkie, kolorowe i magiczne! ✨
+            </p>
+
+            <div class="outro-images-grid">
+                <div class="outro-img-box">
+                    <img src="pics/sun1.jpg" alt="Suncatcher Tiffany prezent">
+                </div>
+                <div class="outro-img-box">
+                    <img src="pics/moon.jpg" alt="Łapacz słońca na oknie">
+                </div>
+            </div>
+
+            <p class="outro-quote">Witraż zaczyna mówić – tylko wtedy, gdy spotka się ze światłem.</p>
+        </div>
+        </div>
+
+    </section>
+
+    <div class="horizontal-paws-divider">
+        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
+        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
+        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
+        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
+        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
+        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
+        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
+    </div>
+
+    <!-- SHOP SECTION -->
+    <section id="shop" class="vitrage-shop">
+        <div class="shop-header">
+            <h2>Sklep z witrażami</h2>
+            <p>Wybierz gotowe dzieło od ręki lub zainspiruj się do stworzenia własnego zamówienia</p>
+        </div>
+
+        <!-- БЛОК 1: ГОТОВЫЕ ТОВАРЫ (Dostępne od ręki) -->
+        <div class="shop-section-block">
+            <h3 class="shop-section-title">Gotowe witraże <span>(Dostępne od ręki)</span></h3>
+            <div class="shop-grid id-ready-products">
+
+                <!-- Карточка 1 (Готовая) -->
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="pics/cat.png" alt="Witraż Kot w kapeluszu">
+                        <span class="product-badge badge-ready">Dostępny</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Witraż "Kot w kapeluszu"</h3>
+                        <p class="product-desc">Ręcznie robiony witraż z wysokiej jakości szkła spektralnego. Gotowy do
+                            wysyłki.</p>
+                        <div class="product-footer">
+                            <span class="product-price">400 PLN</span>
+                            <button class="product-btn" onclick="openOrderModal('Kot w kapeluszu')">Kup teraz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 2 (Готовая) -->
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="pics/rabbit.png" alt="Witraż Złoty Królik">
+                        <span class="product-badge badge-ready">Dostępny</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Witraż "Tanuki"</h3>
+                        <p class="product-desc">Ciepłe barwy szkła i unikalna faktura. Pięknie przepuszcza wieczorne
+                            światło.</p>
+                        <div class="product-footer">
+                            <span class="product-price">300 PLN</span>
+                            <button class="product-btn" onclick="openOrderModal('Złoty Królik')">Kup teraz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="pics/bea.jpg" alt="Witraż Pszczółka">
+                        <span class="product-badge badge-ready">Dostępny</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Witraż "Pszczółka"</h3>
+                        <p class="product-desc">Uroczy suncatcher wykonany z miodowego i fakturowego szkła. Genialnie
+                            łapie promienie słońca, ożywiając każde okno</p>
+                        <div class="product-footer">
+                            <span class="product-price">250 PLN</span>
+                            <button class="product-btn" onclick="openOrderModal('Pszczółka')">Kup teraz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="pics/flowers1.jpg" alt="Witraż Kwiaty">
+                        <span class="product-badge badge-ready">Dostępny</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Witraż "Kwiaty"</h3>
+                        <p class="product-desc">Kompozycja z wielobarwnego szkła opalowego, która nigdy ne zwiędnie.
+                            Tworzy w pomieszczeniu bajeczne, kolorowe refleksy</p>
+                        <div class="product-footer">
+                            <span class="product-price">400 PLN</span>
+                            <button class="product-btn" onclick="openOrderModal('Kwiaty')">Kup teraz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="pics/moon10.jpg" alt="Witraż Moon">
+                        <span class="product-badge badge-ready">Dostępny</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Witraż "Moon"</h3>
+                        <p class="product-desc">Mistyczna kompozycja przedstawiająca dłoń trzymającą tajemniczą planetę.
+                            Głębokie, kobaltowe szkło tworzy w nocy i w słońcu niesamowitą, hipnotyzującą aurę</p>
+                        <div class="product-footer">
+                            <span class="product-price">300 PLN</span>
+                            <button class="product-btn" onclick="openOrderModal('Moon')">Kup teraz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="pics/sun10.JPG" alt="Witraż Sun">
+                        <span class="product-badge badge-ready">Dostępny</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Witraż "Sun"</h3>
+                        <p class="product-desc">Energetyczny suncatcher z radosnego, ognistego szkła spektralnego.
+                            Wypełnia cały pokój ciepłym, bursztynowym blaskiem od samego rana</p>
+                        <div class="product-footer">
+                            <span class="product-price">300 PLN</span>
+                            <button class="product-btn" onclick="openOrderModal('Sun')">Kup teraz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="pics/dragonfly-card.jpg" alt="Witraż Ważka">
+                        <span class="product-badge badge-no">Niedostępny</span>
+                    </div>
+                    <div class="product-info">
+                        <h3>Witraż "Ważka"</h3>
+                        <p class="product-desc">Elegancki suncatcher z opalizującymi skrzydłami, które mienią się
+                            wszystkimi barwami tęczy. Lekka i subtelna ozdoba każdego wnętrza</p>
+                        <div class="product-footer">
+                            <span class="product-price">300 PLN</span>
+                            <button class="product-btn" onclick="openOrderModal('Ważka')">Kup teraz</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <section id="custom-order" class="order-flow-section">
+        <div class="flow-header">
+            <h2>Jak zamówić witraż ze zdjęcia pupila? 🐾</h2>
+        </div>
+
+        <div class="custom-offer-text-block">
+            <p class="custom-offer-p">
+                Zamów swój własny witraż suncatcher z wizerunkiem swojego ukochanego zwierzaka!
+                Każdy suncatcher jest wykonany ręcznie z dbałością o szczegóły, aby jak najlepiej oddać charakter
+                Twojego pupila.
+                Czas realizacji zamówienia wynosi około 7 dni. Idealny pomysł na prezent lub wyjątkową dekorację do
+                Twojego domu.
+            </p>
+
+            <div class="custom-offer-gallery">
+                <div class="custom-gal-box"><img src="pics/husky_dog.jpg" alt="Witraż pupila 1"></div>
+                <div class="custom-gal-box"><img src="pics/psiak.jpg" alt="Witraż pupila 2"></div>
+                <div class="custom-gal-box"><img src="pics/psiak2.jpg" alt="Witraż pupila 3"></div>
+            </div>
+
+            <!-- Параметры заказа: Размер и Цена -->
+            <div class="custom-offer-meta">
+                <span class="custom-badge">📐 Rozmiar: <strong>20×20&nbsp;cm</strong></span>
+                <span class="custom-badge">💰 Cena: <strong>450&nbsp;zł</strong></span>
+            </div>
+        </div>
+
+        <div class="flow-steps-grid">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <p>Wyślij zdjęcie swojego zwierzaka</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <p>Wybierz rozmiar i kolory tła</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <p>Na podstawie zdjęcia przygotuję indywidualny projekt do akceptacji ✏️</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">4</div>
+                <p>Po akceptacji projektu obowiązuje przedpłata (to potwierdzenie zamówienia)</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">5</div>
+                <p>Po zaksięgowaniu wpłaty zaczynam tworzenie. Czas realizacji: do 4 dni roboczych ⌛</p>
+            </div>
+            <div class="step-card step-action-card">
+                <div class="step-num btn-num">6</div>
+                <p><strong>Wypełnij formularz</strong> poniżej, a skontaktuję się z Tobą w celu ustalenia szczegółów! 📦
+                </p>
+            </div>
+        </div>
+
+        <div class="order-form-container">
+            <h3>Formularz zamówienia</h3>
+            <form id="pupilOrderForm" onsubmit="handleFormSubmit(event)">
+
+                <div class="form-group">
+                    <label for="clientName">Twoje imię</label>
+                    <input type="text" id="clientName" placeholder="Np. Anna Kowalska" required>
+                </div>
+
+                <div class="form-row-split">
+                    <div class="form-group">
+                        <label for="clientEmail">Adres e-mail</label>
+                        <input type="email" id="clientEmail" placeholder="Np. anna@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientPhone">Numer telefonu</label>
+                        <input type="text" id="clientPhone" placeholder="Np. +48 123 456 789" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactMethod">Preferowany sposób kontaktu</label>
+                    <select id="contactMethod" required>
+                        <option value="" disabled selected>Wybierz opcję...</option>
+                        <option value="telegram">Telegram ✈️</option>
+                        <option value="whatsapp">WhatsApp 💬</option>
+                        <option value="sms">SMS 📱</option>
+                        <option value="call">Połączenie telefoniczne 📞</option>
+                        <option value="email">E-mail ✉️</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="petType">Rozmiar i kolory tła (lub Twoje pytania)</label>
+                    <textarea id="petType" rows="4" placeholder="Opisz swoje życzenia dotyczące witrażu..."
+                        required></textarea>
+                </div>
+
+                <div class="form-group file-group">
+                    <label for="petPhoto" class="file-label">
+                        <span>📸 Dodaj zdjęcie pupila</span>
+                        <input type="file" id="petPhoto" accept="image/*" required>
+                    </label>
+                </div>
+
+                <button type="submit" class="form-submit-btn">Wyślij zgłoszenie</button>
+            </form>
+        </div>
+
+    </section>
+
+    <section id="blog" class="vitrage-blog-half">
+        <!-- Левая сторона: Сетка из 4-х видео процесса -->
+
+        <div class="blog-text-side">
+            <div class="blog-content-wrap">
+                <h2>Proces tworzenia witrażu od kulis</h2>
+                <p>Zobacz, jak surowy arkusz szkła zmienia się w unikalny suncatcher. Od precyzyjnego szkicowania, przez
+                    delikatne cięcie i owijanie taśmą miedzianą, aż po finalne lutowanie cyną w tradycyjnej technice
+                    Tiffany. Każdy szlif to krok w stronę sztuki, która ożywa dopiero wtedy, gdy spotka się ze światłem
+                    słońca. ✨</p>
+            </div>
+        </div>
+        <div class="blog-image-side blog-video-grid-container">
+            <div class="blog-video-grid">
+                <div class="video-grid-box">
+                    <video autoplay loop muted playsinline poster="pics/proc1.jpg">
+                        <source src="pics/proc1.jpg" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-grid-box">
+                    <video autoplay loop muted playsinline poster="pics/proc2.mp4">
+                        <source src="pics/proc2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-grid-box">
+                    <video autoplay loop muted playsinline poster="pics/proc3.mp4">
+                        <source src="pics/proc3.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-grid-box">
+                    <video autoplay loop muted playsinline poster="pics/proc4.mp4">
+                        <source src="pics/proc4.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <div class="blog-img-overlay">
+                <span>Proces tworzenia 🛠️</span>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="null">
+        <p> </p>
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="vitrage-footer">
+        <div class="footer-container">
+
+            <!-- Левая колонка: Описание -->
+            <div class="footer-brand">
+                <span class="footer-logo">Pracownia Szopa <img src="pics/paw.png" alt=""></span>
+                <p>Ręcznie robione słońcolapy i witraże z miłości do zwierząt. Każdy projekt to unikalna historia
+                    zamknięta w kolorowym szkle.</p>
+                <p>Skontaktuj się ze mną</p>
+            </div>
+
+            <!-- Правая колонка: Соцсети и kontakt -->
+            <div class="footer-socials">
+                <h4>Kontakt & Social</h4>
+                <p><span>+48 505 318 916</span></p>
+                <p><span>o.lavryshcheva@gmail.com</span></p>
+                <div class="social-icons-div">
+                    <div class="social-icons">
+                        <a href="insta" target="_blank" aria-label="Instagram">IG</a>
+                    </div>
+                    <div class="social-icons-long">
+                        <a href="mailto:zbbilyk@gmail.com">MAIL</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Карточка 2 (Готовая) -->
-            <div class="product-card">
-                <div class="product-img-box">
-                    <img src="pics/rabbit.png" alt="Witraż Złoty Królik">
-                    <span class="product-badge badge-ready">Dostępny</span>
-                </div>
-                <div class="product-info">
-                    <h3>Witraż "Złoty Królik"</h3>
-                    <p class="product-desc">Ciepłe barwy szkła i unikalna faktura. Pięknie przepuszcza wieczorne światło.</p>
-                    <div class="product-footer">
-                        <span class="product-price">120 PLN</span>
-                        <button class="product-btn" onclick="openOrderModal('Złoty Królik')">Kup teraz</button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</section>
-
-<section id="custom-order" class="order-flow-section">
-    <div class="flow-header">
-        <h2>Jak zamówić witraż ze zdjęcia pupila? 🐾</h2>
-    </div>
-
-    <div class="flow-steps-grid">
-        <div class="step-card">
-            <div class="step-num">1</div>
-            <p>Wyślij zdjęcie swojego zwierzaka</p>
-        </div>
-        <div class="step-card">
-            <div class="step-num">2</div>
-            <p>Wybierz rozmiar i kolory tła</p>
-        </div>
-        <div class="step-card">
-            <div class="step-num">3</div>
-            <p>Na podstawie zdjęcia przygotuję indywidualny projekt do akceptacji ✏️</p>
-        </div>
-        <div class="step-card">
-            <div class="step-num">4</div>
-            <p>Po akceptacji projektu obowiązuje przedpłata (to potwierdzenie zamówienia)</p>
-        </div>
-        <div class="step-card">
-            <div class="step-num">5</div>
-            <p>Po zaksięgowaniu wpłaty zaczynam tworzenie. Czas realizacji: do 4 dni roboczych ⌛</p>
-        </div>
-        <div class="step-card step-action-card">
-            <div class="step-num btn-num">6</div>
-            <p><strong>Wypełnij formularz</strong> poniżej, a skontaktuję się z Tobą w celu ustalenia szczegółów! 📦</p>
-        </div>
-    </div>
-
-    <div class="order-form-container">
-        <h3>Formularz zamówienia</h3>
-        <form id="pupilOrderForm" onsubmit="handleFormSubmit(event)">
-            
-            <div class="form-group">
-                <label for="clientName">Twoje imię</label>
-                <input type="text" id="clientName" placeholder="Np. Anna Kowalska" required>
-            </div>
-    
-            <div class="form-row-split">
-                <div class="form-group">
-                    <label for="clientEmail">Adres e-mail</label>
-                    <input type="email" id="clientEmail" placeholder="Np. anna@gmail.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="clientPhone">Numer telefonu</label>
-                    <input type="text" id="clientPhone" placeholder="Np. +48 123 456 789" required>
-                </div>
-            </div>
-    
-            <div class="form-group">
-                <label for="contactMethod">Preferowany sposób kontaktu</label>
-                <select id="contactMethod" required>
-                    <option value="" disabled selected>Wybierz opcję...</option>
-                    <option value="telegram">Telegram ✈️</option>
-                    <option value="whatsapp">WhatsApp 💬</option>
-                    <option value="sms">SMS 📱</option>
-                    <option value="call">Połączenie telefoniczne 📞</option>
-                    <option value="email">E-mail ✉️</option>
-                </select>
-            </div>
-    
-            <div class="form-group">
-                <label for="petType">Rozmiar i kolory tła (lub Twoje pytania)</label>
-                <textarea id="petType" rows="4" placeholder="Opisz swoje życzenia dotyczące witrażu..." required></textarea>
-            </div>
-    
-            <div class="form-group file-group">
-                <label for="petPhoto" class="file-label">
-                    <span>📸 Dodaj zdjęcie pupila</span>
-                    <input type="file" id="petPhoto" accept="image/*" required>
-                </label>
-            </div>
-    
-            <button type="submit" class="form-submit-btn">Wyślij zgłoszenie</button>
-        </form>
-    </div>
-
-</section>
-
-<section id="blog" class="vitrage-blog-half">
-    <div class="blog-image-side">
-        <img src="pics/rabbit.png" alt="Kulisy tworzenia witrażu">
-        <div class="blog-img-overlay">
-            <span>Zza kulis pracowni 🛠️</span>
-        </div>
-    </div>
-    
-    <div class="blog-text-side">
-        <div class="blog-content-wrap">
-            <div class="blog-date">07 Lipca 2026</div>
-            <h2>Jak powstaje witraż? Tajemnice pracy ze szkłem</h2>
-            <p>Każdy słońcolap zaczyna się od szkicu. Przejdź z nami przez cały proces: od wyboru arkusza szkła, przez precyzyjne cięcie, owijanie taśmą miedzianą, aż po finalne lutowanie cyną. Odkryj rzemiosło, które ożywa tylko w słońcu.</p>
-            <a href="#read-blog" class="blog-read-link">
-                <span>Czytaj cały artykuł</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-        </div>
-    </div>
-</section>
-
-<section class="null"><p> </p></section>
-
-<!-- FOOTER SECTION -->
-<footer class="vitrage-footer">
-    <div class="footer-container">
-        
-        <!-- Левая колонка: Описание -->
-        <div class="footer-brand">
-            <span class="footer-logo">Pracownia Szopa 🐾</span>
-            <p>Ręcznie robione słońcolapy i witraże z miłości do zwierząt. Każdy projekt to unikalna historia zamknięta w kolorowym szkle.</p>
         </div>
 
-        <!-- Правая колонка: Соцсети и kontakt -->
-        <div class="footer-socials">
-            <h4>Kontakt & Social</h4>
-            <p>Masz pytania? Pisz śmiało!</p>
-            <div class="social-icons">
-                <a href="https://instagram.com" target="_blank" aria-label="Instagram">IG</a>
-                <a href="https://facebook.com" target="_blank" aria-label="Facebook">FB</a>
-                <a href="https://wa.me/" target="_blank" aria-label="WhatsApp">WA</a>
-            </div>
+        <!-- Самый низ: копирайт -->
+        <div class="footer-bottom">
+            <p>&copy; 2026 Pracownia Szopa. Wszystkie prawa zastrzeżone.</p>
         </div>
-
-    </div>
-
-    <!-- Самый низ: копирайт -->
-    <div class="footer-bottom">
-        <p>&copy; 2026 Witraże Pracownia. Wszystkie prawa zastrzeżone.</p>
-    </div>
-</footer>
+    </footer>
 
 </body>
+
 </html>
