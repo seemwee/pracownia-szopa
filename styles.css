@@ -1768,3 +1768,74 @@ h2 {
     header .lang p { font-size: 12px; } 
     header .order-btn button { padding: 8px 16px; font-size: 14px; border-radius: 12px; box-shadow: 0 3px 0 #13110F; } 
 }
+
+/* Стили для всплывающего окна заказа */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(19, 17, 15, 0.6);
+    backdrop-filter: blur(4px);
+    display: none; /* Изначально скрыта */
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.custom-modal-box {
+    background: #EDD7A3;
+    border: 4px solid #13110F;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    box-shadow: 8px 8px 0 #13110F;
+    position: relative;
+    box-sizing: border-box;
+    animation: modalShow 0.2s ease-out;
+}
+@keyframes modalShow {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.modal-close-btn {
+    position: absolute;
+    top: 15px; right: 20px;
+    background: none; border: none;
+    font-size: 30px; cursor: pointer;
+    color: #13110F; font-weight: bold;
+}
+.custom-modal-box h2 { margin: 0 0 10px 0; font-family: 'Copse', Georgia, serif; font-size: 22px; }
+.custom-modal-box p { margin: 0 0 20px 0; font-size: 15px; }
+.modal-form-group { margin-bottom: 15px; }
+.modal-form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+.modal-form-group input {
+    width: 100%; padding: 10px 12px;
+    border: 2px solid #13110F; border-radius: 8px;
+    font-size: 14px; box-sizing: border-box;
+}
+.modal-form-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+}
+@media (max-width: 480px) {
+    .modal-form-row { grid-template-columns: 1fr; gap: 0; }
+}
+.modal-submit-btn {
+    background: #C4411D; color: #EDD7A3;
+    border: 3px solid #13110F; padding: 12px;
+    font-size: 16px; font-weight: 800; text-transform: uppercase;
+    cursor: pointer; border-radius: 12px; width: 100%;
+    box-shadow: 0 4px 0 #13110F; margin-top: 10px;
+    transition: all 0.1s ease;
+}
+.modal-submit-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #13110F; }
+
+/* Стиль для кнопки SPRZEDANE */
+.product-btn.btn-sold-out {
+    background: #ccc !important;
+    color: #666 !important;
+    border-color: #666 !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
