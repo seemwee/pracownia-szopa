@@ -1,158 +1,79 @@
-// Регистрируем плагин ScrollTrigger в системе GSAP
-gsap.registerPlugin(ScrollTrigger);
-
-// ==========================================
-// 1. АНИМАЦИЯ ДЛЯ СЕКЦИИ "O NAS"
-// ==========================================
-gsap.from(".about-text", {
-    x: -150,
-    opacity: 0,
-    scrollTrigger: {
-        trigger: ".about-section",
-        start: "top 90%",
-        end: "top 30%",
-        scrub: 1
-    }
-});
-
-gsap.from(".about-image-wrapper", {
-    x: 150,
-    opacity: 0,
-    scrollTrigger: {
-        trigger: ".about-section",
-        start: "top 90%",
-        end: "top 30%",
-        scrub: 1
-    }
-});
-
-// ==========================================
-// 2. APPLE-СКРОЛЛ ДЛЯ КАСКАДНОЙ "VITRAGE TIMELINE"
-// ==========================================
-gsap.utils.toArray(".timeline-item").forEach((item) => {
-    const img = item.querySelector(".item-img-box");
-    const text = item.querySelector(".item-text-pure");
-
-    if (img) {
-        gsap.from(img, {
-            opacity: 0,
-            y: 50,
-            scale: 0.95,
-            scrollTrigger: {
-                trigger: item,
-                start: "top 85%",
-                end: "top 45%",
-                scrub: 1.2
-            }
-        });
-    }
-
-    if (text) {
-        gsap.from(text, {
-            opacity: 0,
-            y: 30,
-            scrollTrigger: {
-                trigger: item,
-                start: "top 80%",
-                end: "top 50%",
-                scrub: 1.2
-            }
-        });
-    }
-});
-
-// ==========================================
-// 3. APPLE-СКРОЛЛ ДЛЯ РАЗДЕЛЕННЫХ БЛОКОВ МАГАЗИНА (SKLEP)
-// ==========================================
-gsap.utils.toArray(".shop-section-block").forEach((block) => {
-    const cards = block.querySelectorAll(".product-card");
-    const title = block.querySelector(".shop-section-title");
-
-    if (title) {
-        gsap.from(title, {
-            opacity: 0,
-            x: -30,
-            scrollTrigger: {
-                trigger: block,
-                start: "top 85%",
-                end: "top 60%",
-                scrub: 1
-            }
-        });
-    }
-
-    if (cards.length > 0) {
-        gsap.from(cards, {
-            opacity: 0,
-            scale: 0.92,
-            y: 40,
-            stagger: 0.15,
-            scrollTrigger: {
-                trigger: block,
-                start: "top 75%",
-                end: "top 45%",
-                scrub: 1
-            }
-        });
-    }
-});
-
-// ==========================================
-// 4. ФУНКЦИЯ ДЛЯ МОДАЛЬНОГО ОКНА ЗАКАЗА (ЗАДЕЛ ПОД БУДУЩЕЕ)
-// ==========================================
-function openOrderModal(productName) {
-    console.log("Wybrano produkt do zamówienia:", productName);
-    // Сюда мы повесим логику открытия всплывающего окна
-}
-
-// ==========================================
-// 4. APPLE-СКРОЛЛ ДЛЯ ШАГОВ ЗАКАЗА И ФОРМЫ
-// ==========================================
-gsap.from(".step-card", {
-    opacity: 0,
-    scale: 0.9,
-    y: 30,
-    stagger: 0.15,
-    scrollTrigger: {
-        trigger: ".flow-steps-grid",
-        start: "top 80%",
-        end: "top 45%",
-        scrub: 1
-    }
-});
-
-gsap.from(".order-form-container", {
-    opacity: 0,
-    y: 60,
-    scale: 0.96,
-    scrollTrigger: {
-        trigger: ".order-form-container",
-        start: "top 85%",
-        end: "top 55%",
-        scrub: 1.2
-    }
-});
-
-// Заглушка отправки формы, чтобы страница не перезагружалась
-function handleFormSubmit(event) {
-    event.preventDefault();
-    alert("Dziękujemy! Zgłoszenie zostało wysłane. Skontaktujemy się z Tobą wkrótce.");
-}
 
 
-// ==========================================
-// 5. APPLE-СКРОЛЛ ДЛЯ ПОЛНОЭКРАННОГО БЛОГА
-// ==========================================
-if (document.querySelector(".vitrage-blog-half")) {
-    const blogTimeline = gsap.timeline({
-        scrollTrigger: {
-            trigger: ".vitrage-blog-half",
-            start: "top 90%",  // Начинает собираться, когда макушка секции показалась снизу
-            end: "top 20%",    // Полностью встает на место
-            scrub: 1.2
+// Импортируем нужные функции из официального CDN Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// Твой личный конфиг Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDa6zMGsTQaS1_Bm2dC-5aw5yfQ6cyDSBw",
+    authDomain: "pracownia-szopa.firebaseapp.com",
+    projectId: "pracownia-szopa",
+    storageBucket: "pracownia-szopa.firebasestorage.app",
+    messagingSenderId: "288892800012",
+    appId: "1:288892800012:web:006d0e10d7fdb734153229",
+    measurementId: "G-MD9KVDR50N",
+    databaseURL: "https://pracownia-szopa-default-rtdb.europe-west1.firebasedatabase.app"
+};
+
+// Инициализируем базу данных на главной странице
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const productsRef = ref(db, 'products');
+
+// ДИНАМИЧЕСКИЙ ВЫВОД ТОВАРОВ ИЗ БАЗЫ НА ВИТРИНУ
+const shopContainer = document.getElementById('main-shop-container');
+
+if (shopContainer) {
+    onValue(productsRef, (snapshot) => {
+        const data = snapshot.val();
+        shopContainer.innerHTML = ''; // Очищаем контейнер перед рендером
+
+        if (!data) {
+            shopContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; opacity: 0.6;">Obecnie brak gotowych witraży. Skontaktuj się z nami, aby złożyć zamówienie indywidualne! 🐾</p>';
+            return;
+        }
+
+        for (let id in data) {
+            const item = data[id];
+            
+            // Умная польская грамматика для окончаний женского рода
+            const isWazkaOrPszczola = item.title && (item.title.toLowerCase().includes('ważka') || item.title.toLowerCase().includes('pszczółka'));
+            let badgeText = item.available ? (isWazkaOrPszczola ? 'Dostępna' : 'Dostępny') : 'Niedostępny';
+            let badgeClass = item.available ? 'badge-ready' : 'badge-no';
+
+            // 1. Создаем саму структуру карточки через безопасный DOM-объект
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-img-box">
+                    <img src="${item.img || 'pics/icon.png'}" alt="Witraż ${item.title || 'Pracownia Szopa'}">
+                    <span class="product-badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="product-info">
+                    <h3>Witraż "${item.title || 'Bez nazwy'}"</h3>
+                    <p class="product-desc">${item.desc || 'Ręcznie robiony witraż.'}</p>
+                    <div class="product-footer">
+                        <span class="product-price">${item.price || 0} PLN</span>
+                    </div>
+                </div>
+            `;
+
+            // 2. Отдельно создаем кнопку заказа (защита от ошибок Content Security Policy)
+            const buyBtn = document.createElement('button');
+            buyBtn.className = 'product-btn';
+            buyBtn.innerText = 'Kup teraz';
+            
+            // Навешиваем клик, который открывает твою стандартную модалку заказа
+            buyBtn.addEventListener('click', () => {
+                if (typeof openOrderModal === 'function') {
+                    openOrderModal(item.title || 'Zamówienie');
+                }
+            });
+
+            // 3. Собираем элементы вместе
+            card.querySelector('.product-footer').appendChild(buyBtn);
+            shopContainer.appendChild(card);
         }
     });
-
-    blogTimeline.from(".blog-image-side", { xPercent: -30, opacity: 0 }, 0)
-                .from(".blog-text-side", { xPercent: 30, opacity: 0 }, 0);
 }
