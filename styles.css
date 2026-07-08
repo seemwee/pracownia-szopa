@@ -654,7 +654,7 @@ header .order-btn button:active {
 .outro-quote {
     font-size: 24px;
     font-style: italic;
-    color: #C4411D;
+    color: #258495;
     text-align: center;
     font-family: Georgia, serif;
     font-weight: 700;
@@ -1755,18 +1755,55 @@ h2 {
 
 @media (max-width: 768px) { 
     header { 
-        height: auto; 
-        padding: 0px 15px 10px 15px; /* 4px сверху, 15px по бокам, 10px снизу */
-        flex-direction: column; 
+        height: 100px; 
+        padding: 10px 15px; /* Аккуратные отступы сверху и снизу */
+        flex-direction: row; 
+        align-items: center;
+        justify-content: space-between; /* Намертво раскидывает логотип влево, а языки вправо */
     } 
-    header .icon a { transform: translateY(30px); font-size: 18px; } 
-    header img { width: 40px; height: 40px; } 
-    header .btns { width: 100%; justify-content: space-between; gap: 10px; } 
-    header nav { display: none; } 
-    header nav::-webkit-scrollbar { display: none; } 
-    header .lang { padding: 4px 8px; gap: 8px; } 
-    header .lang p { font-size: 12px; } 
-    header .order-btn button { padding: 8px 16px; font-size: 14px; border-radius: 12px; box-shadow: 0 3px 0 #13110F; } 
+    
+    
+    header .icon a { 
+        transform: none; /* Сбрасываем кривой сдвиг вниз */
+        display: flex;
+        align-items: center;
+    } 
+    
+    header img { 
+        width: 40px; 
+        height: 40px; 
+    } 
+    
+    /* Настраиваем блок с кнопками */
+    header .btns { 
+        width: auto; /* Убираем ширину 100%, чтобы блок не растягивался */
+        justify-content: flex-end; 
+    } 
+    
+    /* Полностью прячем кнопку "zamów" */
+    header .order-btn {
+        display: none;
+    }
+    header .order-btn button { 
+        display: none; 
+    } 
+
+    /* Скрываем навигацию */
+    header nav { 
+        display: none; 
+    } 
+    
+    /* Делаем переключатель языков аккуратным */
+    header .lang { 
+        padding: 4px 8px; 
+        gap: 8px; 
+        display: flex;
+    } 
+    
+    header .lang p { 
+        font-size: 14px; /* Чуть увеличил, чтобы пальцем на телефоне попадать удобнее было */
+        margin: 0;
+    } 
 }
 
 /* Стили для всплывающего окна заказа */
