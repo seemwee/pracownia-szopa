@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора | Pracownia Szopa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Copse&display=swap" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; padding: 20px; background-color: #FDF9F2; font-family: 'Copse', Georgia, serif; color: #13110F; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        
+        /* Экран входа */
+        .login-container { width: 100%; max-width: 400px; background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; padding: 35px 25px; box-shadow: 8px 8px 0 #13110F; text-align: center; box-sizing: border-box; }
+        .login-container input { display: block; width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 3px solid #13110F; border-radius: 12px; font-family: inherit; font-size: 16px; box-sizing: border-box; text-align: center; }
+        
+        /* Панель на весь экран */
+        .admin-screen-box { width: 100%; max-width: 1200px; background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; padding: 40px 30px; box-shadow: 8px 8px 0 #13110F; box-sizing: border-box; display: none; margin: 20px auto; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #C4411D; font-weight: bold; text-decoration: none; font-size: 18px; }
+        
+        /* Навигация (вкладки) */
+        .admin-section-nav { display: flex; gap: 12px; margin-bottom: 30px; border-bottom: 4px solid #13110F; padding-bottom: 15px; flex-wrap: wrap; }
+        .nav-tab-btn { background: #FFF; border: 3px solid #13110F; padding: 12px 20px; font-family: inherit; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 4px 4px 0 #13110F; font-size: 15px; transition: all 0.1s ease; }
+        .nav-tab-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #13110F; }
+        .nav-tab-btn.active-tab { background: #258495; color: #EDD7A3; transform: translate(4px, 4px); box-shadow: 0 0 0 #13110F; }
+        
+        .admin-panel-section { display: none; }
+        .admin-panel-section.active-section { display: block; }
+
+        /* Форма добавления */
+        .form-group-box { background: #FFF; padding: 25px; border: 3px solid #13110F; border-radius: 16px; margin-bottom: 30px; box-shadow: 4px 4px 0 #13110F; }
+        .form-group-box input, .form-group-box textarea { display: block; width: 100%; margin: 14px 0; padding: 12px; border: 2px solid #13110F; border-radius: 10px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
+        
+        .file-input-wrapper { margin: 18px 0; }
+        .file-label { display: block; padding: 14px; background: #258495; color: #EDD7A3; border: 3px solid #13110F; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #13110F; }
+        #admin-file { display: none; }
+        .file-status { font-size: 13px; opacity: 0.8; margin-top: 8px; display: block; text-align: center; font-family: sans-serif; font-weight: bold; color: #258495; }
+
+        .save-btn { background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 14px 24px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 14px; box-shadow: 0 4px 0 #13110F; width: 100%; font-family: inherit; }
+        .save-btn:disabled { background: #ccc !important; color: #666 !important; cursor: not-allowed; box-shadow: none !important; }
+        
+        /* Список товаров и инпуты редактирования */
+        .admin-product-item { background: #FFF; padding: 15px; margin: 14px 0; border: 3px solid #13110F; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; gap: 15px; box-shadow: 4px 4px 0 #13110F; }
+        .prod-meta { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .prod-meta img { width: 55px; height: 55px; border: 2px solid #13110F; border-radius: 10px; object-fit: cover; background: #FFF; flex-shrink: 0; }
+        .prod-meta div { flex: 1; }
+        .edit-fields input, .edit-fields textarea { display: block; width: 100%; margin: 6px 0; padding: 8px; border: 2px solid #13110F; border-radius: 8px; font-family: inherit; box-sizing: border-box; }
+        
+        .prod-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+        .status-btn, .edit-btn { padding: 8px 18px; border: 2px solid #13110F; font-size: 13px; font-weight: bold; border-radius: 10px; cursor: pointer; min-width: 130px; text-align: center; color: #FFF; box-shadow: 0 3px 0 #13110F; font-family: inherit; text-transform: uppercase; }
+        .status-btn:active, .edit-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #13110F; }
+        .btn-active { background: #949C2D; color: #13110F; }
+        .btn-inactive { background: #C4411D; color: #EDD7A3; }
+        .btn-edit-mode { background: #258495; color: #EDD7A3; }
+        .btn-save-mode { background: #949C2D; color: #13110F; }
+        
+        /* Карточки заказов */
+        .order-card { background: #FFF; border: 3px solid #13110F; border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 6px 6px 0 #13110F; }
+        .order-date-container { margin-top: 15px; font-size: 12px; color: #777; font-family: sans-serif; font-weight: bold; border-top: 1px dashed rgba(19, 17, 14, 0.15); padding-top: 8px; }
+        .order-card h4 { margin: 0 0 15px 0; color: #C4411D; font-size: 20px; }
+        .order-info-row { font-family: sans-serif; font-size: 15px; margin: 8px 0; line-height: 1.4; color: #13110F; }
+        .order-info-row strong { font-family: 'Copse', Georgia, serif; font-size: 16px; color: #13110F; display: inline-block; min-width: 130px; }
+        .order-info-row a { color: #258495; text-decoration: underline; font-weight: bold; }
+        
+        .order-with-img { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+        .order-pet-thumb-wrapper { position: relative; cursor: pointer; flex-shrink: 0; }
+        .order-pet-thumb { width: 95px; height: 95px; border: 3px solid #13110F; border-radius: 12px; object-fit: cover; box-shadow: 3px 3px 0 #13110F; }
+
+        .badge-method { background: #EDD7A3; padding: 3px 10px; border: 2px solid #13110F; border-radius: 8px; font-weight: bold; font-size: 13px; color: #13110F; }
+        .details-box { margin-top: 15px; background: #FDF9F2; padding: 15px; border-radius: 12px; border: 2px solid #13110F; font-size: 14px; font-family: sans-serif; line-height: 1.5; color: #333; }
+
+        /* Лайтбокс */
+        .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(19, 17, 15, 0.85); backdrop-filter: blur(5px); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; opacity: 0; transition: opacity 0.2s ease; gap: 20px; }
+        .lightbox-img { max-width: 90%; max-height: 75%; border: 4px solid #13110F; border-radius: 16px; box-shadow: 8px 8px 0 #13110F; transform: scale(0.95); transition: transform 0.2s ease; object-fit: contain; background: #FFF; }
+        .lightbox-overlay.active { opacity: 1; }
+        .lightbox-overlay.active .lightbox-img { transform: scale(1); }
+        
+        .download-btn { background: #949C2D; color: #13110F; border: 3px solid #13110F; padding: 10px 24px; font-size: 14px; font-weight: bold; border-radius: 10px; cursor: pointer; box-shadow: 4px 4px 0 #13110F; font-family: inherit; text-decoration: none; text-transform: uppercase; }
+
+        .alert-toast { position: fixed; bottom: 20px; right: 20px; background: #13110F; color: #EDD7A3; padding: 12px 25px; border-radius: 10px; font-family: sans-serif; font-size: 14px; z-index: 10000; display: none; border: 2px solid #EDD7A3; }
+    </style>
+</head>
+<body>
+
+<!-- ЭКРАН ВХОДА -->
+<div class="login-container" id="login-screen">
+    <h2>Авторизация 🐾</h2>
+    <p style="font-family: sans-serif; font-size: 14px; opacity: 0.7;">Введите секретный пароль</p>
+    <input type="password" id="login-pass" placeholder="••••••••" autofocus>
+    <button id="login-submit-btn" class="save-btn">Войти в панель</button>
+</div>
+
+<!-- ГЛАВНЫЙ ИНТЕРФЕЙС АДМИНКИ -->
+<div class="admin-screen-box" id="admin-screen">
+    <a href="index.html" class="back-link">← Вернуться на сайт</a>
+    <h2 style="font-size: 36px; margin: 0 0 30px 0; border-bottom: 4px solid #13110F; padding-bottom: 10px;">Панель управления 🛠️</h2>
+    
+    <!-- Вкладки навигации -->
+    <div class="admin-section-nav">
+        <button class="nav-tab-btn active-tab" data-target="section-products">💎 Витрина</button>
+        <button class="nav-tab-btn" data-target="section-shop-orders">🛒 Заказы с витрины (0)</button>
+        <button class="nav-tab-btn" data-target="section-custom-orders">📸 Индивидуальные по фото (0)</button>
+    </div>
+
+    <!-- СЕКЦИЯ 1: ТОВАРЫ -->
+    <div id="section-products" class="admin-panel-section active-section">
+        <div class="form-group-box">
+            <h3>Добавить новый витраж</h3>
+            <input type="text" id="admin-title" placeholder="Название витража">
+            <textarea id="admin-desc" rows="3" placeholder="Описание товара..."></textarea>
+            <input type="text" id="admin-price" placeholder="Цена">
+            
+            <div class="file-input-wrapper">
+                <label for="admin-file" class="file-label">📸 Выбрать фото на телефоне</label>
+                <input type="file" id="admin-file" accept="image/*">
+                <span id="file-name-status" class="file-status">Файл не выбран</span>
+                
+                <div id="upload-preview-container" style="display: none; text-align: center; margin-top: 12px;">
+                    <img id="upload-preview-img" src="" style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #13110F; border-radius: 12px; box-shadow: 3px 3px 0 #13110F;">
+                </div>
+            </div>
+
+            <button id="add-product-btn" class="save-btn">Опубликовать товар</button>
+        </div>
+
+        <h3>Все товары на сайте</h3>
+        <div id="admin-list-container"></div>
+    </div>
+
+    <!-- СЕКЦИЯ 2: ЗАКАЗЫ ИЗ МАГАЗИНА -->
+    <div id="section-shop-orders" class="admin-panel-section">
+        <h3>Заявки на готовые витражи</h3>
+        <div id="shop-orders-container"></div>
+    </div>
+
+    <!-- СЕКЦИЯ 3: ИНДИВИДУАЛЬНЫЕ ЗАКАЗЫ -->
+    <div id="section-custom-orders" class="admin-panel-section">
+        <h3>Заявки на витраж по фотографии питомца</h3>
+        <div id="custom-orders-container"></div>
+    </div>
+</div>
+
+<!-- ЛАЙТБОКС С КНОПКОЙ СКАЧИВАНИЯ -->
+<div id="lightbox" class="lightbox-overlay">
+    <img id="lightbox-img" class="lightbox-img" src="" alt="Увеличение">
+    <a id="lightbox-download-btn" class="download-btn" href="" download="foto_pupila.jpg" target="_blank">💾 Скачать фотографию</a>
+</div>
+
+<div id="toast" class="alert-toast"></div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const IMGBB_API_KEY = "291d37bc47944d33b00530f6fa7d93f4";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDa6zMGsTQaS1_Bm2dC-5aw5yfQ6cyDSBw",
+        authDomain: "pracownia-szopa.firebaseapp.com",
+        projectId: "pracownia-szopa",
+        storageBucket: "pracownia-szopa.firebasestorage.app",
+        messagingSenderId: "288892800012",
+        appId: "1:288892800012:web:006d0e10d7fdb734153229",
+        measurementId: "G-MD9KVDR50N",
+        databaseURL: "https://pracownia-szopa-default-rtdb.europe-west1.firebasedatabase.app"
+    };
+
+    function showToast(text) {
+        const toast = document.getElementById('toast');
+        if (toast) {
+            toast.innerText = text;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+    }
+
+    // ЛОГИКА ОКНА УВЕЛИЧЕНИЯ С КНОПКОЙ ЖЕСТКОГО СКАЧИВАНИЯ
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const dlBtn = document.getElementById('lightbox-download-btn');
+    
+    window.openLightbox = function(url) {
+        if (!lightbox || !lightboxImg || !dlBtn) return;
+        
+        lightboxImg.src = url;
+        lightbox.style.display = 'flex';
+        setTimeout(() => lightbox.classList.add('active'), 10);
+
+        // ХИТРЫЙ ОБХОД БЛОКИРОВКИ БРАУЗЕРА ДЛЯ СКАЧИВАНИЯ
+        dlBtn.onclick = async (e) => {
+            e.preventDefault(); // Блокируем открытие в новой вкладке
+            const originalText = dlBtn.innerText;
+            dlBtn.innerText = "⏳ Скачивание...";
+            
+            try {
+                // Скачиваем картинку в буфер в обход CORS
+                const response = await fetch(url);
+                const blob = await response.blob();
+                
+                // Создаем виртуальную внутреннюю ссылку
+                const blobUrl = URL.createObjectURL(blob);
+                const tempLink = document.createElement('a');
+                tempLink.href = blobUrl;
+                tempLink.download = `foto_pupila_${Date.now()}.jpg`; // Имя файла при сохранении
+                
+                // Имитируем жесткий клик
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                
+                // Чистим за собой память
+                document.body.removeChild(tempLink);
+                URL.revokeObjectURL(blobUrl);
+            } catch (err) {
+                // Если браузер совсем заблокировал fetch, открываем в новой вкладке как запасной вариант
+                window.open(url, '_blank');
+            } finally {
+                dlBtn.innerText = originalText;
+            }
+        };
+    };
+
+    if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+            // Закрываем, только если кликнули по фону или самой картинке, но не по кнопке скачать
+            if (e.target === lightbox || e.target === lightboxImg) {
+                lightbox.classList.remove('active');
+                setTimeout(() => { lightbox.style.display = 'none'; }, 200);
+            }
+        });
+    }
+
+    const tabs = document.querySelectorAll('.nav-tab-btn');
+    const sections = document.querySelectorAll('.admin-panel-section');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active-tab'));
+            sections.forEach(s => s.classList.remove('active-section'));
+            tab.classList.add('active-tab');
+            document.getElementById(tab.dataset.target).classList.add('active-section');
+        });
+    });
+
+    const SECRET_PASSWORD = "Szopa2026";
+    const loginScreen = document.getElementById('login-screen');
+    const adminScreen = document.getElementById('admin-screen');
+    const passInput = document.getElementById('login-pass');
+
+    function handleLogin() {
+        if (passInput.value === SECRET_PASSWORD) {
+            loginScreen.style.display = 'none';
+            document.body.style.alignItems = 'flex-start';
+            adminScreen.style.display = 'block';
+            showToast("Успешная авторизация! 🐾");
+        } else {
+            showToast("Неверный пароль!");
+            passInput.value = '';
+            passInput.focus();
+        }
+    }
+
+    if (document.getElementById('login-submit-btn')) {
+        document.getElementById('login-submit-btn').addEventListener('click', handleLogin);
+    }
+    if (passInput) {
+        passInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+    }
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    const productsRef = ref(db, 'products');
+    const shopOrdersRef = ref(db, 'shop_orders');
+    const customOrdersRef = ref(db, 'custom_orders');
+
+    const fileInput = document.getElementById('admin-file');
+    const fileStatus = document.getElementById('file-name-status');
+    const previewContainer = document.getElementById('upload-preview-container');
+    const previewImg = document.getElementById('upload-preview-img');
+
+    if (fileInput && fileStatus) {
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            
+            if (file) {
+                fileStatus.innerText = "📁 " + file.name;
+                
+                // Читаем файл локально в браузере для показа превью
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImg.src = event.target.result;
+                    previewContainer.style.display = 'block'; // Показываем превьюшку
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileStatus.innerText = "Файл не выбран";
+                previewContainer.style.display = 'none'; // Прячем, если файл сбросили
+                previewImg.src = '';
+            }
+        });
+    }
+
+    // Хранилище состояний редактирования
+    let editingProductId = null;
+    let globalProductsData = null; // Локальный слепок для инлайн перерисовки
+
+    // 1. СПИСОК ТОВАРОВ + ИНЛАЙН РЕДАКТИРОВАНИЕ
+    function renderProductsList(data) {
+        const adminContainer = document.getElementById('admin-list-container');
+        if (!adminContainer) return;
+        adminContainer.innerHTML = '';
+
+        if (!data) {
+            adminContainer.innerHTML = '<p style="opacity:0.6; padding:10px;">Товары отсутствуют.</p>';
+            return;
+        }
+
+        for (let id in data) {
+            const item = data[id];
+            if(id === '_trigger') continue; // игнорируем служебные ключи
+            
+            const isWazkaOrPszczola = item.title && (item.title.toLowerCase().includes('ważka') || item.title.toLowerCase().includes('pszczółka'));
+            let statusText = item.available ? (isWazkaOrPszczola ? 'Доступна' : 'Доступен') : 'Niedostepny';
+            
+            const itemRow = document.createElement('div');
+            itemRow.className = 'admin-product-item';
+            
+            const isEditing = editingProductId === id;
+
+            itemRow.innerHTML = `
+                <div class="prod-meta">
+                    <img src="${item.img || 'pics/icon.png'}" onerror="this.src='pics/icon.png'">
+                    <div>
+                        ${isEditing ? `
+                            <div class="edit-fields">
+                                <input type="text" id="edit-title-${id}" value="${item.title || ''}" placeholder="Название">
+                                <textarea id="edit-desc-${id}" rows="2" placeholder="Описание">${item.desc || ''}</textarea>
+                                <input type="text" id="edit-price-${id}" value="${item.price || ''}" placeholder="Цена">
+                            </div>
+                        ` : `
+                            <h4>Witraz "${item.title || 'Без названия'}"</h4>
+                            <p style="font-family:sans-serif; font-size:13px; color:#555; margin:4px 0;">${item.desc || 'Без описания.'}</p>
+                            <p>${item.price || 0} PLN</p>
+                        `}
+                    </div>
+                </div>
+                <div class="prod-actions">
+                    <button class="status-btn ${item.available ? 'btn-active' : 'btn-inactive'}" id="status-btn-${id}">
+                        ${statusText}
+                    </button>
+                    <button class="edit-btn ${isEditing ? 'btn-save-mode' : 'btn-edit-mode'}" id="edit-btn-${id}">
+                        ${isEditing ? '💾 Сохранить' : '✏️ Редактировать'}
+                    </button>
+                </div>
+            `;
+
+            adminContainer.appendChild(itemRow);
+
+            // Тумблер наличия
+            document.getElementById(`status-btn-${id}`).addEventListener('click', () => {
+                update(ref(db, `products/${id}`), { available: !item.available });
+                showToast("Статус товара изменен!");
+            });
+
+            // Кнопка Редактировать / Сохранить
+            document.getElementById(`edit-btn-${id}`).addEventListener('click', () => {
+                if (isEditing) {
+                    const updatedTitle = document.getElementById(`edit-title-${id}`).value.trim();
+                    const updatedDesc = document.getElementById(`edit-desc-${id}`).value.trim();
+                    const updatedPrice = document.getElementById(`edit-price-${id}`).value.trim();
+
+                    if (!updatedTitle || !updatedPrice) {
+                        showToast("Название и цена не могут быть пустыми!");
+                        return;
+                    }
+
+                    editingProductId = null; // СРАЗУ ВЫКЛЮЧАЕМ РЕЖИМ РЕДАКТИРОВАНИЯ
+                    
+                    update(ref(db, `products/${id}`), {
+                        title: updatedTitle,
+                        desc: updatedDesc || "Ręcznie robiony witraż.",
+                        price: updatedPrice
+                    }).then(() => {
+                        showToast("Товар успешно обновлен!");
+                    });
+                } else {
+                    editingProductId = id;
+                    renderProductsList(globalProductsData); // Моментально перерисовываем инпуты
+                }
+            });
+        }
+    }
+
+    onValue(productsRef, (snapshot) => {
+        globalProductsData = snapshot.val();
+        renderProductsList(globalProductsData);
+    });
+
+    // 2. ЗАКАЗЫ ИЗ МАГАЗИНА (С ОТОБРАЖЕНИЕМ КАРТИНКИ ТОВАРА)
+    onValue(shopOrdersRef, (snapshot) => {
+        const data = snapshot.val();
+        const container = document.getElementById('shop-orders-container');
+        const tabBtn = document.querySelector('[data-target="section-shop-orders"]');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const count = data ? Object.keys(data).length : 0;
+        if (tabBtn) tabBtn.innerText = `🛒 Заказы с витрины (${count})`;
+
+        if (!data) {
+            container.innerHTML = '<p style="opacity:0.6; padding:15px; font-family:sans-serif;">Новых заказов со склада нет.</p>';
+            return;
+        }
+
+        const entries = Object.entries(data).reverse();
+        entries.forEach(([id, order]) => {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+            
+            // Пытаемся найти фотку товара в нашей локальной базе продуктов по названию
+            let productImgHtml = '';
+            if (globalProductsData) {
+                for (let pId in globalProductsData) {
+                    if (globalProductsData[pId].title === order.product && globalProductsData[pId].img) {
+                        productImgHtml = `
+                            <div class="order-pet-thumb-wrapper" onclick="openLightbox('${globalProductsData[pId].img}')">
+                                <img class="order-pet-thumb" src="${globalProductsData[pId].img}" alt="Витраж">
+                            </div>
+                        `;
+                        break;
+                    }
+                }
+            }
+
+            card.innerHTML = `
+                <div class="order-with-img">
+                    <div style="flex: 1;">
+                        <h4>Витраж: "${order.product || 'Неизвестный'}"</h4>
+                        <div class="order-info-row"><strong>Клиент:</strong> ${order.client_name || ''}</div>
+                        <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
+                        <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
+                    </div>
+                    ${productImgHtml}
+                </div>
+                <div class="order-date-container">📅 Дата оформления: ${order.date || ''}</div>
+            `;
+            container.appendChild(card);
+        });
+    });
+
+    // 3. ИНДИВИДУАЛЬНЫЕ ЗАКАЗЫ
+    onValue(customOrdersRef, (snapshot) => {
+        const data = snapshot.val();
+        const container = document.getElementById('custom-orders-container');
+        const tabBtn = document.querySelector('[data-target="section-custom-orders"]');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const count = data ? Object.keys(data).length : 0;
+        if (tabBtn) tabBtn.innerText = `📸 Индивидуальные по фото (${count})`;
+
+        if (!data) {
+            container.innerHTML = '<p style="opacity:0.6; padding:15px; font-family:sans-serif;">Новых заявок по фотографии нет.</p>';
+            return;
+        }
+
+        const entries = Object.entries(data).reverse();
+        entries.forEach(([id, order]) => {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+            
+            let methodLabels = { telegram: 'Telegram ✈️', whatsapp: 'WhatsApp 💬', sms: 'SMS 📱', call: 'Звонок 📞', email: 'E-mail ✉️' };
+            let contactMethodTxt = methodLabels[order.contact_method] || order.contact_method;
+
+            card.innerHTML = `
+                <div class="order-with-img">
+                    <div style="flex: 1;">
+                        <h4 style="color: #258495;">Заявка от: ${order.client_name || ''}</h4>
+                        <div class="order-info-row"><strong>Способ связи:</strong> <span class="badge-method">${contactMethodTxt}</span></div>
+                        <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
+                        <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
+                        <div class="details-box">
+                            <strong>Пожелания / Детали заказа:</strong><br>${order.wishes_and_details || 'Дополнительных пожеланий нет.'}
+                        </div>
+                    </div>
+                    ${order.pet_photo_url ? `
+                        <div class="order-pet-thumb-wrapper" onclick="openLightbox('${order.pet_photo_url}')">
+                            <img class="order-pet-thumb" src="${order.pet_photo_url}" alt="Фото питомца">
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="order-date-container">📅 Дата отправки: ${order.date || ''}</div>
+            `;
+            container.appendChild(card);
+        });
+    });
+
+    // ДОБАВЛЕНИЕ НОВОГО ВИТРАЖА
+    const addProductBtn = document.getElementById('add-product-btn');
+    if (addProductBtn) {
+        addProductBtn.addEventListener('click', async () => {
+            const title = document.getElementById('admin-title').value.trim();
+            const desc = document.getElementById('admin-desc').value.trim();
+            const price = document.getElementById('admin-price').value.trim();
+            const file = fileInput ? fileInput.files[0] : null;
+
+            if (!title || !price || !file) {
+                showToast('Заполните поля и выберите фото!');
+                return;
+            }
+
+            try {
+                addProductBtn.disabled = true;
+                addProductBtn.innerText = "Загрузка...";
+
+                const formData = new FormData();
+                formData.append("image", file);
+
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (!result.success) throw new Error("Ошибка ImgBB");
+
+                push(productsRef, {
+                    title: title,
+                    desc: desc || "Ręcznie robiony witraż.",
+                    price: price,
+                    img: result.data.url,
+                    available: true
+                }).then(() => {
+                    document.getElementById('admin-title').value = '';
+                    document.getElementById('admin-desc').value = '';
+                    document.getElementById('admin-price').value = '';
+                    if (fileInput) fileInput.value = '';
+                    if (fileStatus) fileStatus.innerText = "Файл не выбран";
+                    showToast('Товар успешно добавлен на сайт! ✨');
+                });
+
+            } catch (err) {
+                showToast('Ошибка: ' + err.message);
+            } finally {
+                addProductBtn.disabled = false;
+                addProductBtn.innerText = "Опубликовать товар";
+            }
+        });
+    }
+</script>
