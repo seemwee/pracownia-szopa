@@ -118,9 +118,9 @@
     <div id="section-products" class="admin-panel-section active-section">
         <div class="form-group-box">
             <h3>Добавить новый витраж</h3>
-            <input type="text" id="admin-title" placeholder="Название витража (например, Золотая Пчела)">
+            <input type="text" id="admin-title" placeholder="Название витража">
             <textarea id="admin-desc" rows="3" placeholder="Описание товара..."></textarea>
-            <input type="text" id="admin-price" placeholder="Цена в PLN">
+            <input type="text" id="admin-price" placeholder="Цена">
             
             <div class="file-input-wrapper">
                 <label for="admin-file" class="file-label">📸 Выбрать фото на телефоне</label>
@@ -316,7 +316,7 @@
             if(id === '_trigger') continue;
             
             const isWazkaOrPszczola = item.title && (item.title.toLowerCase().includes('ważka') || item.title.toLowerCase().includes('pszczółka'));
-            let statusText = item.available ? (isWazkaOrPszczola ? 'Доступна' : 'Доступен') : 'Niedostepny';
+            let statusText = item.available ? (isWazkaOrPszczola ? 'Доступна' : 'Доступен') : 'Резервация';
             
             const itemRow = document.createElement('div');
             itemRow.className = 'admin-product-item';
@@ -464,7 +464,7 @@
         container.innerHTML = '';
 
         const count = data ? Object.keys(data).length : 0;
-        if (tabBtn) tabBtn.innerText = `📸 Indywidualne zgłoszenia (${count})`;
+        if (tabBtn) tabBtn.innerText = `📸 Индивидуальные заказы (${count})`;
 
         if (!data) {
             container.innerHTML = '<p style="opacity:0.6; padding:15px; font-family:sans-serif;">Новых заявок по фотографии нет.</p>';
