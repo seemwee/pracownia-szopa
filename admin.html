@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Панель администратора | Pracownia Szopa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,16 +10,18 @@
     
     <style>
         body { margin: 0; padding: 10px; background-color: #FDF9F2; font-family: 'Copse', Georgia, serif; color: #13110F; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        
-        /* Экран входа */
+        html, body {
+    touch-action: manipulation; /* Отключает задержку клика и автоматический зум при двойном тапе */
+}
+        /* Авторизация */
         .login-container { width: 100%; max-width: 400px; background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; padding: 35px 25px; box-shadow: 8px 8px 0 #13110F; text-align: center; box-sizing: border-box; }
         .login-container input { display: block; width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 3px solid #13110F; border-radius: 12px; font-family: inherit; font-size: 16px; box-sizing: border-box; text-align: center; }
         
-        /* Панель на весь экран */
+        /* Главный бокс панели */
         .admin-screen-box { width: 100%; max-width: 1200px; background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; padding: 30px 20px; box-shadow: 8px 8px 0 #13110F; box-sizing: border-box; display: none; margin: 10px auto; }
         .back-link { display: inline-block; margin-bottom: 25px; color: #C4411D; font-weight: bold; text-decoration: none; font-size: 18px; }
         
-        /* Навигация (вкладки) */
+        /* Вкладки навигации */
         .admin-section-nav { display: flex; gap: 12px; margin-bottom: 30px; border-bottom: 4px solid #13110F; padding-bottom: 15px; flex-wrap: wrap; }
         .nav-tab-btn { background: #FFF; border: 3px solid #13110F; padding: 12px 20px; font-family: inherit; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 4px 4px 0 #13110F; font-size: 15px; transition: all 0.1s ease; }
         .nav-tab-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #13110F; }
@@ -28,7 +30,12 @@
         .admin-panel-section { display: none; }
         .admin-panel-section.active-section { display: block; }
 
-        /* Форма добавления */
+        /* Внутренние подвкладки Архива */
+        .archive-toggle-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        .archive-btn { background: #FFF; border: 2px solid #13110F; padding: 8px 16px; font-family: inherit; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 3px 3px 0 #13110F; }
+        .archive-btn.active-subview { background: #949C2D; color: #13110F; transform: translate(2px, 2px); box-shadow: 0 0 0 #13110F; }
+
+        /* Формы и карточки */
         .form-group-box { background: #FFF; padding: 25px; border: 3px solid #13110F; border-radius: 16px; margin-bottom: 30px; box-shadow: 4px 4px 0 #13110F; }
         .form-group-box input, .form-group-box textarea { display: block; width: 100%; margin: 14px 0; padding: 12px; border: 2px solid #13110F; border-radius: 10px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
         
@@ -40,7 +47,7 @@
         .save-btn { background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 14px 24px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 14px; box-shadow: 0 4px 0 #13110F; width: 100%; font-family: inherit; }
         .save-btn:disabled { background: #ccc !important; color: #666 !important; cursor: not-allowed; box-shadow: none !important; }
         
-        /* Список товаров и инпуты редактирования */
+        /* Списки товаров */
         .admin-product-item { background: #FFF; padding: 15px; margin: 14px 0; border: 3px solid #13110F; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; gap: 15px; box-shadow: 4px 4px 0 #13110F; }
         .prod-meta { display: flex; align-items: center; gap: 15px; flex: 1; }
         .prod-meta img { width: 65px; height: 65px; border: 2px solid #13110F; border-radius: 10px; object-fit: cover; background: #FFF; flex-shrink: 0; }
@@ -48,15 +55,17 @@
         .edit-fields input, .edit-fields textarea { display: block; width: 100%; margin: 6px 0; padding: 8px; border: 2px solid #13110F; border-radius: 8px; font-family: inherit; box-sizing: border-box; }
         
         .prod-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; flex-shrink: 0; }
-        .status-btn, .edit-btn, .delete-btn { padding: 8px 14px; border: 2px solid #13110F; font-size: 13px; font-weight: bold; border-radius: 10px; cursor: pointer; min-width: 140px; text-align: center; color: #FFF; box-shadow: 0 3px 0 #13110F; font-family: inherit; text-transform: uppercase; box-sizing: border-box; }
-        .status-btn:active, .edit-btn:active, .delete-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #13110F; }
+        .status-btn, .edit-btn, .delete-btn, .archive-action-btn { padding: 8px 14px; border: 2px solid #13110F; font-size: 13px; font-weight: bold; border-radius: 10px; cursor: pointer; min-width: 140px; text-align: center; color: #FFF; box-shadow: 0 3px 0 #13110F; font-family: inherit; text-transform: uppercase; box-sizing: border-box; }
+        .status-btn:active, .edit-btn:active, .delete-btn:active, .archive-action-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #13110F; }
+        
         .btn-active { background: #949C2D; color: #13110F; }
         .btn-inactive { background: #C4411D; color: #EDD7A3; }
         .btn-edit-mode { background: #258495; color: #EDD7A3; }
         .btn-save-mode { background: #949C2D; color: #13110F; }
         .delete-btn { background: #C4411D; color: #FFF; }
+        .archive-action-btn { background: #258495; color: #FFF; }
         
-        /* Карточки заказов */
+        /* Заказы */
         .order-card { background: #FFF; border: 3px solid #13110F; border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 6px 6px 0 #13110F; }
         .order-date-container { margin-top: 15px; font-size: 12px; color: #777; font-family: sans-serif; font-weight: bold; border-top: 1px dashed rgba(19, 17, 14, 0.15); padding-top: 8px; }
         .order-card h4 { margin: 0 0 15px 0; color: #C4411D; font-size: 20px; }
@@ -71,14 +80,13 @@
         .badge-method { background: #EDD7A3; padding: 3px 10px; border: 2px solid #13110F; border-radius: 8px; font-weight: bold; font-size: 13px; color: #13110F; }
         .details-box { margin-top: 15px; background: #FDF9F2; padding: 15px; border-radius: 12px; border: 2px solid #13110F; font-size: 14px; font-family: sans-serif; line-height: 1.5; color: #333; }
 
-        /* Лайтбокс */
+        /* Модальные окна */
         .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(19, 17, 15, 0.85); backdrop-filter: blur(5px); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; opacity: 0; transition: opacity 0.2s ease; gap: 20px; }
         .lightbox-img { max-width: 90%; max-height: 75%; border: 4px solid #13110F; border-radius: 16px; box-shadow: 8px 8px 0 #13110F; transform: scale(0.95); transition: transform 0.2s ease; object-fit: contain; background: #FFF; }
         .lightbox-overlay.active { opacity: 1; }
         .lightbox-overlay.active .lightbox-img { transform: scale(1); }
         
         .download-btn { background: #949C2D; color: #13110F; border: 3px solid #13110F; padding: 10px 24px; font-size: 14px; font-weight: bold; border-radius: 10px; cursor: pointer; box-shadow: 4px 4px 0 #13110F; font-family: inherit; text-decoration: none; text-transform: uppercase; text-align: center; }
-
         .alert-toast { position: fixed; bottom: 20px; right: 20px; background: #13110F; color: #EDD7A3; padding: 12px 25px; border-radius: 10px; font-family: sans-serif; font-size: 14px; z-index: 10000; display: none; border: 2px solid #EDD7A3; }
 
         /* АДАПТИВ ПОД МОБИЛКИ (МЕНЕЕ 768px) */
@@ -87,12 +95,37 @@
             .admin-screen-box { padding: 25px 15px; border-radius: 16px; margin: 10px auto; }
             h2 { font-size: 28px !important; }
             .nav-tab-btn { flex: 1 1 100%; text-align: center; padding: 10px; }
+            
+            /* Товары на мобилке */
             .admin-product-item { flex-direction: column; align-items: stretch; gap: 15px; }
             .prod-actions { align-items: stretch; }
-            .status-btn, .edit-btn, .delete-btn { min-width: 100%; text-align: center; }
+            .status-btn, .edit-btn, .delete-btn, .archive-action-btn { min-width: 100%; text-align: center; }
+            
+            /* Заказы на мобилке */
             .order-with-img { flex-direction: column-reverse; align-items: center; gap: 15px; }
             .order-pet-thumb { width: 120px; height: 120px; }
             .order-info-row strong { min-width: auto; display: block; margin-bottom: 2px; }
+            
+            /* КНОПКИ ЗАКАЗОВ НА МОБИЛКЕ — ТЕПЕРЬ ОНИ РОВНЫЕ */
+            .order-card div[style*="display:flex; justify-content: space-between;"] {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 15px !important;
+            }
+            .order-card div[style*="display:flex; gap:10px;"] {
+                flex-direction: column !important;
+                gap: 10px !important;
+                width: 100%;
+            }
+            .order-card .archive-action-btn, 
+            .order-card .delete-btn {
+                width: 100% !important;
+                min-width: 100% !important;
+                padding: 12px 14px !important;
+                font-size: 14px !important;
+                text-align: center !important;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>
@@ -111,8 +144,8 @@
     
     <div class="admin-section-nav">
         <button class="nav-tab-btn active-tab" data-target="section-products">💎 Витрина</button>
-        <button class="nav-tab-btn" data-target="section-shop-orders">🛒 Заказы с витрины (0)</button>
-        <button class="nav-tab-btn" data-target="section-custom-orders">📸 Индивидуальные по фото (0)</button>
+        <button class="nav-tab-btn" data-target="section-shop-orders" id="tab-shop-orders-title">🛒 Заказы с витрины (0)</button>
+        <button class="nav-tab-btn" data-target="section-custom-orders" id="tab-custom-orders-title">📸 Индивидуальные по фото (0)</button>
     </div>
 
     <div id="section-products" class="admin-panel-section active-section">
@@ -140,12 +173,18 @@
     </div>
 
     <div id="section-shop-orders" class="admin-panel-section">
-        <h3>Заявки на готовые витражи</h3>
+        <div class="archive-toggle-nav">
+            <button class="archive-btn active-subview" id="subview-shop-active">Активные заявки</button>
+            <button class="archive-btn" id="subview-shop-archived">Архив заказов</button>
+        </div>
         <div id="shop-orders-container"></div>
     </div>
 
     <div id="section-custom-orders" class="admin-panel-section">
-        <h3>Заявки на витраж по фотографии питомца</h3>
+        <div class="archive-toggle-nav">
+            <button class="archive-btn active-subview" id="subview-custom-active">Активные заявки</button>
+            <button class="archive-btn" id="subview-custom-archived">Архив заказов</button>
+        </div>
         <div id="custom-orders-container"></div>
     </div>
 </div>
@@ -159,10 +198,10 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, push, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // Инициализация конфигураций систем данных
     const IMGBB_API_KEY = "291d37bc47944d33b00530f6fa7d93f4";
-
     const firebaseConfig = {
         apiKey: "AIzaSyDa6zMGsTQaS1_Bm2dC-5aw5yfQ6cyDSBw",
         authDomain: "pracownia-szopa.firebaseapp.com",
@@ -174,6 +213,25 @@
         databaseURL: "https://pracownia-szopa-default-rtdb.europe-west1.firebasedatabase.app"
     };
 
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Ссылки на ветки Базы Данных Firebase
+    const productsRef = ref(db, 'products');
+    const shopOrdersRef = ref(db, 'shop_orders');
+    const customOrdersRef = ref(db, 'custom_orders');
+    const archivedShopOrdersRef = ref(db, 'archived_shop_orders');
+    const archivedCustomOrdersRef = ref(db, 'archived_custom_orders');
+
+    // Состояния интерфейса подвкладок архивов
+    let currentShopSubview = 'active'; // 'active' или 'archived'
+    let currentCustomSubview = 'active'; // 'active' или 'archived'
+    let editingProductId = null;
+    let globalProductsData = null;
+
+    // ==========================================
+    // СЕКЦИЯ: ВСПОМОГАТЕЛЬНЫЙ ИНТЕРФЕЙС (УВЕДОМЛЕНИЯ / МОДАЛКИ)
+    // ==========================================
     function showToast(text) {
         const toast = document.getElementById('toast');
         if (toast) {
@@ -189,7 +247,6 @@
     
     window.openLightbox = function(url) {
         if (!lightbox || !lightboxImg || !dlBtn) return;
-        
         lightboxImg.src = url;
         lightbox.style.display = 'flex';
         setTimeout(() => lightbox.classList.add('active'), 10);
@@ -198,7 +255,6 @@
             e.preventDefault();
             const originalText = dlBtn.innerText;
             dlBtn.innerText = "⏳ Скачивание...";
-            
             try {
                 const response = await fetch(url);
                 const blob = await response.blob();
@@ -206,10 +262,8 @@
                 const tempLink = document.createElement('a');
                 tempLink.href = blobUrl;
                 tempLink.download = `foto_pupila_${Date.now()}.jpg`;
-                
                 document.body.appendChild(tempLink);
                 tempLink.click();
-                
                 document.body.removeChild(tempLink);
                 URL.revokeObjectURL(blobUrl);
             } catch (err) {
@@ -229,6 +283,9 @@
         });
     }
 
+    // ==========================================
+    // СЕКЦИЯ: АВТОРИЗАЦИЯ И НАВИГАЦИЯ ВЫБОРА РАЗДЕЛОВ
+    // ==========================================
     const tabs = document.querySelectorAll('.nav-tab-btn');
     const sections = document.querySelectorAll('.admin-panel-section');
     
@@ -266,13 +323,29 @@
         passInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
     }
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    
-    const productsRef = ref(db, 'products');
-    const shopOrdersRef = ref(db, 'shop_orders');
-    const customOrdersRef = ref(db, 'custom_orders');
+    // Навигация внутренних подвкладок Архива
+    document.getElementById('subview-shop-active').addEventListener('click', () => toggleShopSubview('active'));
+    document.getElementById('subview-shop-archived').addEventListener('click', () => toggleShopSubview('archived'));
+    document.getElementById('subview-custom-active').addEventListener('click', () => toggleCustomSubview('active'));
+    document.getElementById('subview-custom-archived').addEventListener('click', () => toggleCustomSubview('archived'));
 
+    function toggleShopSubview(view) {
+        currentShopSubview = view;
+        document.getElementById('subview-shop-active').classList.toggle('active-subview', view === 'active');
+        document.getElementById('subview-shop-archived').classList.toggle('active-subview', view === 'archived');
+        syncOrdersData();
+    }
+
+    function toggleCustomSubview(view) {
+        currentCustomSubview = view;
+        document.getElementById('subview-custom-active').classList.toggle('active-subview', view === 'active');
+        document.getElementById('subview-custom-archived').classList.toggle('active-subview', view === 'archived');
+        syncOrdersData();
+    }
+
+    // ==========================================
+    // СЕКЦИЯ: ЛОГГЕР ЗАГРУЗКИ И ПРЕДПРОСМОТРА КАРТИНКИ ТОВАРА
+    // ==========================================
     const fileInput = document.getElementById('admin-file');
     const fileStatus = document.getElementById('file-name-status');
     const previewContainer = document.getElementById('upload-preview-container');
@@ -297,10 +370,9 @@
         });
     }
 
-    let editingProductId = null;
-    let globalProductsData = null;
-
-    // 1. СПИСОК ТОВАРОВ + ИНЛАЙН РЕДАКТИРОВАНИЕ + УДАЛЕНИЕ
+    // ==========================================
+    // СЕКЦИЯ: РЕНДЕРИНГ И УПРАВЛЕНИЕ ТОВАРАМИ ВИТРИНЫ
+    // ==========================================
     function renderProductsList(data) {
         const adminContainer = document.getElementById('admin-list-container');
         if (!adminContainer) return;
@@ -320,7 +392,6 @@
             
             const itemRow = document.createElement('div');
             itemRow.className = 'admin-product-item';
-            
             const isEditing = editingProductId === id;
 
             itemRow.innerHTML = `
@@ -341,56 +412,41 @@
                     </div>
                 </div>
                 <div class="prod-actions">
-                    <button class="status-btn ${item.available ? 'btn-active' : 'btn-inactive'}" id="status-btn-${id}">
-                        ${statusText}
-                    </button>
+                    <button class="status-btn ${item.available ? 'btn-active' : 'btn-inactive'}" id="status-btn-${id}">${statusText}</button>
                     <button class="edit-btn ${isEditing ? 'btn-save-mode' : 'btn-edit-mode'}" id="edit-btn-${id}">
                         ${isEditing ? '💾 Сохранить' : '✏️ Редактировать'}
                     </button>
-                    <button class="delete-btn" id="delete-btn-${id}">
-                        🗑️ Удалить
-                    </button>
+                    <button class="delete-btn" id="delete-btn-${id}">🗑️ Удалить</button>
                 </div>
             `;
-
             adminContainer.appendChild(itemRow);
 
-            // Тумблер наличия
             document.getElementById(`status-btn-${id}`).addEventListener('click', () => {
                 update(ref(db, `products/${id}`), { available: !item.available });
                 showToast("Статус товара изменен!");
             });
 
-            // Кнопка Удалить товар (с подтверждением)
             document.getElementById(`delete-btn-${id}`).addEventListener('click', () => {
                 if (confirm(`Вы уверены, что хотите навсегда удалить витраж "${item.title || 'Без названия'}"?`)) {
-                    remove(ref(db, `products/${id}`)).then(() => {
-                        showToast("Товар успешно удален с сайта!");
-                    });
+                    remove(ref(db, `products/${id}`)).then(() => showToast("Товар успешно удален!"));
                 }
             });
 
-            // Кнопка Редактировать / Сохранить
             document.getElementById(`edit-btn-${id}`).addEventListener('click', () => {
                 if (isEditing) {
                     const updatedTitle = document.getElementById(`edit-title-${id}`).value.trim();
                     const updatedDesc = document.getElementById(`edit-desc-${id}`).value.trim();
                     const updatedPrice = document.getElementById(`edit-price-${id}`).value.trim();
-
                     if (!updatedTitle || !updatedPrice) {
                         showToast("Название и цена не могут быть пустыми!");
                         return;
                     }
-
                     editingProductId = null; 
-                    
                     update(ref(db, `products/${id}`), {
                         title: updatedTitle,
                         desc: updatedDesc || "Ręcznie robiony witraż.",
                         price: updatedPrice
-                    }).then(() => {
-                        showToast("Товар успешно обновлен!");
-                    });
+                    }).then(() => showToast("Товар успешно обновлен!"));
                 } else {
                     editingProductId = id;
                     renderProductsList(globalProductsData); 
@@ -404,105 +460,7 @@
         renderProductsList(globalProductsData);
     });
 
-    // 2. ЗАКАЗЫ ИЗ МАГАЗИНА (С КАРТИНКАМИ)
-    onValue(shopOrdersRef, (snapshot) => {
-        const data = snapshot.val();
-        const container = document.getElementById('shop-orders-container');
-        const tabBtn = document.querySelector('[data-target="section-shop-orders"]');
-        if (!container) return;
-        container.innerHTML = '';
-
-        const count = data ? Object.keys(data).length : 0;
-        if (tabBtn) tabBtn.innerText = `🛒 Заказы с витрины (${count})`;
-
-        if (!data) {
-            container.innerHTML = '<p style="opacity:0.6; padding:15px; font-family:sans-serif;">Новых заказов со склада нет.</p>';
-            return;
-        }
-
-        const entries = Object.entries(data).reverse();
-        entries.forEach(([id, order]) => {
-            const card = document.createElement('div');
-            card.className = 'order-card';
-            
-            let productImgHtml = '';
-            if (globalProductsData) {
-                for (let pId in globalProductsData) {
-                    if (globalProductsData[pId].title === order.product && globalProductsData[pId].img) {
-                        productImgHtml = `
-                            <div class="order-pet-thumb-wrapper" onclick="openLightbox('${globalProductsData[pId].img}')">
-                                <img class="order-pet-thumb" src="${globalProductsData[pId].img}" alt="Витраж">
-                            </div>
-                        `;
-                        break;
-                    }
-                }
-            }
-
-            card.innerHTML = `
-                <div class="order-with-img">
-                    <div style="flex: 1;">
-                        <h4>Витраж: "${order.product || 'Nieznany'}"</h4>
-                        <div class="order-info-row"><strong>Клиент:</strong> ${order.client_name || ''}</div>
-                        <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
-                        <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
-                    </div>
-                    ${productImgHtml}
-                </div>
-                <div class="order-date-container">📅 Дата оформления: ${order.date || ''}</div>
-            `;
-            container.appendChild(card);
-        });
-    });
-
-    // 3. ИНДИВИДУАЛЬНЫЕ ЗАКАЗЫ
-    onValue(customOrdersRef, (snapshot) => {
-        const data = snapshot.val();
-        const container = document.getElementById('custom-orders-container');
-        const tabBtn = document.querySelector('[data-target="section-custom-orders"]');
-        if (!container) return;
-        container.innerHTML = '';
-
-        const count = data ? Object.keys(data).length : 0;
-        if (tabBtn) tabBtn.innerText = `📸 Индивидуальные заказы (${count})`;
-
-        if (!data) {
-            container.innerHTML = '<p style="opacity:0.6; padding:15px; font-family:sans-serif;">Новых заявок по фотографии нет.</p>';
-            return;
-        }
-
-        const entries = Object.entries(data).reverse();
-        entries.forEach(([id, order]) => {
-            const card = document.createElement('div');
-            card.className = 'order-card';
-            
-            let methodLabels = { telegram: 'Telegram ✈️', whatsapp: 'WhatsApp 💬', sms: 'SMS 📱', call: 'Звонок 📞', email: 'E-mail ✉️' };
-            let contactMethodTxt = methodLabels[order.contact_method] || order.contact_method;
-
-            card.innerHTML = `
-                <div class="order-with-img">
-                    <div style="flex: 1;">
-                        <h4 style="color: #258495;">Заявка от: ${order.client_name || ''}</h4>
-                        <div class="order-info-row"><strong>Способ связи:</strong> <span class="badge-method">${contactMethodTxt}</span></div>
-                        <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
-                        <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
-                        <div class="details-box">
-                            <strong>Пожелания / Детали заказа:</strong><br>${order.wishes_and_details || 'Дополнительных пожеланий нет.'}
-                        </div>
-                    </div>
-                    ${order.pet_photo_url ? `
-                        <div class="order-pet-thumb-wrapper" onclick="openLightbox('${order.pet_photo_url}')">
-                            <img class="order-pet-thumb" src="${order.pet_photo_url}" alt="Фото питомца">
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="order-date-container">📅 Дата отправки: ${order.date || ''}</div>
-            `;
-            container.appendChild(card);
-        });
-    });
-
-    // ДОБАВЛЕНИЕ НОВОГО ВИТРАЖА
+    // Опубликовать новый товар на ImgBB + Firebase
     const addProductBtn = document.getElementById('add-product-btn');
     if (addProductBtn) {
         addProductBtn.addEventListener('click', async () => {
@@ -519,15 +477,10 @@
             try {
                 addProductBtn.disabled = true;
                 addProductBtn.innerText = "Загрузка...";
-
                 const formData = new FormData();
                 formData.append("image", file);
 
-                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: "POST",
-                    body: formData
-                });
-
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
                 const result = await response.json();
                 if (!result.success) throw new Error("Ошибка ImgBB");
 
@@ -547,7 +500,6 @@
                     if (previewImg) previewImg.src = '';
                     showToast('Товар успешно добавлен на сайт! ✨');
                 });
-
             } catch (err) {
                 showToast('Ошибка: ' + err.message);
             } finally {
@@ -556,6 +508,155 @@
             }
         });
     }
+
+    // ==========================================
+    // СЕКЦИЯ: ОДНОВРЕМЕННАЯ СИНХРОНИЗАЦИЯ И СБОР ДАННЫХ ЗАКАЗОВ
+    // ==========================================
+    let cachedActiveShop = {}, cachedArchivedShop = {};
+    let cachedActiveCustom = {}, cachedArchivedCustom = {};
+
+    function syncOrdersData() {
+        // Отрисовка витринных заказов
+        const shopContainer = document.getElementById('shop-orders-container');
+        const activeShopCount = Object.keys(cachedActiveShop || {}).length;
+        document.getElementById('tab-shop-orders-title').innerText = `🛒 Заказы с витрины (${activeShopCount})`;
+        
+        if (shopContainer) {
+            shopContainer.innerHTML = '';
+            const targetData = (currentShopSubview === 'active') ? cachedActiveShop : cachedArchivedShop;
+            if (!targetData || Object.keys(targetData).length === 0) {
+                shopContainer.innerHTML = `<p style="opacity:0.6; padding:15px; font-family:sans-serif;">${currentShopSubview === 'active' ? 'Новых заявок со склада нет.' : 'Архив пуст.'}</p>`;
+            } else {
+                Object.entries(targetData).reverse().forEach(([id, order]) => {
+                    let productImgHtml = '';
+                    if (globalProductsData) {
+                        for (let pId in globalProductsData) {
+                            if (globalProductsData[pId].title === order.product && globalProductsData[pId].img) {
+                                productImgHtml = `
+                                    <div class="order-pet-thumb-wrapper" onclick="openLightbox('${globalProductsData[pId].img}')">
+                                        <img class="order-pet-thumb" src="${globalProductsData[pId].img}" alt="Витраж">
+                                    </div>
+                                `;
+                                break;
+                            }
+                        }
+                    }
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="order-with-img">
+                            <div style="flex: 1;">
+                                <h4>Витраж: "${order.product || 'Nieznany'}"</h4>
+                                <div class="order-info-row"><strong>Клиент:</strong> ${order.client_name || ''}</div>
+                                <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
+                                <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
+                            </div>
+                            ${productImgHtml}
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items: flex-end; margin-top:15px;">
+                            <div class="order-date-container" style="border:none; padding:0; margin:0;">📅 Оформлен: ${order.date || ''}</div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="archive-action-btn" id="archive-shop-btn-${id}">${currentShopSubview === 'active' ? '📦 В архив' : '🔄 Вернуть'}</button>
+                                <button class="delete-btn" style="padding:6px 12px; font-size:12px; min-width:auto;" id="delete-shop-btn-${id}">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                    shopContainer.appendChild(card);
+
+                    document.getElementById(`archive-shop-btn-${id}`).addEventListener('click', () => {
+                        if (currentShopSubview === 'active') {
+                            set(ref(db, `archived_shop_orders/${id}`), order)
+                                .then(() => remove(ref(db, `shop_orders/${id}`)))
+                                .then(() => showToast("Заказ перенесен в архив."));
+                        } else {
+                            set(ref(db, `shop_orders/${id}`), order)
+                                .then(() => remove(ref(db, `archived_shop_orders/${id}`)))
+                                .then(() => showToast("Заказ восстановлен в активные."));
+                        }
+                    });
+
+                    document.getElementById(`delete-shop-btn-${id}`).addEventListener('click', () => {
+                        if (confirm("Удалить этот заказ навсегда без возможности восстановления?")) {
+                            const path = (currentShopSubview === 'active') ? `shop_orders/${id}` : `archived_shop_orders/${id}`;
+                            remove(ref(db, path)).then(() => showToast("Заказ полностью удален."));
+                        }
+                    });
+                });
+            }
+        }
+
+        // Отрисовка индивидуальных заказов
+        const customContainer = document.getElementById('custom-orders-container');
+        const activeCustomCount = Object.keys(cachedActiveCustom || {}).length;
+        document.getElementById('tab-custom-orders-title').innerText = `📸 Индивидуальные по фото (${activeCustomCount})`;
+
+        if (customContainer) {
+            customContainer.innerHTML = '';
+            const targetData = (currentCustomSubview === 'active') ? cachedActiveCustom : cachedArchivedCustom;
+            if (!targetData || Object.keys(targetData).length === 0) {
+                customContainer.innerHTML = `<p style="opacity:0.6; padding:15px; font-family:sans-serif;">${currentCustomSubview === 'active' ? 'Новых заявок по фотографии нет.' : 'Архив пуст.'}</p>`;
+            } else {
+                Object.entries(targetData).reverse().forEach(([id, order]) => {
+                    let methodLabels = { telegram: 'Telegram ✈️', whatsapp: 'WhatsApp 💬', sms: 'SMS 📱', call: 'Звонок 📞', email: 'E-mail ✉️' };
+                    let contactMethodTxt = methodLabels[order.contact_method] || order.contact_method;
+
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="order-with-img">
+                            <div style="flex: 1;">
+                                <h4 style="color: #258495;">Заявка от: ${order.client_name || ''}</h4>
+                                <div class="order-info-row"><strong>Способ связи:</strong> <span class="badge-method">${contactMethodTxt}</span></div>
+                                <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
+                                <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
+                                <div class="details-box">
+                                    <strong>Пожелания / Детали заказа:</strong><br>${order.wishes_and_details || 'Дополнительных пожеланий нет.'}
+                                </div>
+                            </div>
+                            ${order.pet_photo_url ? `
+                                <div class="order-pet-thumb-wrapper" onclick="openLightbox('${order.pet_photo_url}')">
+                                    <img class="order-pet-thumb" src="${order.pet_photo_url}" alt="Фото питомца">
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items: flex-end; margin-top:15px;">
+                            <div class="order-date-container" style="border:none; padding:0; margin:0;">📅 Отправлена: ${order.date || ''}</div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="archive-action-btn" id="archive-custom-btn-${id}">${currentCustomSubview === 'active' ? '📦 В архив' : '🔄 Вернуть'}</button>
+                                <button class="delete-btn" style="padding:6px 12px; font-size:12px; min-width:auto;" id="delete-custom-btn-${id}">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                    customContainer.appendChild(card);
+
+                    document.getElementById(`archive-custom-btn-${id}`).addEventListener('click', () => {
+                        if (currentCustomSubview === 'active') {
+                            set(ref(db, `archived_custom_orders/${id}`), order)
+                                .then(() => remove(ref(db, `custom_orders/${id}`)))
+                                .then(() => showToast("Заявка перенесена в архив."));
+                        } else {
+                            set(ref(db, `custom_orders/${id}`), order)
+                                .then(() => remove(ref(db, `archived_custom_orders/${id}`)))
+                                .then(() => showToast("Заявка восстановлена в активные."));
+                        }
+                    });
+
+                    document.getElementById(`delete-custom-btn-${id}`).addEventListener('click', () => {
+                        if (confirm("Удалить эту заявку навсегда без возможности восстановления?")) {
+                            const path = (currentCustomSubview === 'active') ? `custom_orders/${id}` : `archived_custom_orders/${id}`;
+                            remove(ref(db, path)).then(() => showToast("Заявка полностью удалена."));
+                        }
+                    });
+                });
+            }
+        }
+    }
+
+    // Слушатели изменений во всех 4 ветках заявок базы данных
+    onValue(shopOrdersRef, (s) => { cachedActiveShop = s.val() || {}; syncOrdersData(); });
+    onValue(archivedShopOrdersRef, (s) => { cachedArchivedShop = s.val() || {}; syncOrdersData(); });
+    onValue(customOrdersRef, (s) => { cachedActiveCustom = s.val() || {}; syncOrdersData(); });
+    onValue(archivedCustomOrdersRef, (s) => { cachedArchivedCustom = s.val() || {}; syncOrdersData(); });
 </script>
 </body>
 </html>
