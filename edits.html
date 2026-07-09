@@ -1,5 +1,33 @@
 index.html
 
+// Плавный скролл наверх + Пасхалка-кликер для перехода в админку (5 кликов)
+        let clickCount = 0;
+        let clickTimer = null;
+        
+        document.querySelectorAll('header .icon a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // 1. Логика плавного подъема наверх при ПЕРВОМ же клике
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                // 2. Логика подсчета кликов для входа в админку
+                clickCount++;
+                clearTimeout(clickTimer);
+                
+                if (clickCount === 5) {
+                    clickCount = 0;
+                    window.location.href = 'admin.html';
+                } else {
+                    clickTimer = setTimeout(() => { clickCount = 0; }, 2000); // Сброс счетчика, если пауза между кликами больше 2 секунд
+                }
+            });
+        });
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
