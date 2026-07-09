@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#EDD7A3">
     <title>Pracownia Szopa</title>
     <link rel="icon" type="image/png" href="icon.png">
@@ -14,41 +14,57 @@
         href="https://fonts.googleapis.com/css2?family=Copse&family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="styles.css?v=1.2">
+    <link rel="stylesheet" href="styles.css?v=1.9.1">
 
     <script type="module" src="firebase-init.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=1.3"></script>
+    <script src="script.js?v=1.9.1"></script>
+    <style>
+        /* Styl dla klikalnych przycisków językowych */
+        .lang p {
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin: 0 5px;
+            display: inline-block;
+        }
 
+        .lang p:hover {
+            opacity: 0.7;
+        }
+
+        .lang p.active-lang {
+            font-weight: bold;
+            text-decoration: underline;
+            color: #258495;
+        }
+    </style>
 </head>
 
 <body>
     <header>
-
-        <div class="icon">
-            <a href="#start"><img src="pics/icon.png" alt=""></a>
-            <a href="#start">Pracownia Szopa</a>
-        </div>
-
+            <div class="icon">
+                <a href="#start"><img src="pics/icon.png" alt=""></a>
+                <a href="#start">Pracownia Szopa</a>
+            </div>
         <div class="nav">
             <nav>
-                <a href="#shop-target">O nas</a>
-                <a href="#shop">Produkcja</a>
-                <a href="#custom-order">Kontakt</a>
-                <a href="#blog">Blog</a>
+                <a href="#shop-target" data-i18n="nav_about">O nas</a>
+                <a href="#shop" data-i18n="nav_production">Produkcja</a>
+                <a href="#custom-order" data-i18n="nav_contact">Kontakt</a>
+                <a href="#blog" data-i18n="nav_blog">Blog</a>
             </nav>
         </div>
 
         <div class="btns">
             <div class="lang">
-                <p>Pl</p>
-                <p>UA</p>
-                <p>RU</p>
+                <p data-lang="pl" class="active-lang">Pl</p>
+                <p data-lang="ua">UA</p>
+                <p data-lang="ru">RU</p>
             </div>
             <div class="order-btn">
-                <a href="#shop"><button>zamów</button></a>
+                <a href="#shop"><button data-i18n="btn_order">zamów</button></a>
             </div>
         </div>
 
@@ -69,15 +85,56 @@
 
         <div class="mosaic-overlay">
             <h1>Pracownia Szopa</h1>
-            <p>Unikalne witraże szklane tworzone z pasją</p>
-            <a href="#shop-target"><button class="mosaic-btn">Dalej</button></a>
+            <p data-i18n="hero_desc">Unikalne witraże szklane tworzone z pasją</p>
+            <a href="#dalsze"><button class="mosaic-btn" data-i18n="btn_more">Dalej</button></a>
+        </div>
+    </section>
+
+    <section class="tworze-showroom-section" id="dalsze">
+        <div class="showroom-container">
+
+            <!-- ЛЕВАЯ СТОРОНА: Компактная сетка на 4 фотки -->
+            <div class="showroom-gallery-grid">
+                <div class="gallery-photo-item">
+                    <img src="pics/bird.jpg" alt="Witraż Pracownia 1">
+                </div>
+                <div class="gallery-photo-item">
+                    <img src="pics/piwonia1.jpg" alt="Witraż Pracownia 2">
+                </div>
+                <div class="gallery-photo-item">
+                    <img src="pics/sun.jpg" alt="Witraż Pracownia 3">
+                </div>
+                <div class="gallery-photo-item">
+                    <img src="pics/bea2.jpg" alt="Witraż Pracownia 4">
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ СТОРОНА: Текст + Оранжевая кнопка + Фоновый водяной знак -->
+            <div class="showroom-content-side">
+                <!-- Твоя новая крутая надпись на бэкграунде -->
+                <div class="showroom-bg-brand">Pracownia <br> Szopa</div>
+
+                <p class="showroom-manifest-text" data-i18n="timeline_intro">
+                    Tworzę witraże w tradycyjnej technice Tiffany, które stanowią wyjątkową dekorację dla Twojego domu
+                    lub przestrzeni biznesowej. Każdy projekt powstaje z dbałością o detale i indywidualny charakter,
+                    łącząc rzemiosło artystyczne z ponadczasową elegancją.
+                </p>
+
+                <!-- Оставляем одну оранжевую кнопку -->
+                <div class="showroom-actions-wrapper">
+                    <a href="#blog" class="btn-showroom btn-orange-header" data-i18n="btnstart">
+                        Zobacz jak to robię
+                    </a>
+                </div>
+            </div>
+
         </div>
     </section>
 
     <!-- TARGET SECTION (Z-Timeline Overlay) -->
     <section id="shop-target" class="vitrage-timeline">
         <div class="timeline-header">
-            <h2>Dla kogo tworzymy magię w szkle?</h2>
+            <h2 data-i18n="timeline_title">Dla kogo tworzymy magię w szkle?</h2>
 
             <div class="paws-path">
                 <div class="paw-print-1"><img src="pics/paw.png" alt=""></div>
@@ -85,83 +142,109 @@
                 <div class="paw-print-3"><img src="pics/paw.png" alt=""></div>
                 <div class="paw-print-4"><img src="pics/paw.png" alt=""></div>
             </div>
-
-            <div class="timeline-glass-box">
-                <p class="timeline-intro">
-                    Tworzę witraże w tradycyjnej technice Tiffany, które stanowią wyjątkową dekorację для Twojego domu
-                    lub przestrzeni biznesowej.
-                    Każdy projekt powstaje z dbałością o detale i indywidualny charakter, łącząc rzemiosło artystyczne z
-                    ponadczasową elegancją.
-                </p>
-            </div>
         </div>
 
-        <div class="timeline-grid">
+        <section class="mobile-gridik">
+            <div class="timeline-grid">
 
-            <!-- BLOCK 1: Królik (Left) -->
-            <div class="timeline-item item-left">
-                <div class="item-img-box">
-                    <img src="pics/husky_dog1.jpg" alt="Witraż Szklany Królik">
-                </div>
-                <div class="item-text-pure">
-                    <h3>Dla miłośników zwierząt</h3>
-                    <p>Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła ozdoba, to kawałek Twojej duszy na
-                        oknie.</p>
-                </div>
-            </div>
-
-            <div class="pc-prezent">
-                <!-- BLOCK 2: Ważka (Right) -->
-                <div class="timeline-item">
-                    <div class="item-text-pure">
-                        <h3>Na wyjątkowy prezent</h3>
-                        <p>Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś
-                            bliskiego, kto kocha zwierzęta.</p>
-                    </div>
+                <div class="timeline-item item-left">
                     <div class="item-img-box">
+                        <img src="pics/husky_dog1.jpg" alt="Witraż Szklany Królik">
+                        <div class="item-text-pure">
+                            <h3 data-i18n="block1_title">Dla miłośników zwierząt</h3>
+                            <p data-i18n="block1_desc">Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła
+                                ozdoba,
+                                to
+                                kawałek Twojej duszy na oknie.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mobile-prezent">
+                    <!-- BLOCK 2: Ważka (Right) -->
+                    <div class="timeline-item">
+                        <div class="item-text-pure">
+                            <div class="item-img-box">
+                                <img src="pics/husky.jpg" alt="Witraż Szklany Ważka">
+                                <h3 data-i18n="block2_title">Na wyjątkowy prezent</h3>
+                                <p data-i18n="block2_desc">Małe przypomnienie o wielkiej miłości. Idealny, osobisty i
+                                    wzruszający prezent dla kogoś bliskiego, kto kocha zwierzęta.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BLOCK 3: Kot (Left) -->
+                    <div class="timeline-item item-cat item-left">
+                        <div class="item-img-box">
+                            <img src="pics/moon10.jpg" alt="Witraż Szklany Kot">
+                            <div class="item-text-pure">
+                                <h3 data-i18n="block3_title">Piękna pamiątka na lata</h3>
+                                <p data-i18n="block3_desc">Dla tych, którzy chcą zachować wspomnienie ukochanego
+                                    zwierzaka.
+                                    Dla
+                                    tych, którzy tęsknią i chcą mieć blisko to, co było najważniejsze.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+        </section>
+
+        <section class="steps-desktop-section">
+            <div class="steps-grid-wrapper">
+
+                <!-- ЭТАП 1: Фото СЛЕВА, Описание СПРАВА -->
+                <div class="step-row row-direct-left">
+                    <div class="step-media-holder">
+                        <img src="pics/husky_dog1.jpg" alt="Witraż Szklany Królik">
+                    </div>
+                    <div class="step-content-box">
+                        <h3 data-i18n="block1_title">Dla miłośników zwierząt</h3>
+                        <p data-i18n="block1_desc">Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła ozdoba,
+                            to kawałek Twojej duszy na oknie.</p>
+                    </div>
+                </div>
+
+                <!-- ЭТАП 2: Фото СПРАВА, Описание СЛЕВА -->
+                <div class="step-row row-inverse-right">
+                    <div class="step-media-holder">
                         <img src="pics/husky.jpg" alt="Witraż Szklany Ważka">
                     </div>
-                </div>
-            </div>
-
-            <div class="mobile-prezent">
-                <!-- BLOCK 2: Ważka (Right) -->
-                <div class="timeline-item">
-                    <div class="item-text-pure">
-                        <div class="item-img-box">
-                            <img src="pics/husky.jpg" alt="Witraż Szklany Ważka">
-                        </div>
-                        <h3>Na wyjątkowy prezent</h3>
-                        <p>Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś
-                            bliskiego, kto kocha zwierzęta.</p>
+                    <div class="step-content-box">
+                        <h3 data-i18n="block2_title">Na wyjątkowy prezent</h3>
+                        <p data-i18n="block2_desc">Małe przypomnienie o wielkiej miłości. Idealny, osobisty i
+                            wzruszający prezent dla kogoś bliskiego, kto kocha zwierzęta.</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- BLOCK 3: Kot (Left) -->
-            <div class="timeline-item item-cat item-left">
-                <div class="item-img-box">
-                    <img src="pics/moon.png" alt="Witraż Szklany Kot">
+                <!-- ЭТАП 3: Фото СЛЕВА, Описание СПРАВА -->
+                <div class="step-row row-direct-left">
+                    <div class="step-media-holder">
+                        <img src="pics/moon.png" alt="Witraż Szklany Kot">
+                    </div>
+                    <div class="step-content-box">
+                        <h3 data-i18n="block3_title">Piękna pamiątka na lata</h3>
+                        <p data-i18n="block3_desc">Dla tych, którzy chcą zachować wspomnienie ukochanego zwierzaka. Dla
+                            tych, którzy tęsknią i chcą mieć blisko to, co było najważniejsze.</p>
+                    </div>
                 </div>
-                <div class="item-text-pure">
-                    <span class="head-emoji">✨</span>
-                    <h3>Piękna pamiątka na lata</h3>
-                    <p>Dla tych, którzy chcą zachować wspomnienie ukochanego zwierzaka. Dla those, którzy tęsknią i chcą
-                        mieć blisko to, co było najważniejsze.</p>
-                </div>
+
             </div>
-
-        </div>
-
+        </section>
 
 
         <div class="timeline-outro-block">
-            <p class="outro-text">
-                Suncatchery witrażowe w stylu Tiffany (Łapacze słońca) to dekoracyjne zawieszki ze szkła, które łapią
-                światło słoneczne i tworzą w domu piękne refleksy i kolory. Każdy suncatcher wykonany jest ręcznie,
-                łącząc kawałki szkła taśmą miedzianą i cyną, co daje unikalne wzory. Idealne na okna, do wnętrz lub jako
-                wyjątkowy prezent — lekkie, kolorowe i magiczne! ✨
-            </p>
+            <div class="outro-text-plate">
+                <p class="outro-text" data-i18n="outro_text">
+                    Suncatchery witrażowe w stylu Tiffany (Łapacze słońca) to dekoracyjne zawieszki ze szkła, które
+                    łapią
+                    światło słoneczne i tworzą w domu piękne refleksy i kolory. Każdy suncatcher wykonany jest
+                    ręcznie,
+                    łącząc kawałki szkła taśmą miedzianą i cyną, co daje unikalne wzory. Idealne na okna, do wnętrz
+                    lub jako
+                    wyjątkowy prezent — lekkie, kolorowe i magiczne! ✨
+                </p>
+            </div>
 
             <div class="outro-images-grid">
                 <div class="outro-img-box">
@@ -172,32 +255,28 @@
                 </div>
             </div>
 
-            <p class="outro-quote">Witraż zaczyna mówić – tylko wtedy, gdy spotka się ze światłem.</p>
-        </div>
+            <div class="quote-badge-box">
+                <p class="outro-quote" data-i18n="outro_quote">Witraż zaczyna mówić – tylko wtedy, gdy spotka się ze
+                    światłem.</p>
+            </div>
         </div>
 
     </section>
 
-    <div class="horizontal-paws-divider">
-        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
-        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
-        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
-        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
-        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
-        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
-        <span class="p-foot"><img src="pics/paw.png" alt=""></span>
-    </div>
-
     <!-- SHOP SECTION -->
     <section id="shop" class="vitrage-shop">
         <div class="shop-header">
-            <h2>Sklep z witrażami</h2>
-            <p>Wybierz gotowe dzieło od ręki lub zainspiruj się do stworzenia własnego zamówienia</p>
+            <div class="shop-signboard">
+                <h2 data-i18n="shop_title">Sklep z witrażami</h2>
+            </div>
+            <p data-i18n="shop_desc">Wybierz gotowe dzieło od ręki lub zainspiruj się do stworzenia własnego zamówienia
+            </p>
         </div>
 
         <!-- БЛОК 1: ГОТОВЫЕ ТОВАРЫ (Dostępne od ręki) -->
         <div class="shop-section-block">
-            <h3 class="shop-section-title">Gotowe witraże <span>(Dostępne od ręki)</span></h3>
+            <h3 class="shop-section-title" data-i18n="shop_ready_title">Gotowe witraże <span
+                    data-i18n="shop_ready_subtitle">(Dostępne od ręki)</span></h3>
             <div class="shop-grid id-ready-products" id="main-shop-container"></div>
         </div>
 
@@ -205,16 +284,15 @@
 
     <section id="custom-order" class="order-flow-section">
         <div class="flow-header">
-            <h2>Jak zamówić witraż ze zdjęcia pupila? 🐾</h2>
+            <h2 data-i18n="custom_title">Jak zamówić witraż ze zdjęcia pupila? 🐾</h2>
         </div>
 
         <div class="custom-offer-text-block">
-            <p class="custom-offer-p">
-                Zamów swój własny witraż suncatcher z wizerunkiem swojego ukochanego zwierzaka!
-                Każdy suncatcher jest wykonany ręcznie z dbałością o szczegóły, aby jak najlepiej oddać charakter
-                Twojego pupila.
-                Czas realizacji zamówienia wynosi około 7 dni. Idealny pomysł na prezent lub wyjątkową dekorację do
-                Twojego domu.
+            <p class="custom-offer-p" data-i18n="custom_desc">
+                Zamów swój własny witraż suncatcher z wizerunkiem swojego ukochanego zwierzaka! Każdy suncatcher jest
+                wykonany ręcznie z dbałością o szczegóły, aby jak najlepiej oddać charakter Twojego pupila. Czas
+                realizacji zamówienia wynosi około 7 dni. Idealny pomysł na prezent lub wyjątkową dekorację do Twojego
+                domu.
             </p>
 
             <div class="custom-offer-gallery">
@@ -225,73 +303,76 @@
 
             <!-- Параметры заказа: Размер и Цена -->
             <div class="custom-offer-meta">
-                <span class="custom-badge">📐 Rozmiar: <strong>20×20&nbsp;cm</strong></span>
-                <span class="custom-badge">💰 Cena: <strong>450&nbsp;zł</strong></span>
+                <span class="custom-badge"><span data-i18n="meta_size">📐 Rozmiar:</span>
+                    <strong>20×20&nbsp;cm</strong></span>
+                <span class="custom-badge"><span data-i18n="meta_price">💰 Cena:</span>
+                    <strong>450&nbsp;zł</strong></span>
             </div>
         </div>
 
         <div class="flow-steps-grid">
             <div class="step-card">
                 <div class="step-num">1</div>
-                <p>Wyślij zdjęcie swojego zwierzaka</p>
+                <p data-i18n="step1">Wyślij zdjęcie swojego zwierzaka</p>
             </div>
             <div class="step-card">
                 <div class="step-num">2</div>
-                <p>Wybierz rozmiar i kolory tła</p>
+                <p data-i18n="step2">Wybierz rozmiar i kolory tła</p>
             </div>
             <div class="step-card">
                 <div class="step-num">3</div>
-                <p>Na podstawie zdjęcia przygotuję indywidualny projekt do akceptacji ✏️</p>
+                <p data-i18n="step3">Na podstawie zdjęcia przygotuję indywidualny projekt do akceptacji ✏️</p>
             </div>
             <div class="step-card">
                 <div class="step-num">4</div>
-                <p>Po akceptacji projektu obowiązuje przedpłata (to potwierdzenie zamówienia)</p>
+                <p data-i18n="step4">Po akceptacji projektu obowiązuje przedpłata (to potwierdzenie zamówienia)</p>
             </div>
             <div class="step-card">
                 <div class="step-num">5</div>
-                <p>Po zaksięgowaniu wpłaty zaczynam tworzenie. Czas realizacji: do 4 dni roboczych ⌛</p>
+                <p data-i18n="step5">Po zaksięgowaniu wpłaty zaczynam tworzenie. Czas realizacji: do 4 dni roboczych ⌛
+                </p>
             </div>
             <div class="step-card step-action-card">
                 <div class="step-num btn-num">6</div>
-                <p><strong>Wypełnij formularz</strong> poniżej, a skontaktuję się z Tobą w celu ustalenia szczegółów! 📦
-                </p>
+                <p><strong data-i18n="step6_bold">Wypełnij formularz</strong> <span data-i18n="step6_text">poniżej, a
+                        skontaktuję się z Tobą w celu ustalenia szczegółów!</span> 📦</p>
             </div>
         </div>
 
         <div class="order-form-container">
-            <h3>Formularz zamówienia</h3>
+            <h3 data-i18n="form_title">Formularz zamówienia</h3>
             <form id="pupilOrderForm" onsubmit="handleFormSubmit(event)">
 
                 <div class="form-group">
-                    <label for="clientName">Twoje imię</label>
+                    <label for="clientName" data-i18n="label_name">Twoje imię</label>
                     <input type="text" id="clientName" placeholder="Np. Anna Kowalska" required>
                 </div>
 
                 <div class="form-row-split">
                     <div class="form-group">
-                        <label for="clientEmail">Adres e-mail</label>
+                        <label for="clientEmail" data-i18n="label_email">Adres e-mail</label>
                         <input type="email" id="clientEmail" placeholder="Np. anna@gmail.com" required>
                     </div>
                     <div class="form-group">
-                        <label for="clientPhone">Numer telefonu</label>
+                        <label for="clientPhone" data-i18n="label_phone">Numer telefonu</label>
                         <input type="text" id="clientPhone" placeholder="+48 000-000-000" maxlength="15" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="contactMethod">Preferowany sposób kontaktu</label>
+                    <label for="contactMethod" data-i18n="label_contact_method">Preferowany sposób kontaktu</label>
                     <select id="contactMethod" required>
-                        <option value="" disabled selected>Wybierz opcję...</option>
+                        <option value="" disabled selected data-i18n="option_select">Wybierz opcję...</option>
                         <option value="telegram">Telegram ✈️</option>
                         <option value="whatsapp">WhatsApp 💬</option>
                         <option value="sms">SMS 📱</option>
-                        <option value="call">Połączenie telefoniczne 📞</option>
+                        <option value="call" data-i18n="option_call">Połączenie telefoniczne 📞</option>
                         <option value="email">E-mail ✉️</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="petType">Rozmiar i kolory tła (lub Twoje pytania)</label>
+                    <label for="petType" data-i18n="label_details">Rozmiar i kolory tła (lub Twoje pytania)</label>
                     <textarea id="petType" rows="4" placeholder="Opisz swoje życzenia dotyczące witrażu..."
                         required></textarea>
                 </div>
@@ -299,7 +380,7 @@
                 <div class="form-group file-group" style="text-align: center;">
                     <label for="petPhoto" class="file-label"
                         style="display: inline-block; cursor: pointer; padding: 12px 20px; background: #258495; color: #EDD7A3; border: 2px solid #13110F; border-radius: 12px; font-weight: bold; box-shadow: 0 4px 0 #13110F;">
-                        <span>📸 Dodaj zdjęcie pupila</span>
+                        <span data-i18n="btn_add_photo">📸 Dodaj zdjęcie pupila</span>
                         <input type="file" id="petPhoto" accept="image/*" required style="display: none;">
                     </label>
 
@@ -307,27 +388,25 @@
                         style="display: none; margin-top: 15px; justify-content: center; align-items: center; flex-direction: column; gap: 8px;">
                         <img id="pet-preview-img" src="" alt="Podgląd"
                             style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #13110F; border-radius: 16px; box-shadow: 4px 4px 0 #13110F;">
-                        <span style="font-size: 13px; font-weight: bold; color: #949C2D;">✓ Zdjęcie zostało
-                            dodane!</span>
+                        <span style="font-size: 13px; font-weight: bold; color: #949C2D;"
+                            data-i18n="photo_added_success">✓ Zdjęcie zostało dodane!</span>
                     </div>
                 </div>
 
-                <button type="submit" class="form-submit-btn">Wyślij zgłoszenie</button>
+                <button type="submit" class="form-submit-btn" data-i18n="btn_submit_form">Wyślij zgłoszenie</button>
             </form>
         </div>
 
     </section>
 
     <section id="blog" class="vitrage-blog-half">
-        <!-- Левая сторона: Сетка из 4-х видео процесса -->
-
         <div class="blog-text-side">
             <div class="blog-content-wrap">
-                <h2>Proces tworzenia witrażu od kulis</h2>
-                <p>Zobacz, jak surowy arkusz szkła zmienia się в unikalny suncatcher. Od precyzyjnego szkicowania, przez
-                    delikatne cięcie i owijanie taśmą miedzianą, aż po finalne lutowanie cyną w tradycyjnej technice
-                    Tiffany. Każdy szlif to krok w stronę sztuki, która ożywa dopiero wtedy, gdy spotka się ze światłem
-                    słońca. ✨</p>
+                <h2 data-i18n="blog_title">Proces tworzenia witrażu od kulis</h2>
+                <p data-i18n="blog_desc">Zobacz, jak surowy arkusz szkła zmienia się w unikalny suncatcher. Od
+                    precyzyjnego szkicowania, przez delikatne cięcie i owijanie taśmą miedzianą, aż po finalne lutowanie
+                    cyną w tradycyjnej technice Tiffany. Każdy szlif to krok w stronę sztuki, która ożywa dopiero wtedy,
+                    gdy spotka się ze światłem słońca. ✨</p>
             </div>
         </div>
         <div class="blog-image-side blog-video-grid-container">
@@ -354,7 +433,7 @@
                 </div>
             </div>
             <div class="blog-img-overlay">
-                <span>Proces tworzenia 🛠️</span>
+                <span data-i18n="blog_overlay">Proces tworzenia 🛠️</span>
             </div>
         </div>
 
@@ -364,16 +443,51 @@
         <p> </p>
     </section>
 
+    
+
+
+    <!-- MODAL -->
+    <div id="order-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <button class="modal-close-btn" id="close-modal-btn">&times;</button>
+            <h2 data-i18n="modal_title">Zamówienie gotowego witrażu 🐾</h2>
+            <p><span data-i18n="modal_chosen">Wybrałeś:</span> <strong id="modal-product-title"
+                    style="color: #C4411D;"></strong></p>
+
+            <form id="shopOrderForm" onsubmit="handleShopOrderSubmit(event)">
+                <input type="hidden" id="modal-hidden-title">
+
+                <div class="modal-form-group">
+                    <label data-i18n="label_name">Twoje imię</label>
+                    <input type="text" id="shopClientName" placeholder="Np. Anna Kowalska" required>
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-group">
+                        <label data-i18n="label_email">Adres e-mail</label>
+                        <input type="email" id="shopClientEmail" placeholder="Np. anna@gmail.com" required>
+                    </div>
+                    <div class="modal-form-group">
+                        <label data-i18n="label_phone">Numer telefonu</label>
+                        <input type="text" id="shopClientPhone" placeholder="Np. +48 123 456 789" required>
+                    </div>
+                </div>
+                <p data-i18n="modal_footer_note">Skontaktuję się z tobą w celu potwierdzenia✨</p>
+                <button type="submit" class="modal-submit-btn" data-i18n="btn_submit_form">Wyślij zgłoszenie</button>
+            </form>
+        </div>
+    </div>
+
     <!-- FOOTER SECTION -->
     <footer class="vitrage-footer">
         <div class="footer-container">
 
             <!-- Левая колонка: Описание -->
             <div class="footer-brand">
-                <span class="footer-logo">Pracownia Szopa <img src="pics/paw.png" alt=""></span>
-                <p>Ręcznie robione słońcolapy i witraże z miłości do zwierząt. Każdy projekt to unikalna historia
-                    zamknięta w kolorowym szkle.</p>
-                <p>Skontaktuj się ze mną</p>
+                <span class="footer-logo">Pracownia Szopa</span>
+                <p data-i18n="footer_brand_desc">Ręcznie robione słońcolapy i witraże z miłości do zwierząt. Każdy
+                    projekt to unikalna historia zamknięta w kolorowym szkle.</p>
+                <p data-i18n="footer_contact_me">Skontaktuj się ze mną</p>
             </div>
 
             <!-- Правая колонка: Соцсети и kontakt -->
@@ -383,7 +497,8 @@
                 <p><span>o.lavryshcheva@gmail.com</span></p>
                 <div class="social-icons-div">
                     <div class="social-icons">
-                        <a href="https://www.instagram.com/pracownia.szopa.witraze/?hl=uk" target="_blank" aria-label="Instagram">IG</a>
+                        <a href="https://www.instagram.com/pracownia.szopa.witraze/?hl=uk" target="_blank"
+                            aria-label="Instagram">IG</a>
                     </div>
                     <div class="social-icons-long">
                         <a href="mailto:o.lavryshcheva@gmail.com">MAIL</a>
@@ -395,48 +510,151 @@
 
         <!-- Самый низ: копирайт -->
         <div class="footer-bottom">
-            <p>&copy; 2026 Pracownia Szopa. Wszystkie prawa zastrzeżone.</p>
+            <p>&copy; 2026 Pracownia Szopa. <span data-i18n="footer_rights">Wszystkie prawa zastrzeżone.</span></p>
         </div>
     </footer>
-
-
-    <!-- ВОТ ОНО! ДОБАВИЛ СЮДА КРАСИВОЕ СТРУКТУРНОЕ ОКНО ДЛЯ ВЫПЛЫВАЮЩЕГО ЗАКАЗА -->
-    <div id="order-modal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <button class="modal-close-btn" id="close-modal-btn">&times;</button>
-            <h2>Zamówienie gotowego witrażu 🐾</h2>
-            <p>Wybrałeś: <strong id="modal-product-title" style="color: #C4411D;"></strong></p>
-
-            <form id="shopOrderForm" onsubmit="handleShopOrderSubmit(event)">
-                <input type="hidden" id="modal-hidden-title">
-
-                <div class="modal-form-group">
-                    <label>Twoje imię</label>
-                    <input type="text" id="shopClientName" placeholder="Np. Anna Kowalska" required>
-                </div>
-
-                <div class="modal-form-row">
-                    <div class="modal-form-group">
-                        <label>Adres e-mail</label>
-                        <input type="email" id="shopClientEmail" placeholder="Np. anna@gmail.com" required>
-                    </div>
-                    <div class="modal-form-group">
-                        <label>Numer telefonu</label>
-                        <input type="text" id="shopClientPhone" placeholder="Np. +48 123 456 789" required>
-                    </div>
-                </div>
-                <p>Skontaktuję się z tobą w celu potwierdzenia✨</p>
-                <button type="submit" class="modal-submit-btn">Wyślij zgłoszenie</button>
-            </form>
-        </div>
-    </div>
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Наш рабочий токен ImgBB
+        // Słownik tłumaczeń
+        const translations = {
+            pl: {
+                nav_about: "O nas", nav_production: "Sklep", nav_contact: "Kontakt", nav_blog: "Blog",
+                btn_order: "zamów", hero_desc: "Unikalne witraże szklane tworzone z pasją", btn_more: "Dalej",
+                timeline_title: "Dla kogo tworzę magię w szkle?",
+                timeline_intro: "Tworzę witraże w tradycyjnej technice Tiffany, które stanowią wyjątkową dekorację dla Twojego domu lub przestrzeni biznesowej. Każdy projekt powstaje z dbałością o detale i indywidualny charakter, łącząc rzemiosło artystyczne z ponadczasową elegancją.",
+                block1_title: "Dla miłośników zwierząt", block1_desc: "Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła ozdoba, to kawałek Twojej duszy na oknie.",
+                block2_title: "Na wyjątkowy prezent", block2_desc: "Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś bliskiego, kto kocha zwierzęta.",
+                block3_title: "Piękna pamiątka na lata", block3_desc: "Dla tych, którzy chcą zachować wspomnienie ukochanego zwierzaka. Dla tych, którzy tęsknią i chcą mieć blisko to, co było najważniejsze.",
+                outro_text: "Suncatchery witrażowe w stylu Tiffany (Łapacze słońca) to dekoracyjne zawieszki ze szkła, które łapią światło słoneczne i tworzą w domu piękne refleksy i kolory. Każdy suncatcher wykonany jest ręcznie, łącząc kawałki szkła taśmą miedzianą i cyną, co daje unikalne wzory. Idealne na okna, do wnętrz lub jako wyjątkowy prezent — lekkie, kolorowe i magiczne! ✨",
+                outro_quote: "Witraż zaczyna mówić – tylko wtedy, gdy spotka się ze światłem.",
+                shop_title: "Sklep z witrażami", shop_desc: "Wybierz gotowe dzieło od ręki lub zainspiruj się do stworzenia własnego zamówienia",
+                shop_ready_title: "Gotowe witraże ", shop_ready_subtitle: "(Dostępne od ręki)",
+                custom_title: "Jak zamówić witraż ze zdjęcia pupila? 🐾",
+                custom_desc: "Zamów swój własny witraż suncatcher z wizerunkiem swojego ukochanego zwierzaka! Każdy suncatcher jest wykonany ręcznie z dbałością o szczegóły, aby jak najlepiej oddać charakter Twojego pupila. Czas realizacji zamówienia wynosi około 7 dni. Idealny pomysł na prezent lub wyjątkową dekorację do Twojego domu.",
+                meta_size: "📐 Rozmiar:", meta_price: "💰 Cena:",
+                step1: "Wyślij zdjęcie swojego zwierzaka", step2: "Wybierz rozmiar i kolory tła", step3: "Na podstawie zdjęcia przygotuję indywidualny projekt do akceptacji ✏️",
+                step4: "Po akceptacji projektu obowiązuje przedpłata (to potwierdzenie zamówienia)", step5: "Po zaksięgowaniu wpłaty zaczynam tworzenie. Czas realizacji: do 4 dni roboczych ⌛",
+                step6_bold: "Wypełnij formularz", step6_text: "poniżej, a skontaktuję się z Tobą w celu ustalenia szczegółów!",
+                form_title: "Formularz zamówienia", label_name: "Twoje imię", label_email: "Adres e-mail", label_phone: "Numer telefonu",
+                label_contact_method: "Preferowany sposób kontaktu", option_select: "Wybierz opcję...", option_call: "Połączenie telefoniczne 📞",
+                label_details: "Rozmiar i kolory tła (lub Twoje pytania)", btn_add_photo: "📸 Dodaj zdjęcie pupila", photo_added_success: "✓ Zdjęcie zostało dodane!",
+                btn_submit_form: "Wyślij zgłoszenie", blog_title: "Proces tworzenia witrażu od kulis",
+                blog_desc: "Zobacz, jak surowy arkusz szkła zmienia się w unikalny suncatcher. Od precyzyjnego szkicowania, przez delikatne cięcie i owijanie taśmą miedzianą, aż po finalne lutowanie cyną w tradycyjnej technice Tiffany. Każdy szlif to krok w stronę sztuki, która ożywa dopiero wtedy, gdy spotka się ze światłem słońca. ✨",
+                blog_overlay: "Proces tworzenia 🛠️", footer_brand_desc: "Ręcznie robione słońcolapy i witraże z miłości do zwierząt. Każdy projekt to unikalna historia zamknięta w kolorowym szkle.",
+                footer_contact_me: "Skontaktuj się ze mną", footer_rights: "Wszystkie prawa zastrzeżone.",
+                modal_title: "Zamówienie gotowego witrażu 🐾", modal_chosen: "Wybrałeś:", modal_footer_note: "Skontaktuję się z tobą w celu potwierdzenia✨",
+                alert_shop_success: "Dziękujemy! Zgłoszenie zostało wysłane. Skontaktuję się z Tobą wkrótce! 🐾",
+                alert_custom_success: "Zgłoszenie zostało pomyślnie wysłane! ✨ Przygotuję projekt i skontaktuję się z Tobą przez wybrany sposób komunikacji. 🐾",
+                alert_add_photo: "Proszę dodać zdjęcie pupila!", placeholder_details: "Opisz swoje życzenia dotyczące witrażu...", btn_buy_now: "Kup teraz", btn_sold_out: "Rezerwacja",
+                badge_available_f: "Dostępna", badge_available_m: "Dostępny", badge_unavailable: "Zarezerwowany", shop_empty: "Obecnie brak gotowych witraży. Skontaktuj się z nami! 🐾", loading: "Wysyłanie zgłoszenia... ⌛", btnstart: "Jak to robie"
+            },
+            ua: {
+                nav_about: "Про нас", nav_production: "Магазин", nav_contact: "Контакти", nav_blog: "Блог",
+                btn_order: "замовити", hero_desc: "Унікальні скляні вітражі, створені з пристрастю", btn_more: "Далі",
+                timeline_title: "Для кого я створюю магію в склі?",
+                timeline_intro: "Я створюю вітражі за традиційною технікою Тіффані, які стануть унікальною прикрасою для вашого дому чи бізнес-простору. Кожен проєкт створюється з увагою до деталей та індивідуального характеру, поєднуючи художню майстерність із позачасовою елегантністю.",
+                block1_title: "Для любителів тварин", block1_desc: "Ваш улюбленець, увічнений у кольоровому склі. Це не просто прикраса, це частинка вашої душі на вікні.",
+                block2_title: "На унікальний подарунок", block2_desc: "Маленьке нагадування про велике кохання. Ідеальний, особистий та зворушливий подарунок для когось близького, хто любить тварин.",
+                block3_title: "Красива пам'ять на роки", block3_desc: "Для тих, хто хоче зберегти пам'ять про улюбленого вихованця. Для тих, хто сумує і хоче мати поруч те, що було найважливішим.",
+                outro_text: "Вітражні санкетчери в стилі Тіффані (Ловці сонця) — це декоративні підвіски зі скла, які ловлять сонячне світло і створюють у домі красиві рефлекси та кольори. Кожен ловець сонця виготовляється вручну, поєднуючи шматочки скла мідною стрічкою та оловом. Ідеально для вікон, інтер'єру або як унікальний подарунок — легкі, кольорові та магічні! ✨",
+                outro_quote: "Вітраж починає говорити — тільки тоді, коли зустрічається зі світлом.",
+                shop_title: "Магазин вітражів", shop_desc: "Оберіть готову роботу прямо зараз або надихніться на створення власного замовлення",
+                shop_ready_title: "Готові вітражі", shop_ready_subtitle: "(В наявності)",
+                custom_title: "Як замовити вітраж по фото улюбленця? 🐾",
+                custom_desc: "Замовте свій власний вітраж-санкетчер із зображенням вашого улюбленого вихованця! Кожен виріб виготовляється вручну з увагою до деталей, щоб якнайкраще передати характер вашого улюбленця. Термін виконання замовлення становить близько 7 днів. Ідея для подарунка або унікального декору.",
+                meta_size: "📐 Розмір:", meta_price: "💰 Ціна:",
+                step1: "Надішліть фото вашої тварини", step2: "Оберіть розмір та кольори фону", step3: "На основі фото я підготую індивідуальний проєкт на затвердження ✏️",
+                step4: "Після затвердження проєкту діє передоплата (це підтвердження замовлення)", step5: "Після надходження оплати я починаю створення. Час виконання: до 4 робочих днів ⌛",
+                step6_bold: "Заповніть форму", step6_text: "нижче, і я зв'яжуся з вами для уточнення деталей!",
+                form_title: "Форма замовлення", label_name: "Ваше ім'я", label_email: "Email адреса", label_phone: "Номер телефону",
+                label_contact_method: "Бажаний спосіб зв'язку", option_select: "Оберіть варіант...", option_call: "Телефонний дзвінок 📞",
+                label_details: "Розмір та кольори фону (або ваші запитання)", btn_add_photo: "📸 Додати фото улюбленця", photo_added_success: "✓ Фото додано!",
+                btn_submit_form: "Надіслати заявку", blog_title: "Процес створення вітражу за лаштунками",
+                blog_desc: "Подивіться, як сирий аркуш скла перетворюється на унікальний ловець сонця. Від точного ескізу, делікатного різання та обгортання мідною стрічкою до фінального паяння оловом у традиційній техніці Тіффані. Кожен штрих — це крок до мистецтва, яке оживає, коли зустрічається з сонцем. ✨",
+                blog_overlay: "Процес створення 🛠️", footer_brand_desc: "Ловці сонця та вітражі ручної роботи з любові до тварин. Кожен проєкт — це унікальна історія, застигла в кольоровому склі.",
+                footer_contact_me: "Зв'яжіться зі мною", footer_rights: "Всі права захищені.",
+                modal_title: "Замовлення готового вітражу 🐾", modal_chosen: "Ви обрали:", modal_footer_note: "Я зв'яжуся з вами для підтвердження ✨",
+                alert_shop_success: "Дякуємо! Заявку надіслано. Я зв'яжуся з вами найближчим часом! 🐾",
+                alert_custom_success: "Заявку успішно надіслано! ✨ Я підготую проєкт і зв'яжуся з вами обраним способом. 🐾",
+                alert_add_photo: "Будь ласка, додайте фото улюбленця!", placeholder_details: "Опишіть ваші побажання щодо вітражу...", btn_buy_now: "Купити зараз", btn_sold_out: "Резервація",
+                badge_available_f: "Доступна", badge_available_m: "Доступний", badge_unavailable: "Зарезервовано", shop_empty: "Наразі немає готових вітражів. Зв'яжіться з нами! 🐾", loading: "Надсилання заявки... ⌛", btnstart: "Як я це роблю"
+            },
+            ru: {
+                nav_about: "О нас", nav_production: "Магазин", nav_contact: "Контакты", nav_blog: "Блог",
+                btn_order: "заказать", hero_desc: "Уникальные стеклянные витражи, созданные с страстью", btn_more: "Далее",
+                timeline_title: "Для кого я создаю магию в стекле?",
+                timeline_intro: "Я создаю витражи в традиционной технике Тиффани, которые станут уникальным украшением для вашего дома или бизнес-пространства. Каждый проект создается с вниманием к деталям и индивидуальному характеру, сочетая художественное мастерство с вневременной элегантностью.",
+                block1_title: "Для любителей животных", block1_desc: "Ваш питомец, запечатленный в цветном стекле. Это не просто украшение, это частичка вашей души на окне.",
+                block2_title: "На уникальный подарок", block2_desc: "Маленькое напоминание о большой любви. Идеальный, личный и трогательный подарок для кого-то близкого, кто любит животных.",
+                block3_title: "Красивая память на годы", block3_desc: "Для тех, кто хочет сохранить память о любимом питомце. Для тех, кто скучает и хочет иметь рядом то, что было самым важным.",
+                outro_text: "Витражные санкетчеры в стиле Тиффани (Ловцы солнца) — это декоративные подвески из стекла, которые ловят солнечный свет и создают в доме красивые рефлексы и цвета. Каждый ловець солнца изготавливается вручную, соединяя кусочки стекла медной лентой и оловом. Идеально для окон, интерьера или как уникальный подарок — легкие, цветные и магические! ✨",
+                outro_quote: "Витраж начинает говорить — только тогда, когда встречается со светом.",
+                shop_title: "Магазин витражей", shop_desc: "Выберите готовую работу прямо сейчас или вдохновитесь на создание собственного заказа",
+                shop_ready_title: "Готовые витражи", shop_ready_subtitle: "(В наличии)",
+                custom_title: "Как заказать витраж по фото питомца? 🐾",
+                custom_desc: "Закажите свой собственный витраж-санкетчер с изображением вашего любимого питомца! Каждое изделие изготавливается вручную с вниманием к деталям, чтобы лучше всего передать характер вашего любимца. Срок выполнения заказа составляет около 7 дней. Отличная идея для подарка или уникального декора.",
+                meta_size: "📐 Размер:", meta_price: "💰 Цена:",
+                step1: "Отправьте фото вашего животного", step2: "Выберите размер и цвета фона", step3: "На основе фото я подготовлю индивидуальный проект на утверждение ✏️",
+                step4: "После утверждения проекта действует предоплата (это подтверждение заказа)", step5: "После поступления оплаты я начинаю создание. Время выполнения: до 4 рабочих дней ⌛",
+                step6_bold: "Заполните форму", step6_text: "ниже, и я свяжусь с вами для уточнения деталей!",
+                form_title: "Форма заказа", label_name: "Ваше имя", label_email: "Email адрес", label_phone: "Номер телефона",
+                label_contact_method: "Предпочтительный способ связи", option_select: "Выберите вариант...", option_call: "Телефонный звонок 📞",
+                label_details: "Размер и цвета фона (или ваши вопросы)", btn_add_photo: "📸 Добавить фото питомца", photo_added_success: "✓ Фото добавлено!",
+                btn_submit_form: "Отправить заявку", blog_title: "Процесс создания витража за кулисами",
+                blog_desc: "Посмотрите, как сырой лист стекла превращается в уникальный ловец солнца. От точного эскиза, деликатной резки и обертывания медной лентой до финальной пайки оловом в традиционной технике Тиффани. Каждый штрих — это шаг к искусству, которое оживает, когда встречается с солнцем. ✨",
+                blog_overlay: "Процесс создания 🛠️", footer_brand_desc: "Ловцы солнца и витражи ручной работы из любви к животным. Каждый проект — это уникальная история, застывшая в цветном стекле.",
+                footer_contact_me: "Свяжитесь со мной", footer_rights: "Все права защищены.",
+                modal_title: "Заказ готового витража 🐾", modal_chosen: "Вы выбрали:", modal_footer_note: "Я свяжусь с вами для подтверждения ✨",
+                alert_shop_success: "Спасибо! Заявка отправлена. Я свяжусь с вами в ближайшее время! 🐾",
+                alert_custom_success: "Заявка успешно отправлена! ✨ Я подготовлю проект и свяжусь с вами выбранным способом. 🐾",
+                alert_add_photo: "Пожалуйста, добавьте фото питомца!", placeholder_details: "Опишите ваши пожелания по витражу...", btn_buy_now: "Купить сейчас", btn_sold_out: "Резервация",
+                badge_available_f: "Доступна", badge_available_m: "Доступен", badge_unavailable: "Зарезервирован", shop_empty: "В настоящее время нет готовых витражей. Свяжитесь с нами! 🐾", loading: "Отправка заявки... ⌛", btnstart: "Как я это делаю"
+            }
+        };
+
+        let currentLang = localStorage.getItem('selectedLang') || 'pl';
+        let latestProductsData = null; // Przechowuje dane z Firebase do ponownego renderowania przy zmianie języka
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('selectedLang', lang);
+
+            // Aktualizacja klas aktywności w nagłówku
+            document.querySelectorAll('.lang p').forEach(p => {
+                if (p.getAttribute('data-lang') === lang) p.classList.add('active-lang');
+                else p.classList.remove('active-lang');
+            });
+
+            // Tłumaczenie statycznych elementów HTML
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    elem.innerHTML = translations[lang][key];
+                }
+            });
+
+            // Aktualizacja placeholderów w formularzach
+            const petTypeInput = document.getElementById('petType');
+            if (petTypeInput) petTypeInput.placeholder = translations[lang].placeholder_details;
+
+            // Ponowne wyrenderowanie produktów z nowym językiem
+            if (latestProductsData) {
+                renderProducts(latestProductsData);
+            }
+        }
+
+        // Podpięcie eventów kliknięcia pod przyciski języków
+        document.querySelectorAll('.lang p').forEach(p => {
+            p.addEventListener('click', () => {
+                changeLanguage(p.getAttribute('data-lang'));
+            });
+        });
+
+
+        // FIREBASE LOGIC
         const IMGBB_API_KEY = "291d37bc47944d33b00530f6fa7d93f4";
 
         const firebaseConfig = {
@@ -457,71 +675,81 @@
         const shopContainer = document.getElementById('main-shop-container');
         const modal = document.getElementById('order-modal');
 
-        // 1. ЛОГИКА ВЫВОДА ТОВАРОВ НА ВИТРИНУ
-        if (shopContainer) {
-            onValue(productsRef, (snapshot) => {
-                const data = snapshot.val();
-                shopContainer.innerHTML = '';
+        function renderProducts(data) {
+            if (!shopContainer) return;
+            shopContainer.innerHTML = '';
 
-                if (!data) {
-                    shopContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; font-family: sans-serif; padding: 20px;">Obecnie brak gotowych witraży. Skontaktuj się z nami! 🐾</p>';
-                    return;
-                }
+            if (!data) {
+                shopContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; font-family: sans-serif; padding: 20px;">${translations[currentLang].shop_empty}</p>`;
+                return;
+            }
 
-                for (let id in data) {
-                    const item = data[id];
-                    const isWazkaOrPszczola = item.title && (item.title.toLowerCase().includes('ważka') || item.title.toLowerCase().includes('pszczółka'));
-                    let badgeText = item.available ? (isWazkaOrPszczola ? 'Dostępna' : 'Dostępny') : 'Niedostępny';
-                    let badgeClass = item.available ? 'badge-ready' : 'badge-no';
+            for (let id in data) {
+                const item = data[id];
+                const isWazkaOrPszczola = item.title && (item.title.toLowerCase().includes('ważka') || item.title.toLowerCase().includes('pszczółka') || item.title.toLowerCase().includes('бджілка') || item.title.toLowerCase().includes('пчелка'));
 
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.innerHTML = `
+                let badgeText = item.available
+                    ? (isWazkaOrPszczola ? translations[currentLang].badge_available_f : translations[currentLang].badge_available_m)
+                    : translations[currentLang].badge_unavailable;
+                let badgeClass = item.available ? 'badge-ready' : 'badge-no';
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
                     <div class="product-img-box">
                         <img src="${item.img || 'pics/icon.png'}" alt="Witraż ${item.title || 'Pracownia Szopa'}">
                         <span class="product-badge ${badgeClass}">${badgeText}</span>
                     </div>
                     <div class="product-info">
                         <h3>Witraż "${item.title || 'Bez nazwy'}"</h3>
-                        <p class="product-desc">${item.desc || 'Ręcznie robiony witraż.'}</p>
+                        <p class="product-desc">${item.desc || ''}</p>
                         <div class="product-footer">
                             <span class="product-price">${item.price || 0} PLN</span>
                         </div>
                     </div>
                 `;
 
-                    const buyBtn = document.createElement('button');
-
-                    if (item.available) {
-                        buyBtn.className = 'product-btn';
-                        buyBtn.innerText = 'Kup teraz';
-                        buyBtn.addEventListener('click', () => {
-                            if (modal) {
-                                document.getElementById('modal-product-title').innerText = item.title;
-                                document.getElementById('modal-hidden-title').value = item.title;
-                                modal.style.display = 'flex';
-                            }
-                        });
-                    } else {
-                        buyBtn.className = 'product-btn btn-sold-out';
-                        buyBtn.innerText = 'Sprzedane!';
-                        buyBtn.disabled = true;
-                    }
-
-                    card.querySelector('.product-footer').appendChild(buyBtn);
-                    shopContainer.appendChild(card);
+                const buyBtn = document.createElement('button');
+                if (item.available) {
+                    buyBtn.className = 'product-btn';
+                    buyBtn.innerText = translations[currentLang].btn_buy_now;
+                    buyBtn.addEventListener('click', () => {
+                        if (modal) {
+                            document.getElementById('modal-product-title').innerText = item.title;
+                            document.getElementById('modal-hidden-title').value = item.title;
+                            modal.style.display = 'flex';
+                        }
+                    });
+                } else {
+                    buyBtn.className = 'product-btn btn-sold-out';
+                    buyBtn.innerText = translations[currentLang].btn_sold_out;
+                    buyBtn.disabled = true;
                 }
+
+                card.querySelector('.product-footer').appendChild(buyBtn);
+                shopContainer.appendChild(card);
+            }
+        }
+
+        // 1. POBIERANIE PRODUKTÓW Z BAZY
+        if (shopContainer) {
+            onValue(productsRef, (snapshot) => {
+                latestProductsData = snapshot.val();
+                renderProducts(latestProductsData);
             });
         }
 
-        // 2. ЗАКРЫТИЕ МОДАЛКИ КУПИТЬ ГОТОВОЕ
+        // Inicjalizacja domyślnego języka przy załadowaniu strony
+        changeLanguage(currentLang);
+
+        // 2. ZAKRЫTIE MODALKI
         const closeModalBtn = document.getElementById('close-modal-btn');
         if (closeModalBtn) {
             closeModalBtn.addEventListener('click', () => { if (modal) modal.style.display = 'none'; });
         }
         window.addEventListener('click', (e) => { if (modal && e.target === modal) modal.style.display = 'none'; });
 
-        // 3. ОТПРАВКА ЗАКАЗА ГОТОВОГО ТОВАРA В БАЗУ
+        // 3. WYSYŁANIE ZGŁOSZENIA GOTOWEGO PRODUKTU
         window.handleShopOrderSubmit = function (event) {
             event.preventDefault();
 
@@ -538,13 +766,13 @@
                 client_phone: phone,
                 date: new Date().toLocaleString()
             }).then(() => {
-                alert('Dziękujemy! Zgłoszenie zostało wysłane. Skontaktuję się z Tobą wkrótce! 🐾');
+                alert(translations[currentLang].alert_shop_success);
                 if (modal) modal.style.display = 'none';
                 document.getElementById('shopOrderForm').reset();
             }).catch(err => alert('Błąd: ' + err.message));
         };
 
-        // 4. БЕСШОВНЫЙ СЕКРЕТНЫЙ ВХОД В АДМИНКУ
+        // 4. TAJNE WEJŚCIE DO ADMINA
         let clickCount = 0;
         let clickTimer = null;
         const logoLinks = document.querySelectorAll('header .icon a');
@@ -566,27 +794,26 @@
             });
         });
 
-        // 5. ОЖИВЛЕНИЕ ФОРМЫ ЗАКАЗА ПО ФОТО ПИТОМЦА
-        // Логика мгновенного превью картинки питомца
-    const petFileInput = document.getElementById('petPhoto');
-    const petPreviewBox = document.getElementById('pet-preview-box');
-    const petPreviewImg = document.getElementById('pet-preview-img');
+        // 5. OBSŁUGA FORMULARZA NA ZAMÓWIENIE INDYWIDUALNE
+        const petFileInput = document.getElementById('petPhoto');
+        const petPreviewBox = document.getElementById('pet-preview-box');
+        const petPreviewImg = document.getElementById('pet-preview-img');
 
-    if (petFileInput && petPreviewBox && petPreviewImg) {
-        petFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    petPreviewImg.src = event.target.result;
-                    petPreviewBox.style.display = 'flex'; // Показываем превью
-                };
-                reader.readAsDataURL(file);
-            } else {
-                petPreviewBox.style.display = 'none'; // Прячем, если сбросили
-            }
-        });
-    }
+        if (petFileInput && petPreviewBox && petPreviewImg) {
+            petFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        petPreviewImg.src = event.target.result;
+                        petPreviewBox.style.display = 'flex';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    petPreviewBox.style.display = 'none';
+                }
+            });
+        }
 
         window.handleFormSubmit = async function (event) {
             event.preventDefault();
@@ -601,17 +828,15 @@
             const file = fileInput.files[0];
 
             if (!file) {
-                alert('Proszę dodać zdjęcie pupila!');
+                alert(translations[currentLang].alert_add_photo);
                 return;
             }
 
             try {
-                // Блокируем кнопку, чтобы клиент не кликал по 100 раз пока грузится фото
                 submitBtn.disabled = true;
                 const originalText = submitBtn.innerText;
-                submitBtn.innerText = 'Wysyłanie zgłoszenia... ⌛';
+                submitBtn.innerText = translations[currentLang].loading;
 
-                // 1. Сначала загружаем фотку питомца на ImgBB
                 const formData = new FormData();
                 formData.append("image", file);
 
@@ -621,11 +846,10 @@
                 });
 
                 const result = await response.json();
-                if (!result.success) throw new Error("Błąd podczas ładowania zdjęcia pupila.");
+                if (!result.success) throw new Error("Błąd podczas ładowния zdjęcia.");
 
                 const petImageUrl = result.data.url;
 
-                // 2. Сохраняем всю заявку в ветку custom_orders базы Firebase
                 const customOrdersRef = ref(db, 'custom_orders');
                 await push(customOrdersRef, {
                     client_name: name,
@@ -637,72 +861,52 @@
                     date: new Date().toLocaleString()
                 });
 
-                alert('Zgłoszenie zostało pomyślnie wysłane! ✨ Przygotuję projekt i skontaktuję się z Tobą przez wybrany sposób komunikacji. 🐾');
+                alert(translations[currentLang].alert_custom_success);
                 document.getElementById('pupilOrderForm').reset();
+                if (petPreviewBox) petPreviewBox.style.display = 'none';
 
             } catch (err) {
                 alert('Wystąpił błąd: ' + err.message);
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'Wyślij zgłoszenie';
+                submitBtn.innerText = translations[currentLang].btn_submit_form;
             }
         };
-        // НОРМАЛЬНАЯ, КРАСИВАЯ МАСКА ДЛЯ ТЕЛЕФОНА +48 123-123-123
-    const maskPhoneInput = (inputElement) => {
-        inputElement.addEventListener('input', (e) => {
-            // Очищаем всё, оставляя только цифры
-            let digits = e.target.value.replace(/\D/g, "");
-            
-            // Если пользователь стёр всё, оставляем базу
-            if (digits.length === 0) {
-                e.target.value = "+48 ";
-                return;
-            }
 
-            // Если ввод начинается с 48, убираем дублирование для логики
-            if (digits.startsWith("48") && digits.length > 2) {
-                digits = digits.substring(2);
-            } else if (digits.startsWith("48") && digits.length <= 2) {
-                digits = "";
-            }
+        // MASKA TELEFONICZNA
+        const maskPhoneInput = (inputElement) => {
+            inputElement.addEventListener('input', (e) => {
+                let digits = e.target.value.replace(/\D/g, "");
+                if (digits.length === 0) {
+                    e.target.value = "+48 ";
+                    return;
+                }
+                if (digits.startsWith("48") && digits.length > 2) {
+                    digits = digits.substring(2);
+                } else if (digits.startsWith("48") && digits.length <= 2) {
+                    digits = "";
+                }
+                let formatted = "+48 ";
+                if (digits.length > 0) { formatted += digits.substring(0, 3); }
+                if (digits.length >= 4) { formatted += "-" + digits.substring(3, 6); }
+                if (digits.length >= 7) { formatted += "-" + digits.substring(6, 9); }
+                e.target.value = formatted;
+            });
+            inputElement.addEventListener('focus', (e) => {
+                if (e.target.value.trim() === "" || e.target.value === "+48") {
+                    e.target.value = "+48 ";
+                }
+            });
+            inputElement.addEventListener('blur', (e) => {
+                if (e.target.value.trim() === "+48") { e.target.value = ""; }
+            });
+        };
 
-            // Собираем строку красиво по кусочкам
-            let formatted = "+48 ";
-            
-            if (digits.length > 0) {
-                formatted += digits.substring(0, 3);
-            }
-            if (digits.length >= 4) {
-                formatted += "-" + digits.substring(3, 6);
-            }
-            if (digits.length >= 7) {
-                formatted += "-" + digits.substring(6, 9);
-            }
+        const phoneInput1 = document.getElementById('clientPhone');
+        const phoneInput2 = document.getElementById('shopClientPhone');
+        if (phoneInput1) maskPhoneInput(phoneInput1);
+        if (phoneInput2) maskPhoneInput(phoneInput2);
 
-            e.target.value = formatted;
-        });
-
-        // При фокусе автоматически подставляем шаблон
-        inputElement.addEventListener('focus', (e) => {
-            if (e.target.value.trim() === "" || e.target.value === "+48") {
-                e.target.value = "+48 ";
-            }
-        });
-
-        // Если пользователь убрал фокус и ничего не ввёл кроме кода — очищаем поле
-        inputElement.addEventListener('blur', (e) => {
-            if (e.target.value.trim() === "+48") {
-                e.target.value = "";
-            }
-        });
-    };
-
-    // Включаем маску для обеих форм
-    const phoneInput1 = document.getElementById('clientPhone');
-    const phoneInput2 = document.getElementById('shopClientPhone');
-    
-    if (phoneInput1) maskPhoneInput(phoneInput1);
-    if (phoneInput2) maskPhoneInput(phoneInput2);
     </script>
 
 </body>
