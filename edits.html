@@ -1,1004 +1,713 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#EDD7A3">
-    <title>Pracownia Szopa</title>
-    
-    <link rel="icon" type="image/png" href="icon.png">
+    <title>Панель администратора | Pracownia Szopa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Copse&family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="styles.css?v=1.9.1">
-    <script type="module" src="firebase-init.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=1.9.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Copse&display=swap" rel="stylesheet">
     
     <style>
-        /* Инлайн-стили для мультиязычности */
-        .lang p { cursor: pointer; transition: opacity 0.2s; margin: 0 5px; display: inline-block; touch-action: manipulation; }
-        .lang p:hover { opacity: 0.7; }
-        .lang p.active-lang { font-weight: bold; text-decoration: underline; color: #258495; }
+        body { margin: 0; padding: 10px; background-color: #FDF9F2; font-family: 'Copse', Georgia, serif; color: #13110F; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        html, body { touch-action: manipulation; }
+        
+        /* Авторизация */
+        .login-container { width: 100%; max-width: 400px; background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; padding: 35px 25px; box-shadow: 8px 8px 0 #13110F; text-align: center; box-sizing: border-box; }
+        .login-container input { display: block; width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 3px solid #13110F; border-radius: 12px; font-family: inherit; font-size: 16px; box-sizing: border-box; text-align: center; }
+        
+        /* Главный бокс панели */
+        .admin-screen-box { width: 100%; max-width: 1200px; background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; padding: 30px 20px; box-shadow: 8px 8px 0 #13110F; box-sizing: border-box; display: none; margin: 10px auto; }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #C4411D; font-weight: bold; text-decoration: none; font-size: 18px; }
+        
+        /* Вкладки навигации */
+        .admin-section-nav { display: flex; gap: 12px; margin-bottom: 30px; border-bottom: 4px solid #13110F; padding-bottom: 15px; flex-wrap: wrap; }
+        .nav-tab-btn { background: #FFF; border: 3px solid #13110F; padding: 12px 20px; font-family: inherit; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 4px 4px 0 #13110F; font-size: 15px; transition: all 0.1s ease; }
+        .nav-tab-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #13110F; }
+        .nav-tab-btn.active-tab { background: #258495; color: #EDD7A3; transform: translate(4px, 4px); box-shadow: 0 0 0 #13110F; }
+        
+        .admin-panel-section { display: none; }
+        .admin-panel-section.active-section { display: block; }
 
-        /* КРАСИВЫЕ БРУТАЛЬНЫЕ ТОСТЫ (СИСТЕМА УВЕДОМЛЕНИЙ) */
-        .craft-toast {
-            position: fixed;
-            bottom: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #13110F;
-            color: #EDD7A3;
-            border: 3px solid #EDD7A3;
-            border-radius: 16px;
-            padding: 16px 28px;
-            font-size: 15px;
-            font-weight: bold;
-            text-align: center;
-            z-index: 100000;
-            box-shadow: 0 8px 24px rgba(19,17,15, 0.4);
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: calc(100% - 40px);
-            max-width: 450px;
-            box-sizing: border-box;
-            pointer-events: none;
-        }
-        .craft-toast.show-toast {
-            bottom: 30px;
+        /* Внутренние подвкладки Архива */
+        .archive-toggle-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        .archive-btn { background: #FFF; border: 2px solid #13110F; padding: 8px 16px; font-family: inherit; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 3px 3px 0 #13110F; }
+        .archive-btn.active-subview { background: #949C2D; color: #13110F; transform: translate(2px, 2px); box-shadow: 0 0 0 #13110F; }
+
+        /* Формы и карточки */
+        .form-group-box { background: #FFF; padding: 25px; border: 3px solid #13110F; border-radius: 16px; margin-bottom: 30px; box-shadow: 4px 4px 0 #13110F; }
+        .form-group-box input, .form-group-box textarea { display: block; width: 100%; margin: 14px 0; padding: 12px; border: 2px solid #13110F; border-radius: 10px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
+        
+        .file-input-wrapper { margin: 18px 0; }
+        .file-label { display: block; padding: 14px; background: #258495; color: #EDD7A3; border: 3px solid #13110F; border-radius: 12px; text-align: center; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #13110F; }
+        #admin-file { display: none; }
+        .file-status { font-size: 13px; opacity: 0.8; margin-top: 8px; display: block; text-align: center; font-family: sans-serif; font-weight: bold; color: #258495; }
+
+        .save-btn { background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 14px 24px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 14px; box-shadow: 0 4px 0 #13110F; width: 100%; font-family: inherit; }
+        .save-btn:disabled { background: #ccc !important; color: #666 !important; cursor: not-allowed; box-shadow: none !important; }
+        
+        /* Списки товаров */
+        .admin-product-item { background: #FFF; padding: 15px; margin: 14px 0; border: 3px solid #13110F; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; gap: 15px; box-shadow: 4px 4px 0 #13110F; }
+        .prod-meta { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .prod-meta img { width: 65px; height: 65px; border: 2px solid #13110F; border-radius: 10px; object-fit: cover; background: #FFF; flex-shrink: 0; }
+        .prod-meta div { flex: 1; }
+        .edit-fields input, .edit-fields textarea { display: block; width: 100%; margin: 6px 0; padding: 8px; border: 2px solid #13110F; border-radius: 8px; font-family: inherit; box-sizing: border-box; }
+        
+        .prod-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; flex-shrink: 0; }
+        .status-btn, .edit-btn, .delete-btn, .archive-action-btn { padding: 8px 14px; border: 2px solid #13110F; font-size: 13px; font-weight: bold; border-radius: 10px; cursor: pointer; min-width: 140px; text-align: center; color: #FFF; box-shadow: 0 3px 0 #13110F; font-family: inherit; text-transform: uppercase; box-sizing: border-box; }
+        .status-btn:active, .edit-btn:active, .delete-btn:active, .archive-action-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #13110F; }
+        
+        .btn-active { background: #949C2D; color: #13110F; }
+        .btn-inactive { background: #C4411D; color: #EDD7A3; }
+        .btn-edit-mode { background: #258495; color: #EDD7A3; }
+        .btn-save-mode { background: #949C2D; color: #13110F; }
+        .delete-btn { background: #C4411D; color: #FFF; }
+        .archive-action-btn { background: #258495; color: #FFF; }
+        
+        /* Заказы */
+        .order-card { background: #FFF; border: 3px solid #13110F; border-radius: 16px; padding: 25px; margin-bottom: 20px; box-shadow: 6px 6px 0 #13110F; }
+        .order-date-container { margin-top: 15px; font-size: 12px; color: #777; font-family: sans-serif; font-weight: bold; border-top: 1px dashed rgba(19, 17, 14, 0.15); padding-top: 8px; }
+        .order-card h4 { margin: 0 0 15px 0; color: #C4411D; font-size: 20px; }
+        .order-info-row { font-family: sans-serif; font-size: 15px; margin: 8px 0; line-height: 1.4; color: #13110F; word-break: break-word; }
+        .order-info-row strong { font-family: 'Copse', Georgia, serif; font-size: 16px; color: #13110F; display: inline-block; min-width: 130px; }
+        .order-info-row a { color: #258495; text-decoration: underline; font-weight: bold; }
+        
+        .order-with-img { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+        .order-pet-thumb-wrapper { position: relative; cursor: pointer; flex-shrink: 0; }
+        .order-pet-thumb { width: 95px; height: 95px; border: 3px solid #13110F; border-radius: 12px; object-fit: cover; box-shadow: 3px 3px 0 #13110F; }
+
+        .badge-method { background: #EDD7A3; padding: 3px 10px; border: 2px solid #13110F; border-radius: 8px; font-weight: bold; font-size: 13px; color: #13110F; }
+        .details-box { margin-top: 15px; background: #FDF9F2; padding: 15px; border-radius: 12px; border: 2px solid #13110F; font-size: 14px; font-family: sans-serif; line-height: 1.5; color: #333; }
+
+        /* Модальные окна и Лайтбокс */
+        .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(19, 17, 15, 0.85); backdrop-filter: blur(5px); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; opacity: 0; transition: opacity 0.2s ease; gap: 20px; }
+        .lightbox-img { max-width: 90%; max-height: 75%; border: 4px solid #13110F; border-radius: 16px; box-shadow: 8px 8px 0 #13110F; transform: scale(0.95); transition: transform 0.2s ease; object-fit: contain; background: #FFF; }
+        .lightbox-overlay.active { opacity: 1; }
+        .lightbox-overlay.active .lightbox-img { transform: scale(1); }
+        
+        /* КРАФТОВОЕ ОКНО ПОДТВЕРЖДЕНИЯ УДАЛЕНИЯ */
+        .confirm-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(19, 17, 15, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 100000; padding: 20px; box-sizing: border-box; }
+        .confirm-modal-box { background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; width: 100%; max-width: 420px; padding: 30px 25px; box-shadow: 8px 8px 0 #13110F; text-align: center; box-sizing: border-box; transform: scale(0.9); transition: transform 0.2s ease; }
+        .confirm-modal-overlay.active .confirm-modal-box { transform: scale(1); }
+        .confirm-modal-box h3 { margin: 0 0 15px 0; font-size: 22px; color: #C4411D; }
+        .confirm-modal-box p { font-family: sans-serif; font-size: 15px; margin: 0 0 25px 0; color: #13110F; line-height: 1.4; }
+        .confirm-btns-row { display: flex; gap: 15px; justify-content: center; }
+        .confirm-btn-yes { background: #C4411D; color: #FFF; border: 3px solid #13110F; padding: 12px 24px; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 0 #13110F; font-family: inherit; text-transform: uppercase; flex: 1; }
+        .confirm-btn-no { background: #FFF; color: #13110F; border: 3px solid #13110F; padding: 12px 24px; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 0 #13110F; font-family: inherit; text-transform: uppercase; flex: 1; }
+        .confirm-btn-yes:active, .confirm-btn-no:active { transform: translateY(3px); box-shadow: 0 0 0 #13110F; }
+
+        .download-btn { background: #949C2D; color: #13110F; border: 3px solid #13110F; padding: 10px 24px; font-size: 14px; font-weight: bold; border-radius: 10px; cursor: pointer; box-shadow: 4px 4px 0 #13110F; font-family: inherit; text-decoration: none; text-transform: uppercase; text-align: center; }
+        .alert-toast { position: fixed; bottom: 20px; right: 20px; background: #13110F; color: #EDD7A3; padding: 12px 25px; border-radius: 10px; font-family: sans-serif; font-size: 14px; z-index: 10000; display: none; border: 2px solid #EDD7A3; }
+
+        /* АДАПТИВ ПОД МОБИЛКИ (МЕНЕЕ 768px) */
+        @media (max-width: 768px) {
+            body { padding: 5px; }
+            .admin-screen-box { padding: 25px 15px; border-radius: 16px; margin: 10px auto; }
+            h2 { font-size: 28px !important; }
+            .nav-tab-btn { flex: 1 1 100%; text-align: center; padding: 10px; }
+            
+            /* Товары на мобилке */
+            .admin-product-item { flex-direction: column; align-items: stretch; gap: 15px; }
+            .prod-actions { align-items: stretch; }
+            .status-btn, .edit-btn, .delete-btn, .archive-action-btn { min-width: 100%; text-align: center; }
+            
+            /* Заказы на мобилке */
+            .order-with-img { flex-direction: column-reverse; align-items: center; gap: 15px; }
+            .order-pet-thumb { width: 120px; height: 120px; }
+            .order-info-row strong { min-width: auto; display: block; margin-bottom: 2px; }
+            
+            /* КНОПКИ ЗАКАЗОВ НА МОБИЛКЕ — ТЕПЕРЬ ОНИ РОВНЫЕ */
+            .order-card div[style*="display:flex; justify-content: space-between;"] {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 15px !important;
+            }
+            .order-card div[style*="display:flex; gap:10px;"] {
+                flex-direction: column !important;
+                gap: 10px !important;
+                width: 100%;
+            }
+            .order-card .archive-action-btn, 
+            .order-card .delete-btn {
+                width: 100% !important;
+                min-width: 100% !important;
+                padding: 12px 14px !important;
+                font-size: 14px !important;
+                text-align: center !important;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="craft-toast-notification" class="craft-toast">Уведомление 🐾</div>
+<div class="login-container" id="login-screen">
+    <h2>Авторизация 🐾</h2>
+    <p style="font-family: sans-serif; font-size: 14px; opacity: 0.7;">Введи пароль</p>
+    <input type="password" id="login-pass" placeholder="••••••••" autofocus>
+    <button id="login-submit-btn" class="save-btn">Войти в панель</button>
+</div>
 
-    <header>
-        <div class="icon">
-            <a href="javascript:void(0)"><img src="pics/icon.png" alt="Logo"></a>
-            <a href="javascript:void(0)">Pracownia Szopa</a>
-        </div>
-        <div class="nav">
-            <nav>
-                <a href="#shop-target" data-i18n="nav_about">O nas</a>
-                <a href="#shop" data-i18n="nav_production">Sklep</a>
-                <a href="#custom-order" data-i18n="nav_contact">Kontakt</a>
-                <a href="#blog" data-i18n="nav_blog">Blog</a>
-            </nav>
-        </div>
-        <div class="btns">
-            <div class="lang">
-                <p data-lang="pl" class="active-lang">Pl</p>
-                <p data-lang="ua">UA</p>
-                <p data-lang="ru">RU</p>
-            </div>
-            <div class="order-btn">
-                <a href="#shop"><button data-i18n="btn_order">zamów</button></a>
-            </div>
-        </div>
-    </header>
-
-    <section class="hero-full-mosaic" id="start">
-        <div class="mosaic-grid">
-            <div class="mosaic-item"><img src="pics/rabbit.png" alt="Witraż Królik"></div>
-            <div class="mosaic-item"><img src="pics/dragonfly.jpg" alt="Witraż Ważka"></div>
-            <div class="mosaic-item"><img src="pics/cat.png" alt="Witraż Kot"></div>
-        </div>
-        <div class="center-badge">
-            <div class="badge-glow"></div>
-            <img class="badge-logo" src="pics/icon.png" alt="Pracownia Szopa">
-        </div>
-        <div class="mosaic-overlay">
-            <h1>Pracownia Szopa</h1>
-            <p data-i18n="hero_desc">Unikalne witraże szklane tworzone z pasją</p>
-            <a href="#dalsze"><button class="mosaic-btn" data-i18n="btn_more">Dalej</button></a>
-        </div>
-    </section>
-
-    <section class="tworze-showroom-section" id="dalsze">
-        <div class="showroom-container">
-            <div class="showroom-gallery-grid">
-                <div class="gallery-photo-item"><img src="pics/bird.jpg" alt="Witraż Pracownia 1"></div>
-                <div class="gallery-photo-item"><img src="pics/piwonia1.jpg" alt="Witraż Pracownia 2"></div>
-                <div class="gallery-photo-item"><img src="pics/sun.jpg" alt="Witraż Pracownia 3"></div>
-                <div class="gallery-photo-item"><img src="pics/bea2.jpg" alt="Witraż Pracownia 4"></div>
-            </div>
-            <div class="showroom-content-side">
-                <div class="showroom-bg-brand">Pracownia <br> Szopa</div>
-                <p class="showroom-manifest-text" data-i18n="timeline_intro">
-                    Tworzę witraże w tradycyjnej technice Tiffany, które stanowią wyjątkową dekorację dla Twojego domu lub przestrzeni biznesowej. Każdy projekt powstaje z dbałością o detale i indywidualny karakter, łącząc rzemiosło artystyczne z ponadczasową elegancją.
-                </p>
-                <div class="showroom-actions-wrapper">
-                    <a href="#blog" class="btn-showroom btn-orange-header" data-i18n="btnstart">Zobacz jak to robię</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="shop-target" class="vitrage-timeline">
-        <div class="timeline-header">
-            <h2 data-i18n="timeline_title">Dla kogo tworzymy magię w szkle?</h2>
-            <div class="paws-path">
-                <div class="paw-print-1"><img src="pics/paw.png" alt="Paw"></div>
-                <div class="paw-print-2"><img src="pics/paw.png" alt="Paw"></div>
-                <div class="paw-print-3"><img src="pics/paw.png" alt="Paw"></div>
-                <div class="paw-print-4"><img src="pics/paw.png" alt="Paw"></div>
-            </div>
-        </div>
-
-        <div class="steps-desktop-section">
-            <div class="steps-grid-wrapper">
-                <div class="step-row row-direct-left">
-                    <div class="step-media-holder"><img src="pics/husky_dog1.jpg" alt="Witraż Szklany Królik"></div>
-                    <div class="step-content-box">
-                        <h3 data-i18n="block1_title">Dla miłośników zwierząt</h3>
-                        <p data-i18n="block1_desc">Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła ozdoba, to kawałek Twojej duszy na oknie.</p>
-                    </div>
-                </div>
-                <div class="step-row row-inverse-right">
-                    <div class="step-media-holder"><img src="pics/husky.jpg" alt="Witraż Szklany Ważka"></div>
-                    <div class="step-content-box">
-                        <h3 data-i18n="block2_title">Na wyjątkowy prezent</h3>
-                        <p data-i18n="block2_desc">Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś bliskiego, kto kocha zwierzęta.</p>
-                    </div>
-                </div>
-                <div class="step-row row-direct-left">
-                    <div class="step-media-holder"><img src="pics/moon.png" alt="Witraż Szklany Kot"></div>
-                    <div class="step-content-box">
-                        <h3 data-i18n="block3_title">Piękna pamiątka na lata</h3>
-                        <p data-i18n="block3_desc">Dla tych, którzy chcą zachować wspomnienie ukochanego zwierzaka. Dla tych, którzy tęsknią i chcą mieć blisko to, co było najważniejsze.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="timeline-outro-block">
-            <div class="outro-text-plate">
-                <p class="outro-text" data-i18n="outro_text">
-                    Suncatchery witrażowe w stylu Tiffany (Łapacze słońca) to dekoracyjne zawieszki ze szkła, które łapią światło słoneczne i tworzą w domu piękne refleksy i kolory. Każdy suncatcher wykonany jest ręcznie, łącząc kawałki szkła taśmą miedzianą i cyną, co daje unikalne wzory. Idealne na okna, do wnętrz lub jako wyjątkowy prezent — lekkie, kolorowe i magiczne! ✨
-                </p>
-            </div>
-            <div class="outro-images-grid">
-                <div class="outro-img-box"><img src="pics/sun1y.jpg" alt="Suncatcher Tiffany prezent"></div>
-                <div class="outro-img-box"><img src="pics/moon.jpg" alt="Łapacz słońca na oknie"></div>
-            </div>
-            <div class="quote-badge-box">
-                <p class="outro-quote" data-i18n="outro_quote">Witraż zaczyna mówić – tylko wtedy, gdy spotka się ze światłem.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="shop" class="vitrage-shop">
-        <div class="shop-header">
-            <div class="shop-signboard">
-                <h2 data-i18n="shop_title">Sklep z witrażami</h2>
-            </div>
-            <p data-i18n="shop_desc">Wybierz gotowe dzieło od ręki lub zainspiruj się do stworzenia własnego zamówienia</p>
-        </div>
-        <div class="shop-section-block">
-            <h3 class="shop-section-title" data-i18n="shop_ready_title">Gotowe witraże <span data-i18n="shop_ready_subtitle">(Dostępne od ręki)</span></h3>
-            <div class="shop-grid id-ready-products" id="main-shop-container"></div>
-        </div>
-    </section>
-
-    <section id="custom-order" class="order-flow-section">
-        <div class="flow-header">
-            <h2 data-i18n="custom_title">Jak zamówić witraż ze zdjęcia pupila? 🐾</h2>
-        </div>
-        <div class="custom-offer-text-block">
-            <p class="custom-offer-p" data-i18n="custom_desc">
-                Zamów swój własny witraż suncatcher z wizerunkiem swojego ukochanego zwierzaka! Każdy suncatcher jest wykonany ręcznie z dbałością o szczegóły, aby jak najlepiej oddać charakter Twojego pupila. Czas realizacji zamówienia wynosi około 7 dni. Idealny pomysł na prezent lub wyjątkową dekorację do Twojego domu.
-            </p>
-            <div class="custom-offer-gallery">
-                <div class="custom-gal-box"><img src="pics/husky_dog.jpg" alt="Witraż pupila 1"></div>
-                <div class="custom-gal-box"><img src="pics/psiak.jpg" alt="Witraż pupila 2"></div>
-                <div class="custom-gal-box"><img src="pics/psiak2.jpg" alt="Witraż pupila 3"></div>
-            </div>
-            <div class="custom-offer-meta">
-                <span class="custom-badge"><span data-i18n="meta_size">📐 Rozmiar:</span> <strong>20×20&nbsp;cm</strong></span>
-                <span class="custom-badge"><span data-i18n="meta_price">💰 Cena:</span> <strong>450&nbsp;zł</strong></span>
-            </div>
-        </div>
-
-        <div class="flow-steps-grid">
-            <div class="step-card"><div class="step-num">1</div><p data-i18n="step1">Wyślij zdjęcie своего zwierzaka</p></div>
-            <div class="step-card"><div class="step-num">2</div><p data-i18n="step2">Wybierz rozmiar i kolory tła</p></div>
-            <div class="step-card"><div class="step-num">3</div><p data-i18n="step3">Na podstawie zdjęcia przygotuję indywidualny projekt do akceptacji ✏️</p></div>
-            <div class="step-card"><div class="step-num">4</div><p data-i18n="step4">Po akceptacji projektu obowiązuje przedpłata (to potwierdzenie zamówienia)</p></div>
-            <div class="step-card"><div class="step-num">5</div><p data-i18n="step5">Po zaksięgowaniu wpłaty zaczynam tworzenie. Czas realizacji: do 4 dni roboczych ⌛</p></div>
-            <div class="step-card step-action-card">
-                <div class="step-num btn-num">6</div>
-                <p><strong data-i18n="step6_bold">Wypełnij formularz</strong> <span data-i18n="step6_text">poniżej, a skontaktuję się z Tobą w celu ustalenia szczegółów!</span> 📦</p>
-            </div>
-        </div>
-
-        <div class="order-form-container">
-            <h3 data-i18n="form_title">Formularz zamówienia</h3>
-            <form id="pupilOrderForm" onsubmit="handleFormSubmit(event)">
-                <div class="form-group">
-                    <label for="clientName" data-i18n="label_name">Twoje imię</label>
-                    <input type="text" id="clientName" placeholder="Np. Anna Kowalska" required>
-                </div>
-                <div class="form-row-split">
-                    <div class="form-group">
-                        <label for="clientEmail" data-i18n="label_email">Adres e-mail</label>
-                        <input type="email" id="clientEmail" placeholder="Np. anna@gmail.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="clientPhone" data-i18n="label_phone">Numer telefonu</label>
-                        <input type="text" id="clientPhone" placeholder="+48 000-000-000" maxlength="15" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="contactMethod" data-i18n="label_contact_method">Preferowany sposób kontaktu</label>
-                    <select id="contactMethod" required>
-                        <option value="" disabled selected data-i18n="option_select">Wybierz opcję...</option>
-                        <option value="telegram">Telegram ✈️</option>
-                        <option value="whatsapp">WhatsApp 💬</option>
-                        <option value="sms">SMS 📱</option>
-                        <option value="call" data-i18n="option_call">Połączenie telefoniczne 📞</option>
-                        <option value="email">E-mail ✉️</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="petType" data-i18n="label_details">Rozmiar i kolory tła (lub Twoje pytania)</label>
-                    <textarea id="petType" rows="4" placeholder="Opisz swoje życzenia dotyczące witrażu..." required></textarea>
-                </div>
-                <div class="form-group file-group" style="text-align: center;">
-                    <label for="petPhoto" class="file-label" style="display: inline-block; cursor: pointer; padding: 12px 20px; background: #258495; color: #EDD7A3; border: 2px solid #13110F; border-radius: 12px; font-weight: bold; box-shadow: 0 4px 0 #13110F;">
-                        <span data-i18n="btn_add_photo">📸 Dodaj zdjęcie pupila</span>
-                        <input type="file" id="petPhoto" accept="image/*" required style="display: none;">
-                    </label>
-                    <div id="pet-preview-box" style="display: none; margin-top: 15px; justify-content: center; align-items: center; flex-direction: column; gap: 8px;">
-                        <img id="pet-preview-img" src="" alt="Podgląd" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #13110F; border-radius: 16px; box-shadow: 4px 4px 0 #13110F;">
-                        <span style="font-size: 13px; font-weight: bold; color: #949C2D;" data-i18n="photo_added_success">✓ Zdjęcie zostało dodane!</span>
-                    </div>
-                </div>
-                <button type="submit" class="form-submit-btn" data-i18n="btn_submit_form">Wyślij zgłoszenie</button>
-            </form>
-        </div>
-    </section>
-
-    <section id="blog" class="vitrage-blog-half">
-        <div class="blog-text-side">
-            <div class="blog-content-wrap">
-                <h2 data-i18n="blog_title">Proces tworzenia witrażu od kulis</h2>
-                <p data-i18n="blog_desc">Zobacz, jak surowy arkusz szkła zmienia się в unikalny suncatcher. Od precyzyjnego szkicowania, przez delikatne cięcie i owijanie taśmą miedzianą, aż po finalne lutowanie cyną w tradycyjnej technice Tiffany. Każdy szlif to krok w stronę sztuki, która ożywa dopiero wtedy, gdy spotka się ze światłem słońca. ✨</p>
-            </div>
-        </div>
-        <div class="blog-image-side blog-video-grid-container">
-            <div class="blog-video-grid">
-                <div class="video-grid-box"><video autoplay loop muted playsinline poster="pics/proc1.jpg"><source src="pics/proc1.jpg" type="video/mp4"></video></div>
-                <div class="video-grid-box"><video autoplay loop muted playsinline poster="pics/proc2.mp4"><source src="pics/proc2.mp4" type="video/mp4"></video></div>
-                <div class="video-grid-box"><video autoplay loop muted playsinline poster="pics/proc3.mp4"><source src="pics/proc3.mp4" type="video/mp4"></video></div>
-                <div class="video-grid-box"><video autoplay loop muted playsinline poster="pics/proc4.mp4"><source src="pics/proc4.mp4" type="video/mp4"></video></div>
-            </div>
-            <div class="blog-img-overlay"><span data-i18n="blog_overlay">Proces tworzenia 🛠️</span></div>
-        </div>
-    </section>
-
-    <section class="null"><p> </p></section>
-
-    <div id="order-modal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <button class="modal-close-btn" id="close-modal-btn">&times;</button>
-            <h2 data-i18n="modal_title">Zamówienie gotowego witrażu 🐾</h2>
-            <p><span data-i18n="modal_chosen">Wybrałeś:</span> <strong id="modal-product-title" style="color: #C4411D;"></strong></p>
-
-            <form id="shopOrderForm" onsubmit="handleShopOrderSubmit(event)">
-                <input type="hidden" id="modal-hidden-title">
-                <div class="modal-form-group">
-                    <label data-i18n="label_name">Twoje imię</label>
-                    <input type="text" id="shopClientName" placeholder="Np. Anna Kowalska" required>
-                </div>
-                <div class="modal-form-row">
-                    <div class="modal-form-group">
-                        <label data-i18n="label_email">Adres e-mail</label>
-                        <input type="email" id="shopClientEmail" placeholder="Np. anna@gmail.com" required>
-                    </div>
-                    <div class="modal-form-group">
-                        <label data-i18n="label_phone">Numer telefonu</label>
-                        <input type="text" id="shopClientPhone" placeholder="Np. +48 123 456 789" required>
-                    </div>
-                </div>
-                <p data-i18n="modal_footer_note">Skontaktuję się z tobą w celu potwierdzenia✨</p>
-                <button type="submit" class="modal-submit-btn" data-i18n="btn_submit_form">Wyślij zgłoszenie</button>
-            </form>
-        </div>
+<div class="admin-screen-box" id="admin-screen">
+    <a href="index.html" class="back-link">← Вернуться на сайт</a>
+    <h2 style="font-size: 36px; margin: 0 0 30px 0; border-bottom: 4px solid #13110F; padding-bottom: 10px;">Панель управления 🛠️</h2>
+    
+    <div class="admin-section-nav">
+        <button class="nav-tab-btn active-tab" data-target="section-products">💎 Витрина</button>
+        <button class="nav-tab-btn" data-target="section-shop-orders" id="tab-shop-orders-title">🛒 Заказы с витрины (0)</button>
+        <button class="nav-tab-btn" data-target="section-custom-orders" id="tab-custom-orders-title">📸 Индивидуальные по фото (0)</button>
     </div>
 
-    <footer class="vitrage-footer">
-        <div class="footer-container">
-            <div class="footer-brand">
-                <span class="footer-logo">Pracownia Szopa</span>
-                <p data-i18n="footer_brand_desc">Ręcznie robione słońcolapy i witraże z miłości do zwierząt. Każdy projekt to unikalna historia zamknięta w kolorowym szkle.</p>
-                <p data-i18n="footer_contact_me">Skontaktuj się ze mną</p>
-            </div>
-            <div class="footer-socials">
-                <h4>Kontakt & Social</h4>
-                <p><span>+48 505 318 916</span></p>
-                <p><span>o.lavryshcheva@gmail.com</span></p>
-                <div class="social-icons-div">
-                    <div class="social-icons"><a href="https://www.instagram.com/pracownia.szopa.witraze/?hl=uk" target="_blank">IG</a></div>
-                    <div class="social-icons-long"><a href="mailto:o.lavryshcheva@gmail.com">MAIL</a></div>
+    <div id="section-products" class="admin-panel-section active-section">
+        <div class="form-group-box">
+            <h3>Добавить новый витраж</h3>
+            <input type="text" id="admin-title" placeholder="Название витража">
+            <textarea id="admin-desc" rows="3" placeholder="Описание товара..."></textarea>
+            <input type="text" id="admin-price" placeholder="Цена">
+            
+            <div class="file-input-wrapper">
+                <label for="admin-file" class="file-label">📸 Выбрать фото на телефоне</label>
+                <input type="file" id="admin-file" accept="image/*">
+                <span id="file-name-status" class="file-status">Файл не выбран</span>
+                
+                <div id="upload-preview-container" style="display: none; text-align: center; margin-top: 12px;">
+                    <img id="upload-preview-img" src="" style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #13110F; border-radius: 12px; box-shadow: 3px 3px 0 #13110F;">
                 </div>
             </div>
+
+            <button id="add-product-btn" class="save-btn">Опубликовать товар</button>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Pracownia Szopa. <span data-i18n="footer_rights">Wszystkie prawa zastrzeżone.</span></p>
+
+        <h3>Все товары на сайте</h3>
+        <div id="admin-list-container"></div>
+    </div>
+
+    <div id="section-shop-orders" class="admin-panel-section">
+        <div class="archive-toggle-nav">
+            <button class="archive-btn active-subview" id="subview-shop-active">Активные заявки</button>
+            <button class="archive-btn" id="subview-shop-archived">Архив заказов</button>
         </div>
-    </footer>
+        <div id="shop-orders-container"></div>
+    </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <div id="section-custom-orders" class="admin-panel-section">
+        <div class="archive-toggle-nav">
+            <button class="archive-btn active-subview" id="subview-custom-active">Активные заявки</button>
+            <button class="archive-btn" id="subview-custom-archived">Архив заказов</button>
+        </div>
+        <div id="custom-orders-container"></div>
+    </div>
+</div>
 
-        const translations = {
-            pl: {
-                nav_about: "O nas", nav_production: "Sklep", nav_contact: "Kontakt", nav_blog: "Blog",
-                btn_order: "zamów", hero_desc: "Unikalne witraże szklane tworzone z pasją", btn_more: "Dalej",
-                timeline_title: "Dla kogo tworzę magię w szkle?",
-                timeline_intro: "Tworzę witraże w tradycyjnej technice Tiffany, które stanowią wyjątkową dekorację dla Twojego domu lub przestrzeni biznesowej. Każdy projekt powstaje z dbałością o detale i indywidualny charakter, łącząc rzemiosło artystyczne z ponadczasową elegancją.",
-                block1_title: "Dla miłośników zwierząt", block1_desc: "Twój pupil uwieczniony w kolorowym szkle. To nie jest zwykła ozdoba, to kawałek Twojej duszy na oknie.",
-                block2_title: "Na wyjątkowy prezent", block2_desc: "Małe przypomnienie o wielkiej miłości. Idealny, osobisty i wzruszający prezent dla kogoś bliskiego, kto kocha zwierzęta.",
-                block3_title: "Piękna pamiątka na lata", block3_desc: "Dla tych, którzy chcą zachować wspomnienie ukochanego zwierzaka. Dla tych, którzy tęsknią i chcą mieć blisko to, co było najważniejsze.",
-                outro_text: "Suncatchery witrażowe w stylu Tiffany (Łapacze słońca) to dekoracyjne zawieszki ze szkła, które łapią światło słoneczne i tworzą w domu piękne refleksy i kolory. Każdy suncatcher wykonany jest ręcznie, łącząc kawałki szkła taśmą miedzianą i cyną, co daje unikalne wzory. Idealne na okna, do wnętrz lub jako wyjątkowy prezent — lekkie, kolorowe i magiczne! ✨",
-                outro_quote: "Witraż zaczyna mówić – tylko wtedy, gdy spotka się ze światłem.",
-                shop_title: "Sklep z witrażami", shop_desc: "Wybierz gotowe dzieło od ręki lub zainspiruj się do stworzenia własnego zamówienia",
-                shop_ready_title: "Gotowe witraże ", shop_ready_subtitle: "(Dostępne od ręki)",
-                custom_title: "Jak zamówić witraż ze zdjęcia pupila? 🐾",
-                custom_desc: "Zamów swój własny witraż suncatcher z wizerunkiem swojego ukochanego zwierzaka! Każdy suncatcher jest wykonany ręcznie z dbałością o szczegóły, aby jak najlepiej oddać charakter Twojego pupila. Czas realizacji zamówienia wynosi około 7 dni. Idealny pomysł na prezent lub wyjątkową dekorację do Twojego domu.",
-                meta_size: "📐 Rozmiar:", meta_price: "💰 Cena:",
-                step1: "Wyślij zdjęcie swojego zwierzaka", step2: "Wybierz rozmiar i kolory tła", step3: "Na podstawie zdjęcia przygotuję indywidualny projekt do akceptacji ✏️",
-                step4: "Po akceptacji projektu obowiązuje przedpłata (to potwierdzenie zamówienia)", step5: "Po zaksięgowaniu wpłaty zaczynam tworzenie. Czas realizacji: do 4 dni roboczych ⌛",
-                step6_bold: "Wypełnij formularz", step6_text: "poniżej, a skontaktuję się z Tobą w celu ustalenia szczegółów!",
-                form_title: "Formularz zamówienia", label_name: "Twoje imię", label_email: "Adres e-mail", label_phone: "Numer telefonu",
-                label_contact_method: "Preferowany sposób kontaktu", option_select: "Wybierz opcję...", option_call: "Połączenie telefoniczne 📞",
-                label_details: "Rozmiar i kolory tła (lub Twoje pytania)", btn_add_photo: "📸 Dodaj zdjęcie pupila", photo_added_success: "✓ Zdjęcie zostało dodane!",
-                btn_submit_form: "Wyślij zgłoszenie", blog_title: "Proces tworzenia witrażu od kulis",
-                blog_desc: "Zobacz, jak surowy arkusz szkła zmienia się w unikalny suncatcher. Od precyzyjnego szkicowania, przez delikatne cięcie i owijanie taśmą miedzianą, aż po finalne lutowanie cyną w tradycyjnej technice Tiffany. Każdy szlif to krok w stronę sztuki, która ożywa dopiero wtedy, gdy spotka się ze światłem słońca. ✨",
-                blog_overlay: "Proces tworzenia 🛠️", footer_brand_desc: "Ręcznie robione słońcolapy i witraże z miłości do zwierząt. Każdy projekt to unikalna historia zamknięta w kolorowym szkle.",
-                footer_contact_me: "Skontaktuj się ze mną", footer_rights: "Wszystkie prawa zastrzeżone.",
-                modal_title: "Zamówienie gotowego witrażu 🐾", modal_chosen: "Wybrałeś:", modal_footer_note: "Skontaktuję się z tobą w celu potwierdzenia✨",
-                alert_shop_success: "Dziękujemy! Zgłoszenie zostało wysłane. Skontaktuję się z Tobą wkrótce! 🐾",
-                alert_custom_success: "Zgłoszenie zostało pomyślnie wysłane! ✨ Przyготовлю проект и свяжусь с Вами через выбранный способ коммуникации. 🐾",
-                alert_add_photo: "Proszę dodać zdjęcie pupila!", placeholder_details: "Opisz swoje życzenia dotyczące witrażu...", btn_buy_now: "Kup teraz", btn_sold_out: "Rezerwacja",
-                badge_available_f: "Dostępna", badge_available_m: "Dostępny", badge_unavailable: "Zarezerwowany", shop_empty: "Obecnie brak gotowych witraży. Skontaktuj się z nami! 🐾", loading: "Wysyłanie zgłoszenia... ⌛", btnstart: "Jak to robie"
-            },
-            ua: {
-                nav_about: "Про нас", nav_production: "Магазин", nav_contact: "Контакти", nav_blog: "Блог",
-                btn_order: "замовити", hero_desc: "Унікальні скляні вітражі, створені з пристрастю", btn_more: "Далі",
-                timeline_title: "Для кого я створюю магію в склі?",
-                timeline_intro: "Я створюю вітражі за традиційною технікою Тіффані, які стануть унікальною прикрасою для вашого дому чи бізнес-простору. Кожен проєкт створюється з увагою до деталей та індивідуального характеру, поєднуючи художню майстерність із позачасовою елегантністю.",
-                block1_title: "Для любителів тварин", block1_desc: "Ваш улюбленець, увічнений у кольоровому склі. Це не просто прикраса, це частинка вашої душі на вікні.",
-                block2_title: "На унікальний подарунок", block2_desc: "Маленьке нагадування про велике кохання. Ідеальний, особистий та зворушливий подарунок для когось близького, хто любить тварин.",
-                block3_title: "Красива пам'ять на роки", block3_desc: "Для тих, хто хоче зберегти пам'ять про улюбленого вихованця. Для тих, хто сумує і хоче мати поруч те, що було найважливішим.",
-                outro_text: "Вітражні санкетчери в стилі Тіффані (Ловці сонця) — це декоративні підвіски зі скла, які ловлять сонячне світло і створюють у домі красиві рефлекси та кольори. Кожен ловець сонця виготовляється вручну, поєднуючи шматочки скла мідною стрічкою та оловом. Ідеально для вікон, інтер'єру або як унікальний подарунок — легкі, кольорові та магічні! ✨",
-                outro_quote: "Вітраж починає говорити — тільки тоді, коли зустрічається зі світлом.",
-                shop_title: "Магазин вітражів", shop_desc: "Оберіть готову роботу прямо зараз або надихніться на створення власного замовлення",
-                shop_ready_title: "Готові вітражі", shop_ready_subtitle: "(В наявності)",
-                custom_title: "Як замовити вітраж по фото улюбленця? 🐾",
-                custom_desc: "Замовте свій власний вітраж-санкетчер із зображенням вашого улюбленого вихованця! Кожен виріб виготовляється вручну з увагою до деталей, щоб якнайкраще передати характер вашого улюбленця. Термін виконання замовлення становить близько 7 днів. Ідея для подарунка або унікального декору.",
-                meta_size: "📐 Розмір:", meta_price: "💰 Ціна:",
-                step1: "Надішліть фото вашої тварини", step2: "Оберіть розмір та кольори фону", step3: "На основі photo я підготую індивідуальний проєкт на затвердження ✏️",
-                step4: "Після затвердження проєкту діє передоплата (це підтвердження замовлення)", step5: "Після надходження оплати я починаю створення. Час виконання: до 4 робочих днів ⌛",
-                step6_bold: "Заповніть форму", step6_text: "нижче, і я зв'яжуся з вами для уточнення деталей!",
-                form_title: "Форма замовлення", label_name: "Ваше ім'я", label_email: "Email адреса", label_phone: "Номер телефону",
-                label_contact_method: "Бажаний спосіб зв'язку", option_select: "Оберіть варіант...", option_call: "Телефонний дзвінок 📞",
-                label_details: "Розмір та кольори фону (або ваші запитання)", btn_add_photo: "📸 Додати фото улюбленця", photo_added_success: "✓ Фото додано!",
-                btn_submit_form: "Надіслати заявку", blog_title: "Процес створення вітражу за лаштунками",
-                blog_desc: "Подивіться, як сирий аркуш скла перетворюється на унікальний ловець сонця. Від точного ескізу, делікатного різання та обгортання мідною стрічкою до фінального паяння оловом у традиційній техніці Тіффані. Кожен штрих — це крок до мистецтва, яке оживає, коли зустрічається з сонцем. ✨",
-                blog_overlay: "Процес створення 🛠️", footer_brand_desc: "Ловці сонця та вітражі ручної роботи з любові до тварин. Кожен проєкт — це унікальна історія, застигла в кольоровому склі.",
-                footer_contact_me: "Зв'яжіться зі мною", footer_rights: "Всі права захищені.",
-                modal_title: "Замовлення готового вітражу 🐾", modal_chosen: "Ви обрали:", modal_footer_note: "Я зв'яжуся з вами для підтвердження ✨",
-                alert_shop_success: "Дякуємо! Заявку надіслано. Я зв'яжуся з вами найближчим часом! 🐾",
-                alert_custom_success: "Заявку успішно надіслано! ✨ Я підготую проєкт і зв'яжуся з вами обраним способом. 🐾",
-                alert_add_photo: "Будь ласка, додайте фото улюбленця!", placeholder_details: "Опишіть ваші побажання щодо вітражу...", btn_buy_now: "Купити зараз", btn_sold_out: "Резервація",
-                badge_available_f: "Доступна", badge_available_m: "Доступний", badge_unavailable: "Зарезервовано", shop_empty: "Наразі немає готових вітражів. Зв'яжіться з нами! 🐾", loading: "Надсилання заявки... ⌛", btnstart: "Як я це роблю"
-            },
-            ru: {
-                nav_about: "О нас", nav_production: "Магазин", nav_contact: "Контакты", nav_blog: "Блог",
-                btn_order: "заказать", hero_desc: "Уникальные стеклянные витражи, созданные с страстью", btn_more: "Далее",
-                timeline_title: "Для кого я создаю магию в стекле?",
-                timeline_intro: "Я создаю витражи в традиционной технике Тиффани, которые станут уникальным украшением для вашего дома или бизнес-пространства. Каждый проект создается с вниманием к деталям и индивидуальному характеру, сочетая художественное мастерство с вневременной элегантностью.",
-                block1_title: "Для любителей животных", block1_desc: "Ваш питомец, запечатленный в цветном стекле. Это не просто украшение, это частичка вашей души на окне.",
-                block2_title: "На уникальный подарок", block2_desc: "Маленькое напоминание о большой любви. Идеальный, личный и трогательный подарок для кого-то близкого, кто любит животных.",
-                block3_title: "Красивая память на годы", block3_desc: "Для тех, кто хочет сохранить память о любимом питомце. Для тех, кто скучает и хочет иметь рядом то, что было самым важным.",
-                outro_text: "Витражные санкетчеры в стиле Тиффани (Ловцы солнца) — это декоративные подвески из стекла, которые ловят солнечный свет и создают в доме красивые рефлексы и цвета. Каждый ловець солнца изготавливается вручную, соединяя кусочки стекла медной лентой и оловом. Идеально для окон, интерьера или как уникальный подарок — легкие, цветные и магические! ✨",
-                outro_quote: "Витраж начинает говорить — только тогда, когда встречается со светом.",
-                shop_title: "Магазин витражей", shop_desc: "Выберите готовую работу прямо сейчас или вдохновитесь на создание собственного заказа",
-                shop_ready_title: "Готовые витражи", shop_ready_subtitle: "(В наличии)",
-                custom_title: "Как заказать витраж по фото питомца? 🐾",
-                custom_desc: "Закажите свой собственный витраж-санкетчер с изображением вашего любимого питомца! Каждое изделие изготавливается вручную с вниманием к деталям, чтобы лучше всего передать характер вашего любимца. Срок выполнения заказа составляет около 7 дней. Отличная идея для подарка или уникального декора.",
-                meta_size: "📐 Размер:", meta_price: "💰 Цена:",
-                step1: "Отправьте фото вашего животного", step2: "Выберите размер и цвета фона", step3: "На основе фото я подготовлю индивидуальный проект на утверждение ✏️",
-                step4: "Пока вы одобряете проект, действует предоплата (это подтверждение заказа)", step5: "После поступления оплаты я начинаю создание. Время выполнения: до 4 рабочих дней ⌛",
-                step6_bold: "Заполните форму", step6_text: "ниже, и я свяжусь с вами для уточнения деталей!",
-                form_title: "Форма заказа", label_name: "Ваше имя", label_email: "Email адрес", label_phone: "Номер телефона",
-                label_contact_method: "Предпочтительный способ связи", option_select: "Выберите вариант...", option_call: "Телефонный звонок 📞",
-                label_details: "Размер и цвета фона (или ваши вопросы)", btn_add_photo: "📸 Добавить фото питомца", photo_added_success: "✓ Фото добавлено!",
-                btn_submit_form: "Отправить заявку", blog_title: "Proces sоздания витража за кулисами",
-                blog_desc: "Посмотрите, как сырой лист стекла превращается в уникальный ловец солнца. От точного эскиза, деликатной резки и обертывания медной лентой до финальной пайки оловом в традиционной технике Тиффани. Каждый штрих — это шаг к искусству, которое оживает, когда встречается с солнцем. ✨",
-                blog_overlay: "Процесс создания 🛠️", footer_brand_desc: "Ловцы солнца и витражи ручной работы из любви к животным. Каждый проект — это уникальная история, застывшая в цветном стекле.",
-                footer_contact_me: "Свяжитесь со мной", footer_rights: "Все права защищены.",
-                modal_title: "Заказ готового витража 🐾", modal_chosen: "Вы выбрали:", modal_footer_note: "Я свяжусь с вами для подтверждения ✨",
-                alert_shop_success: "Спасибо! Заявка отправлена. Я свяжусь с вами в ближайшее время! 🐾",
-                alert_custom_success: "Заявка успешно отправлена! ✨ Я подготовлю проект и свяжусь с вами выбранным способом. 🐾",
-                alert_add_photo: "Пожалуйста, добавьте фото питомца!", placeholder_details: "Опишите ваши пожелания по витражу...", btn_buy_now: "Купить сейчас", btn_sold_out: "Резервация",
-                badge_available_f: "Доступна", badge_available_m: "Доступен", badge_unavailable: "Зарезервирован", shop_empty: "В настоящее время нет готовых витражей. Свяжитесь с нами! 🐾", loading: "Отправка заявки... ⌛", btnstart: "Как я это делаю"
+<div id="lightbox" class="lightbox-overlay">
+    <img id="lightbox-img" class="lightbox-img" src="" alt="Увеличение">
+    <a id="lightbox-download-btn" class="download-btn" href="" download="foto_pupila.jpg" target="_blank">💾 Скачать фотографию</a>
+</div>
+
+<div id="custom-confirm-modal" class="confirm-modal-overlay">
+    <div class="confirm-modal-box">
+        <h3>Подтверждение ⚠️</h3>
+        <p id="confirm-modal-text">Вы уверены, что хотите выполнить это действие?</p>
+        <div class="confirm-btns-row">
+            <button id="confirm-btn-yes" class="confirm-btn-yes">Да, удалить</button>
+            <button id="confirm-btn-no" class="confirm-btn-no">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="alert-toast"></div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update, push, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // Инициализация конфигураций систем данных
+    const IMGBB_API_KEY = "291d37bc47944d33b00530f6fa7d93f4";
+    const firebaseConfig = {
+        apiKey: "AIzaSyDa6zMGsTQaS1_Bm2dC-5aw5yfQ6cyDSBw",
+        authDomain: "pracownia-szopa.firebaseapp.com",
+        projectId: "pracownia-szopa",
+        storageBucket: "pracownia-szopa.firebasestorage.app",
+        messagingSenderId: "288892800012",
+        appId: "1:288892800012:web:006d0e10d7fdb734153229",
+        measurementId: "G-MD9KVDR50N",
+        databaseURL: "https://pracownia-szopa-default-rtdb.europe-west1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Ссылки на ветки Базы Данных Firebase
+    const productsRef = ref(db, 'products');
+    const shopOrdersRef = ref(db, 'shop_orders');
+    const customOrdersRef = ref(db, 'custom_orders');
+    const archivedShopOrdersRef = ref(db, 'archived_shop_orders');
+    const archivedCustomOrdersRef = ref(db, 'archived_custom_orders');
+
+    // Состояния интерфейса подвкладок архивов
+    let currentShopSubview = 'active'; // 'active' или 'archived'
+    let currentCustomSubview = 'active'; // 'active' или 'archived'
+    let editingProductId = null;
+    let globalProductsData = null;
+
+    // СИСТЕМНЫЙ ДВИЖОК ДЛЯ КАСТОМНОГО CONFIRM (Фикс для стабильной работы на iOS и Android)
+    let onConfirmSuccessCallback = null;
+
+    function openCustomConfirm(message, successCallback) {
+        const modal = document.getElementById('custom-confirm-modal');
+        const textElem = document.getElementById('confirm-modal-text');
+        if (!modal || !textElem) return;
+
+        textElem.innerText = message;
+        onConfirmSuccessCallback = successCallback;
+        
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+    }
+
+    function closeCustomConfirm() {
+        const modal = document.getElementById('custom-confirm-modal');
+        if (!modal) return;
+        modal.classList.remove('active');
+        setTimeout(() => { modal.style.display = 'none'; }, 200);
+        onConfirmSuccessCallback = null;
+    }
+
+    document.getElementById('confirm-btn-yes').addEventListener('click', () => {
+        if (typeof onConfirmSuccessCallback === 'function') onConfirmSuccessCallback();
+        closeCustomConfirm();
+    });
+
+    document.getElementById('confirm-btn-no').addEventListener('click', closeCustomConfirm);
+
+    // ==========================================
+    // СЕКЦИЯ: ВСПОМОГАТЕЛЬНЫЙ ИНТЕРФЕЙС (УВЕДОМЛЕНИЯ / МОДАЛКИ)
+    // ==========================================
+    function showToast(text) {
+        const toast = document.getElementById('toast');
+        if (toast) {
+            toast.innerText = text;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+    }
+
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const dlBtn = document.getElementById('lightbox-download-btn');
+    
+    window.openLightbox = function(url) {
+        if (!lightbox || !lightboxImg || !dlBtn) return;
+        lightboxImg.src = url;
+        lightbox.style.display = 'flex';
+        setTimeout(() => lightbox.classList.add('active'), 10);
+
+        dlBtn.onclick = async (e) => {
+            e.preventDefault();
+            const originalText = dlBtn.innerText;
+            dlBtn.innerText = "⏳ Скачивание...";
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const tempLink = document.createElement('a');
+                tempLink.href = blobUrl;
+                tempLink.download = `foto_pupila_${Date.now()}.jpg`;
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+                URL.revokeObjectURL(blobUrl);
+            } catch (err) {
+                window.open(url, '_blank');
+            } finally {
+                dlBtn.innerText = originalText;
             }
         };
+    };
 
-        let currentLang = localStorage.getItem('selectedLang') || 'pl';
-        let latestProductsData = null;
-
-        // СИСТЕМНЫЙ ТОСТЕР ВМЕСТО АЛЕРТОВ (Фикс для стабильной работы на мобилках)
-        function showCraftToast(text) {
-            const toast = document.getElementById('craft-toast-notification');
-            if (toast) {
-                toast.innerHTML = text;
-                toast.classList.add('show-toast');
-                setTimeout(() => { toast.classList.remove('show-toast'); }, 4000);
+    if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox || e.target === lightboxImg) {
+                lightbox.classList.remove('active');
+                setTimeout(() => { lightbox.style.display = 'none'; }, 200);
             }
-        }
-
-        function changeLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('selectedLang', lang);
-
-            document.querySelectorAll('.lang p').forEach(p => {
-                if (p.getAttribute('data-lang') === lang) p.classList.add('active-lang');
-                else p.classList.remove('active-lang');
-            });
-
-            document.querySelectorAll('[data-i18n]').forEach(elem => {
-                const key = elem.getAttribute('data-i18n');
-                if (translations[lang][key]) elem.innerHTML = translations[lang][key];
-            });
-
-            const petTypeInput = document.getElementById('petType');
-            if (petTypeInput) petTypeInput.placeholder = translations[lang].placeholder_details;
-
-            if (latestProductsData) renderProducts(latestProductsData);
-        }
-
-        document.querySelectorAll('.lang p').forEach(p => {
-            p.addEventListener('click', () => changeLanguage(p.getAttribute('data-lang')));
         });
+    }
 
-        // Конфигурация ядра Firebase
-        const IMGBB_API_KEY = "291d37bc47944d33b00530f6fa7d93f4";
-        const firebaseConfig = {
-            apiKey: "AIzaSyDa6zMGsTQaS1_Bm2dC-5aw5yfQ6cyDSBw",
-            authDomain: "pracownia-szopa.firebaseapp.com",
-            projectId: "pracownia-szopa",
-            storageBucket: "pracownia-szopa.firebasestorage.app",
-            messagingSenderId: "288892800012",
-            appId: "1:288892800012:web:006d0e10d7fdb734153229",
-            measurementId: "G-MD9KVDR50N",
-            databaseURL: "https://pracownia-szopa-default-rtdb.europe-west1.firebasedatabase.app"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const productsRef = ref(db, 'products');
-        const shopContainer = document.getElementById('main-shop-container');
-        const modal = document.getElementById('order-modal');
-
-        function renderProducts(data) {
-            if (!shopContainer) return;
-            shopContainer.innerHTML = '';
-
-            if (!data) {
-                shopContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; font-family: sans-serif; padding: 20px;">${translations[currentLang].shop_empty}</p>`;
-                return;
-            }
-
-            for (let id in data) {
-                const item = data[id];
-                const isWazkaOrPszczola = item.title && (item.title.toLowerCase().includes('ważka') || item.title.toLowerCase().includes('pszczółka') || item.title.toLowerCase().includes('бджілка') || item.title.toLowerCase().includes('пчелка'));
-
-                let badgeText = item.available
-                    ? (isWazkaOrPszczola ? translations[currentLang].badge_available_f : translations[currentLang].badge_available_m)
-                    : translations[currentLang].badge_unavailable;
-                let badgeClass = item.available ? 'badge-ready' : 'badge-no';
-
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <div class="product-img-box">
-                        <img src="${item.img || 'pics/icon.png'}" alt="Witraż ${item.title || 'Pracownia Szopa'}">
-                        <span class="product-badge ${badgeClass}">${badgeText}</span>
-                    </div>
-                    <div class="product-info">
-                        <h3>Witraż "${item.title || 'Bez nazwy'}"</h3>
-                        <p class="product-desc">${item.desc || ''}</p>
-                        <div class="product-footer">
-                            <span class="product-price">${item.price || 0} PLN</span>
-                        </div>
-                    </div>
-                `;
-
-                const buyBtn = document.createElement('button');
-                if (item.available) {
-                    buyBtn.className = 'product-btn';
-                    buyBtn.innerText = translations[currentLang].btn_buy_now;
-                    buyBtn.addEventListener('click', () => {
-                        if (modal) {
-                            document.getElementById('modal-product-title').innerText = item.title;
-                            document.getElementById('modal-hidden-title').value = item.title;
-                            modal.style.display = 'flex';
-                        }
-                    });
-                } else {
-                    buyBtn.className = 'product-btn btn-sold-out';
-                    buyBtn.innerText = translations[currentLang].btn_sold_out;
-                    buyBtn.disabled = true;
-                }
-
-                card.querySelector('.product-footer').appendChild(buyBtn);
-                shopContainer.appendChild(card);
-            }
-        }
-
-        if (shopContainer) {
-            onValue(productsRef, (snapshot) => {
-                latestProductsData = snapshot.val();
-                renderProducts(latestProductsData);
-            });
-        }
-
-        changeLanguage(currentLang);
-
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', () => { if (modal) modal.style.display = 'none'; });
-        }
-        window.addEventListener('click', (e) => { if (modal && e.target === modal) modal.style.display = 'none'; });
-
-        // Отправка лид-формы на покупку готового витража
-        window.handleShopOrderSubmit = function (event) {
-            event.preventDefault();
-            const productTitle = document.getElementById('modal-hidden-title').value;
-            const name = document.getElementById('shopClientName').value.trim();
-            const email = document.getElementById('shopClientEmail').value.trim();
-            const phone = document.getElementById('shopClientPhone').value.trim();
-
-            push(ref(db, 'shop_orders'), {
-                product: productTitle,
-                client_name: name,
-                client_email: email,
-                client_phone: phone,
-                date: new Date().toLocaleString()
-            }).then(() => {
-                showCraftToast(translations[currentLang].alert_shop_success);
-                if (modal) modal.style.display = 'none';
-                document.getElementById('shopOrderForm').reset();
-            }).catch(err => showCraftToast('Błąd: ' + err.message));
-        };
-
-        // Пасхалка-кликер для перехода в панель администратора (5 кликов по логотипу + плавный скролл)
-        let clickCount = 0;
-        let clickTimer = null;
-        document.querySelectorAll('header .icon a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                clickCount++;
-                clearTimeout(clickTimer);
-                if (clickCount === 5) {
-                    clickCount = 0;
-                    window.location.href = 'admin.html';
-                } else {
-                    clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
-                }
-            });
+    // ==========================================
+    // СЕКЦИЯ: АВТОРИЗАЦИЯ И НАВИГАЦИЯ ВЫБОРА РАЗДЕЛОВ
+    // ==========================================
+    const tabs = document.querySelectorAll('.nav-tab-btn');
+    const sections = document.querySelectorAll('.admin-panel-section');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active-tab'));
+            sections.forEach(s => s.classList.remove('active-section'));
+            tab.classList.add('active-tab');
+            document.getElementById(tab.dataset.target).classList.add('active-section');
         });
+    });
 
-        // Обработка превью картинки индивидуального заказа
-        const petFileInput = document.getElementById('petPhoto');
-        const petPreviewBox = document.getElementById('pet-preview-box');
-        const petPreviewImg = document.getElementById('pet-preview-img');
+    const SECRET_PASSWORD = "Szopa2026";
+    const loginScreen = document.getElementById('login-screen');
+    const adminScreen = document.getElementById('admin-screen');
+    const passInput = document.getElementById('login-pass');
 
-        if (petFileInput && petPreviewBox && petPreviewImg) {
-            petFileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        petPreviewImg.src = event.target.result;
-                        petPreviewBox.style.display = 'flex';
-                    };
-                    reader.readAsDataURL(file);
+    function handleLogin() {
+        if (passInput.value === SECRET_PASSWORD) {
+            loginScreen.style.display = 'none';
+            document.body.style.alignItems = 'flex-start';
+            adminScreen.style.display = 'block';
+            showToast("Успешная авторизация! 🐾");
+        } else {
+            showToast("Неверный пароль!");
+            passInput.value = '';
+            passInput.focus();
+        }
+    }
+
+    if (document.getElementById('login-submit-btn')) {
+        document.getElementById('login-submit-btn').addEventListener('click', handleLogin);
+    }
+    if (passInput) {
+        passInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+    }
+
+    // Навигация внутренних подвкладок Архива
+    document.getElementById('subview-shop-active').addEventListener('click', () => toggleShopSubview('active'));
+    document.getElementById('subview-shop-archived').addEventListener('click', () => toggleShopSubview('archived'));
+    document.getElementById('subview-custom-active').addEventListener('click', () => toggleCustomSubview('active'));
+    document.getElementById('subview-custom-archived').addEventListener('click', () => toggleCustomSubview('archived'));
+
+    function toggleShopSubview(view) {
+        currentShopSubview = view;
+        document.getElementById('subview-shop-active').classList.toggle('active-subview', view === 'active');
+        document.getElementById('subview-shop-archived').classList.toggle('active-subview', view === 'archived');
+        syncOrdersData();
+    }
+
+    function toggleCustomSubview(view) {
+        currentCustomSubview = view;
+        document.getElementById('subview-custom-active').classList.toggle('active-subview', view === 'active');
+        document.getElementById('subview-custom-archived').classList.toggle('active-subview', view === 'archived');
+        syncOrdersData();
+    }
+
+    // ==========================================
+    // СЕКЦИЯ: ЛОГГЕР ЗАГРУЗКИ И ПРЕДПРОСМОТРА КАРТИНКИ ТОВАРА
+    // ==========================================
+    const fileInput = document.getElementById('admin-file');
+    const fileStatus = document.getElementById('file-name-status');
+    const previewContainer = document.getElementById('upload-preview-container');
+    const previewImg = document.getElementById('upload-preview-img');
+
+    if (fileInput && fileStatus) {
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileStatus.innerText = "📁 " + file.name;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImg.src = event.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileStatus.innerText = "Файл не выбран";
+                previewContainer.style.display = 'none';
+                previewImg.src = '';
+            }
+        });
+    }
+
+    // ==========================================
+    // СЕКЦИЯ: РЕНДЕРИНГ И УПРАВЛЕНИЕ ТОВАРАМИ ВИТРИНЫ
+    // ==========================================
+    function renderProductsList(data) {
+        const adminContainer = document.getElementById('admin-list-container');
+        if (!adminContainer) return;
+        adminContainer.innerHTML = '';
+
+        if (!data) {
+            adminContainer.innerHTML = '<p style="opacity:0.6; padding:10px;">Товары отсутствуют.</p>';
+            return;
+        }
+
+        for (let id in data) {
+            const item = data[id];
+            if(id === '_trigger') continue;
+            
+            const isWazkaOrPszczola = item.title && (item.title.toLowerCase().includes('ważka') || item.title.toLowerCase().includes('pszczółka'));
+            let statusText = item.available ? (isWazkaOrPszczola ? 'Доступна' : 'Доступен') : 'Резервация';
+            
+            const itemRow = document.createElement('div');
+            itemRow.className = 'admin-product-item';
+            const isEditing = editingProductId === id;
+
+            itemRow.innerHTML = `
+                <div class="prod-meta">
+                    <img src="${item.img || 'pics/icon.png'}" onerror="this.src='pics/icon.png'">
+                    <div>
+                        ${isEditing ? `
+                            <div class="edit-fields">
+                                <input type="text" id="edit-title-${id}" value="${item.title || ''}" placeholder="Название">
+                                <textarea id="edit-desc-${id}" rows="2" placeholder="Описание">${item.desc || ''}</textarea>
+                                <input type="text" id="edit-price-${id}" value="${item.price || ''}" placeholder="Цена">
+                            </div>
+                        ` : `
+                            <h4>Witraz "${item.title || 'Без названия'}"</h4>
+                            <p style="font-family:sans-serif; font-size:13px; color:#555; margin:4px 0;">${item.desc || 'Bez opisu.'}</p>
+                            <p>${item.price || 0} PLN</p>
+                        `}
+                    </div>
+                </div>
+                <div class="prod-actions">
+                    <button class="status-btn ${item.available ? 'btn-active' : 'btn-inactive'}" id="status-btn-${id}">${statusText}</button>
+                    <button class="edit-btn ${isEditing ? 'btn-save-mode' : 'btn-edit-mode'}" id="edit-btn-${id}">
+                        ${isEditing ? '💾 Сохранить' : '✏️ Редактировать'}
+                    </button>
+                    <button class="delete-btn" id="delete-btn-${id}">🗑️ Удалить</button>
+                </div>
+            `;
+            adminContainer.appendChild(itemRow);
+
+            document.getElementById(`status-btn-${id}`).addEventListener('click', () => {
+                update(ref(db, `products/${id}`), { available: !item.available });
+                showToast("Статус товара изменен!");
+            });
+
+            document.getElementById(`delete-btn-${id}`).addEventListener('click', () => {
+                openCustomConfirm(`Вы уверены, что хотите навсегда удалить витраж "${item.title || 'Без названия'}"?`, () => {
+                    remove(ref(db, `products/${id}`)).then(() => showToast("Товар успешно удален!"));
+                });
+            });
+
+            document.getElementById(`edit-btn-${id}`).addEventListener('click', () => {
+                if (isEditing) {
+                    const updatedTitle = document.getElementById(`edit-title-${id}`).value.trim();
+                    const updatedDesc = document.getElementById(`edit-desc-${id}`).value.trim();
+                    const updatedPrice = document.getElementById(`edit-price-${id}`).value.trim();
+                    if (!updatedTitle || !updatedPrice) {
+                        showToast("Название и цена не могут быть пустыми!");
+                        return;
+                    }
+                    editingProductId = null; 
+                    update(ref(db, `products/${id}`), {
+                        title: updatedTitle,
+                        desc: updatedDesc || "Ręcznie robiony witraż.",
+                        price: updatedPrice
+                    }).then(() => showToast("Товар успешно обновлен!"));
                 } else {
-                    petPreviewBox.style.display = 'none';
+                    editingProductId = id;
+                    renderProductsList(globalProductsData); 
                 }
             });
         }
+    }
 
-        // Отправка индивидуального заказа по фото с фиксом для стабильной работы на iOS и Android
-        window.handleFormSubmit = async function (event) {
-            event.preventDefault();
-            const submitBtn = event.target.querySelector('.form-submit-btn');
-            const name = document.getElementById('clientName').value.trim();
-            const email = document.getElementById('clientEmail').value.trim();
-            const phone = document.getElementById('clientPhone').value.trim();
-            const contactMethod = document.getElementById('contactMethod').value;
-            const details = document.getElementById('petType').value.trim();
-            const file = petFileInput.files[0];
+    onValue(productsRef, (snapshot) => {
+        globalProductsData = snapshot.val();
+        renderProductsList(globalProductsData);
+    });
 
-            if (!file) {
-                showCraftToast(translations[currentLang].alert_add_photo);
+    // Опубликовать новый товар на ImgBB + Firebase
+    const addProductBtn = document.getElementById('add-product-btn');
+    if (addProductBtn) {
+        addProductBtn.addEventListener('click', async () => {
+            const title = document.getElementById('admin-title').value.trim();
+            const desc = document.getElementById('admin-desc').value.trim();
+            const price = document.getElementById('admin-price').value.trim();
+            const file = fileInput ? fileInput.files[0] : null;
+
+            if (!title || !price || !file) {
+                showToast('Заполните поля и выберите фото!');
                 return;
             }
 
             try {
-                submitBtn.disabled = true;
-                submitBtn.innerText = translations[currentLang].loading;
-
+                addProductBtn.disabled = true;
+                addProductBtn.innerText = "Загрузка...";
                 const formData = new FormData();
                 formData.append("image", file);
 
                 const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
                 const result = await response.json();
-                if (!result.success) throw new Error("Błąd ImgBB");
+                if (!result.success) throw new Error("Ошибка ImgBB");
 
-                await push(ref(db, 'custom_orders'), {
-                    client_name: name,
-                    client_email: email,
-                    client_phone: phone,
-                    contact_method: contactMethod,
-                    wishes_and_details: details,
-                    pet_photo_url: result.data.url,
-                    date: new Date().toLocaleString()
+                push(productsRef, {
+                    title: title,
+                    desc: desc || "Ręcznie robiony witraż.",
+                    price: price,
+                    img: result.data.url,
+                    available: true
+                }).then(() => {
+                    document.getElementById('admin-title').value = '';
+                    document.getElementById('admin-desc').value = '';
+                    document.getElementById('admin-price').value = '';
+                    if (fileInput) fileInput.value = '';
+                    if (fileStatus) fileStatus.innerText = "Файл не выбран";
+                    if (previewContainer) previewContainer.style.display = 'none';
+                    if (previewImg) previewImg.src = '';
+                    showToast('Товар успешно добавлен на сайт! ✨');
                 });
-
-                showCraftToast(translations[currentLang].alert_custom_success);
-                document.getElementById('pupilOrderForm').reset();
-                if (petPreviewBox) petPreviewBox.style.display = 'none';
             } catch (err) {
-                showCraftToast('Wystąpił błąd: ' + err.message);
+                showToast('Ошибка: ' + err.message);
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = translations[currentLang].btn_submit_form;
+                addProductBtn.disabled = false;
+                addProductBtn.innerText = "Опубликовать товар";
             }
-        };
+        });
+    }
 
-        // Валидационная маска номера телефона (+48)
-        const maskPhoneInput = (inputElement) => {
-            inputElement.addEventListener('input', (e) => {
-                let digits = e.target.value.replace(/\D/g, "");
-                if (digits.length === 0) { e.target.value = "+48 "; return; }
-                if (digits.startsWith("48") && digits.length > 2) digits = digits.substring(2);
-                else if (digits.startsWith("48") && digits.length <= 2) digits = "";
-                
-                let formatted = "+48 ";
-                if (digits.length > 0) formatted += digits.substring(0, 3);
-                if (digits.length >= 4) formatted += "-" + digits.substring(3, 6);
-                if (digits.length >= 7) formatted += "-" + digits.substring(6, 9);
-                e.target.value = formatted;
-            });
-            inputElement.addEventListener('focus', (e) => {
-                if (e.target.value.trim() === "" || e.target.value === "+48") e.target.value = "+48 ";
-            });
-            inputElement.addEventListener('blur', (e) => {
-                if (e.target.value.trim() === "+48") e.target.value = "";
-            });
-        };
+    // ==========================================
+    // СЕКЦИЯ: ОДНОВРЕМЕННАЯ СИНХРОНИЗАЦИЯ И СБОР ДАННЫХ ЗАКАЗОВ
+    // ==========================================
+    let cachedActiveShop = {}, cachedArchivedShop = {};
+    let cachedActiveCustom = {}, cachedArchivedCustom = {};
 
-        const phoneInput1 = document.getElementById('clientPhone');
-        const phoneInput2 = document.getElementById('shopClientPhone');
-        if (phoneInput1) maskPhoneInput(phoneInput1);
-        if (phoneInput2) maskPhoneInput(phoneInput2);
-    </script>
+    function syncOrdersData() {
+        // Отрисовка витринных заказов
+        const shopContainer = document.getElementById('shop-orders-container');
+        const activeShopCount = Object.keys(cachedActiveShop || {}).length;
+        document.getElementById('tab-shop-orders-title').innerText = `🛒 Заказы с витрины (${activeShopCount})`;
+        
+        if (shopContainer) {
+            shopContainer.innerHTML = '';
+            const targetData = (currentShopSubview === 'active') ? cachedActiveShop : cachedArchivedShop;
+            if (!targetData || Object.keys(targetData).length === 0) {
+                shopContainer.innerHTML = `<p style="opacity:0.6; padding:15px; font-family:sans-serif;">${currentShopSubview === 'active' ? 'Новых заявок со склада нет.' : 'Архив пуст.'}</p>`;
+            } else {
+                Object.entries(targetData).reverse().forEach(([id, order]) => {
+                    let productImgHtml = '';
+                    if (globalProductsData) {
+                        for (let pId in globalProductsData) {
+                            if (globalProductsData[pId].title === order.product && globalProductsData[pId].img) {
+                                productImgHtml = `
+                                    <div class="order-pet-thumb-wrapper" onclick="openLightbox('${globalProductsData[pId].img}')">
+                                        <img class="order-pet-thumb" src="${globalProductsData[pId].img}" alt="Витраж">
+                                    </div>
+                                `;
+                                break;
+                            }
+                        }
+                    }
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="order-with-img">
+                            <div style="flex: 1;">
+                                <h4>Витраж: "${order.product || 'Nieznany'}"</h4>
+                                <div class="order-info-row"><strong>Клиент:</strong> ${order.client_name || ''}</div>
+                                <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
+                                <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
+                            </div>
+                            ${productImgHtml}
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items: flex-end; margin-top:15px;">
+                            <div class="order-date-container" style="border:none; padding:0; margin:0;">📅 Оформлен: ${order.date || ''}</div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="archive-action-btn" id="archive-shop-btn-${id}">${currentShopSubview === 'active' ? '📦 В архив' : '🔄 Вернуть'}</button>
+                                <button class="delete-btn" style="padding:8px 14px; font-size:13px;" id="delete-shop-btn-${id}">🗑️ Удалить</button>
+                            </div>
+                        </div>
+                    `;
+                    shopContainer.appendChild(card);
+
+                    document.getElementById(`archive-shop-btn-${id}`).addEventListener('click', () => {
+                        if (currentShopSubview === 'active') {
+                            set(ref(db, `archived_shop_orders/${id}`), order)
+                                .then(() => remove(ref(db, `shop_orders/${id}`)))
+                                .then(() => showToast("Заказ перенесен в архив."));
+                        } else {
+                            set(ref(db, `shop_orders/${id}`), order)
+                                .then(() => remove(ref(db, `archived_shop_orders/${id}`)))
+                                .then(() => showToast("Заказ восстановлен в активные."));
+                        }
+                    });
+
+                    document.getElementById(`delete-shop-btn-${id}`).addEventListener('click', () => {
+                        openCustomConfirm("Удалить этот заказ навсегда без возможности восстановления?", () => {
+                            const path = (currentShopSubview === 'active') ? `shop_orders/${id}` : `archived_shop_orders/${id}`;
+                            remove(ref(db, path)).then(() => showToast("Заказ полностью удален."));
+                        });
+                    });
+                });
+            }
+        }
+
+        // Отрисовка индивидуальных заказов
+        const customContainer = document.getElementById('custom-orders-container');
+        const activeCustomCount = Object.keys(cachedActiveCustom || {}).length;
+        document.getElementById('tab-custom-orders-title').innerText = `📸 Индивидуальные по фото (${activeCustomCount})`;
+
+        if (customContainer) {
+            customContainer.innerHTML = '';
+            const targetData = (currentCustomSubview === 'active') ? cachedActiveCustom : cachedArchivedCustom;
+            if (!targetData || Object.keys(targetData).length === 0) {
+                customContainer.innerHTML = `<p style="opacity:0.6; padding:15px; font-family:sans-serif;">${currentCustomSubview === 'active' ? 'Новых заявок по фотографии нет.' : 'Архив пуст.'}</p>`;
+            } else {
+                Object.entries(targetData).reverse().forEach(([id, order]) => {
+                    let methodLabels = { telegram: 'Telegram ✈️', whatsapp: 'WhatsApp 💬', sms: 'SMS 📱', call: 'Звонок 📞', email: 'E-mail ✉️' };
+                    let contactMethodTxt = methodLabels[order.contact_method] || order.contact_method;
+
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="order-with-img">
+                            <div style="flex: 1;">
+                                <h4 style="color: #258495;">Заявка от: ${order.client_name || ''}</h4>
+                                <div class="order-info-row"><strong>Способ связи:</strong> <span class="badge-method">${contactMethodTxt}</span></div>
+                                <div class="order-info-row"><strong>Телефон:</strong> <a href="tel:${order.client_phone}">${order.client_phone || ''}</a></div>
+                                <div class="order-info-row"><strong>E-mail:</strong> <a href="mailto:${order.client_email}">${order.client_email || ''}</a></div>
+                                <div class="details-box">
+                                    <strong>Пожелания / Детали заказа:</strong><br>${order.wishes_and_details || 'Дополнительных пожеланий нет.'}
+                                </div>
+                            </div>
+                            ${order.pet_photo_url ? `
+                                <div class="order-pet-thumb-wrapper" onclick="openLightbox('${order.pet_photo_url}')">
+                                    <img class="order-pet-thumb" src="${order.pet_photo_url}" alt="Фото питомца">
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items: flex-end; margin-top:15px;">
+                            <div class="order-date-container" style="border:none; padding:0; margin:0;">📅 Отправлена: ${order.date || ''}</div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="archive-action-btn" id="archive-custom-btn-${id}">${currentCustomSubview === 'active' ? '📦 В архив' : '🔄 Вернуть'}</button>
+                                <button class="delete-btn" style="padding:8px 14px; font-size:13px;" id="delete-custom-btn-${id}">🗑️ Удалить</button>
+                            </div>
+                        </div>
+                    `;
+                    customContainer.appendChild(card);
+
+                    document.getElementById(`archive-custom-btn-${id}`).addEventListener('click', () => {
+                        if (currentCustomSubview === 'active') {
+                            set(ref(db, `archived_custom_orders/${id}`), order)
+                                .then(() => remove(ref(db, `custom_orders/${id}`)))
+                                .then(() => showToast("Заявка перенесена в архив."));
+                        } else {
+                            set(ref(db, `custom_orders/${id}`), order)
+                                .then(() => remove(ref(db, `archived_custom_orders/${id}`)))
+                                .then(() => showToast("Заявка восстановлена в активные."));
+                        }
+                    });
+
+                    document.getElementById(`delete-custom-btn-${id}`).addEventListener('click', () => {
+                        openCustomConfirm("Удалить эту заявку навсегда без возможности восстановления?", () => {
+                            const path = (currentCustomSubview === 'active') ? `custom_orders/${id}` : `archived_custom_orders/${id}`;
+                            remove(ref(db, path)).then(() => showToast("Заявка полностью удалена."));
+                        });
+                    });
+                });
+            }
+        }
+    }
+
+    // Слушатели изменений во всех 4 ветках заявок базы данных
+    onValue(shopOrdersRef, (s) => { cachedActiveShop = s.val() || {}; syncOrdersData(); });
+    onValue(archivedShopOrdersRef, (s) => { cachedArchivedShop = s.val() || {}; syncOrdersData(); });
+    onValue(customOrdersRef, (s) => { cachedActiveCustom = s.val() || {}; syncOrdersData(); });
+    onValue(archivedCustomOrdersRef, (s) => { cachedArchivedCustom = s.val() || {}; syncOrdersData(); });
+</script>
 </body>
-</html>.mosaic-overlay { position: absolute; bottom: 40px; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; width: 100%; padding: 0 20px; pointer-events: none; }
-.mosaic-overlay h1 { font-size: 42px; color: #EDD7A3; text-shadow: 0 4px 8px rgba(19, 17, 15, 0.6); text-transform: uppercase; letter-spacing: 2px; }
-.mosaic-overlay p { font-size: 18px; color: #EDD7A3; text-shadow: 0 2px 4px rgba(19, 17, 15, 0.6); font-weight: 500; margin: 0; }
-.mosaic-btn { pointer-events: auto; background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 12px 32px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 16px; box-shadow: 0 4px 0 #13110F; transition: all 0.1s ease; margin-top: 5px; }
-.mosaic-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #13110F; }
-
-@keyframes spinGlass { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes floatBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-/* ======================================================= */
-/* СЕКЦИЯ 4: ИНТЕРАКТИВНЫЙ ШОУРУМ МАСТЕРСКОЙ */
-/* ======================================================= */
-.tworze-showroom-section { width: 100%; background-color: #F7E7C4; padding: 60px 0; box-sizing: border-box; overflow: hidden; }
-.showroom-container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 60px; box-sizing: border-box; }
-.showroom-gallery-grid { width: 45%; flex: 0 0 45%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-.showroom-gallery-grid .gallery-photo-item { border: 3px solid #13110F; border-radius: 16px; overflow: hidden; height: 180px; box-shadow: 5px 5px 0 #13110F; background-color: #FFF; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.showroom-gallery-grid .gallery-photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.showroom-content-side { width: 55%; flex: 0 0 55%; display: flex; flex-direction: column; gap: 30px; position: relative; }
-.showroom-content-side .showroom-bg-brand { position: absolute; top: -55px; left: -15px; font-family: 'Copse', Georgia, serif; font-size: 85px; font-weight: 900; line-height: 1.1; color: #C4411D; opacity: 0.15; text-transform: uppercase; white-space: nowrap; z-index: 1; pointer-events: none; max-width: 100%; }
-.showroom-content-side .showroom-manifest-text { margin: 0; font-family: 'Copse', Georgia, serif; font-size: 20px; line-height: 1.6; color: #13110F; position: relative; z-index: 2; max-width: 100%; }
-.showroom-actions-wrapper { display: flex; position: relative; z-index: 2; }
-.btn-orange-header { display: inline-flex; align-items: center; justify-content: center; padding: 15px 35px; font-size: 16px; font-weight: bold; text-decoration: none; background-color: #C4411D; color: #FDF9F2; border: 3px solid #13110F; border-radius: 12px; box-shadow: 4px 4px 0 #13110F; box-sizing: border-box; transition: transform 0.1s ease, box-shadow 0.1s ease; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
-.btn-orange-header:active { transform: translateY(2px); box-shadow: 2px 2px 0 #13110F; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 5: ЗИГЗАГ ДЛЯ ПК (STEPS DESKTOP) */
-/* ======================================================= */
-.vitrage-timeline { width: 100%; padding: 40px; background-color: #EDD7A3; display: flex; flex-direction: column; align-items: center; }
-.timeline-header { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 60px; }
-.timeline-header h2 { font-size: 42px; color: #13110F; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
-.timeline-header .timeline-paw { font-size: 40px; margin-top: 15px; animation: wigglePaw 3.5s ease-in-out infinite; }
-.paws-path { width: 100%; max-width: 500px; height: 70px; margin: 10px auto; position: relative; overflow: visible; }
-.paws-path img { width: 30px; }
-.paws-path div { font-size: 38px; opacity: 0; position: absolute; width: auto; height: auto; transform-origin: center bottom; }
-.paw-print-1 { left: 40%; top: 70px; --rot: 20deg; animation: walk 5s linear infinite; }
-.paw-print-2 { left: 50%; top: 50px; --rot: 30deg; animation: walk 5s linear infinite 1s; }
-.paw-print-3 { left: 43%; top: 15px; --rot: 40deg; animation: walk 5s linear infinite 2s; }
-.paw-print-4 { left: 53%; top: 1px; --rot: 50deg; animation: walk 5s linear infinite 3s; }
-@keyframes walk { 0% { opacity: 0; } 4% { opacity: 0.7; } 50% { opacity: 0.7; } 51% { opacity: 0; } }
-
-.timeline-intro { max-width: 750px; font-size: 18px; line-height: 1.6; color: #13110F; opacity: 0.85; font-family: Georgia, serif; font-weight: 500; margin: 25px 0 0 0; text-align: center; }
-.timeline-grid { max-width: 1100px; width: 100%; display: flex; flex-direction: column; position: relative; }
-.timeline-item { width: 100%; display: flex; align-items: center; position: relative; }
-.item-img-box { flex: 1; height: 100%; max-width: 50%; overflow: hidden; border: 4px solid #13110F; border-radius: 20px; background: #13110F; box-shadow: 0 8px 0 #13110F; z-index: 2; }
-.item-img-box img { width: 100%; height: 500px; object-fit: cover; filter: brightness(0.85) contrast(1.1); transition: transform 0.6s ease; }
-.item-text-pure { flex: 1; max-width: 50%; padding: 0 50px; display: flex; flex-direction: column; gap: 12px; z-index: 3; pointer-events: none; }
-.item-text-pure h3 { font-size: 26px; color: #EDD7A3; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; line-height: 1.3; font-family: Georgia, serif !important; }
-.item-text-pure p { font-size: 16px; line-height: 1.6; color: #EDD7A3; font-weight: 500; margin: 0; font-family: Georgia, serif !important; }
-.item-text-pure .item-price { font-weight: 700; color: #C4411D; font-size: 18px; margin-top: 5px; }
-
-.steps-desktop-section { width: 100%; }
-.steps-grid-wrapper { width: 100%; max-width: 1050px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 40px; box-sizing: border-box; }
-.step-row { display: flex; align-items: center; width: 100%; background-color: #13110F; border: 4px solid #13110F; border-radius: 30px; box-shadow: 8px 8px 0 #13110F; overflow: hidden; box-sizing: border-box; }
-.step-row .step-media-holder { width: 45%; flex: 0 0 45%; display: flex; }
-.step-row .step-media-holder img { width: 100%; height: auto; display: block; object-fit: contain; }
-.step-row .step-content-box { width: 55%; flex: 0 0 55%; padding: 40px; box-sizing: border-box; }
-.step-row .step-content-box h3 { margin: 0 0 16px 0; font-size: 28px; color: #EDD7A3; font-family: 'Copse', Georgia, serif; }
-.step-row .step-content-box p { margin: 0; font-size: 16px; line-height: 1.6; color: #EDD7A3; }
-.step-row.row-direct-left { flex-direction: row; }
-.step-row.row-direct-left .step-content-box { text-align: left; }
-.step-row.row-inverse-right { flex-direction: row-reverse; }
-.step-row.row-inverse-right .step-content-box { text-align: right; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 6: ФИНАЛЬНЫЙ БЛОК С КАРТИНКАМИ И ЦИТАТОЙ (OUTRO) */
-/* ======================================================= */
-.timeline-outro-block { max-width: 1100px; width: 100%; margin-top: 100px; display: flex; flex-direction: column; gap: 40px; align-items: center; }
-.outro-text-plate { max-width: 750px; margin: 60px auto; padding: 30px 20px; position: relative; box-sizing: border-box; border-top: 2px solid #13110F; border-bottom: 2px solid #13110F; }
-.outro-text-plate .outro-text { margin: 0; font-family: 'Copse', Georgia, serif; font-size: 16px; line-height: 1.7; color: #13110F; text-align: center; letter-spacing: 0.3px; opacity: 0.9; }
-.outro-text-plate::before { content: '✦'; position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background-color: #EDD7A3; padding: 0 15px; font-size: 14px; color: #13110F; }
-.outro-text { font-size: 19px; line-height: 1.7; color: #13110F; text-align: center; font-family: Georgia, serif; font-weight: 500; max-width: 900px; margin: 0; opacity: 0.9; }
-.outro-images-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-.outro-img-box { width: 100%; height: 400px; border: 3px solid #13110F; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 0 #13110F; }
-.outro-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-.quote-badge-box { max-width: 650px; width: 100%; margin: 50px auto; padding: 60px 40px; background-image: url('pics/brush.png'); background-position: center center; background-repeat: no-repeat; background-size: contain; display: flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: 280px; }
-.quote-badge-box .outro-quote { margin: 0; font-family: 'Copse', Georgia, serif; font-size: 22px; line-height: 1.5; color: #13110F; text-align: center; font-style: italic; max-width: 80%; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 7: МАГАЗИН И ВИТРИНА ТОВАРОВ (SHOP) */
-/* ======================================================= */
-.vitrage-shop { width: 100%; padding: 120px 40px; background-color: #EDD7A3; display: flex; flex-direction: column; align-items: center; gap: 80px; }
-.shop-header { text-align: center; display: flex; flex-direction: column; gap: 15px; }
-.shop-header h2 { font-size: 42px; color: #13110F; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
-.shop-header p { font-size: 18px; color: #13110F; font-weight: 500; margin: 0; opacity: 0.8; font-family: Georgia, serif; }
-.shop-section-block { max-width: 1200px; width: 100%; display: flex; flex-direction: column; gap: 35px; }
-.shop-section-title { font-size: 28px; color: #13110F; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; font-family: Georgia, serif; font-weight: 700; border-bottom: 3px solid #13110F; padding-bottom: 10px; }
-.shop-section-title span { font-size: 16px; font-weight: 700; text-transform: none; color: #13110F; opacity: 0.7; margin-left: 10px; }
-.shop-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; }
-.product-card { background: #fffcf7; border: 3px solid #13110F; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 0 #13110F; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.product-img-box { width: 100%; height: 380px; overflow: hidden; border-bottom: 3px solid #13110F; position: relative; background: #13110F; }
-.product-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-.product-badge { position: absolute; top: 15px; right: 15px; border: 2px solid #13110F; padding: 6px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 10px; box-shadow: 0 2px 0 #13110F; color: #fff; }
-.badge-ready { background: #949C2D; }
-.badge-no { background: #b42626; }
-.badge-custom { background: #258495; }
-.product-info { padding: 25px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
-.product-info h3 { font-size: 22px; color: #13110F; margin: 0; line-height: 1.3; font-family: Georgia, serif; }
-.product-desc { font-size: 14px; line-height: 1.6; color: #13110F; opacity: 0.9; margin: 0; flex-grow: 1; font-family: Georgia, serif; }
-.product-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-.product-price { font-size: 22px; font-weight: 800; color: #C4411D; }
-.product-btn { background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 8px 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 12px; box-shadow: 0 3px 0 #13110F; transition: all 0.1s ease; }
-.product-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #13110F; }
-.btn-custom { background: #258495; }
-.product-btn.btn-sold-out { background: #ccc !important; color: #666 !important; border-color: #666 !important; box-shadow: none !important; cursor: not-allowed !important; transform: none !important; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 8: ФОРМА И ЭТАПЫ ИНДИВИДУАЛЬНОГО ЗАКАЗА */
-/* ======================================================= */
-.order-flow-section { width: 100%; padding: 120px 40px; background-color: #EDD7A3; display: flex; flex-direction: column; align-items: center; gap: 60px; }
-.flow-header { text-align: center; }
-.flow-header h2 { font-size: 42px; color: #13110F; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
-.custom-offer-text-block { max-width: 850px; margin: 25px auto 10px auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-.custom-offer-p { font-size: 17px; line-height: 1.6; color: #13110F; opacity: 0.9; text-align: center; margin: 0; font-family: inherit; }
-.custom-offer-gallery { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 10px 0; }
-.custom-gal-box { width: 100%; height: 240px; border: 3px solid #13110F; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 0 #13110F; background: #13110F; box-sizing: border-box; }
-.custom-gal-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-.custom-offer-meta { display: flex; gap: 15px; justify-content: center; width: 100%; margin-top: 5px; }
-.custom-badge { background: #FFFFFF; border: 2px solid #13110F; box-shadow: 4px 4px 0 #13110F; padding: 10px 20px; border-radius: 12px; font-size: 16px; color: #13110F; }
-.custom-badge strong { color: #C4411D; font-weight: 700; }
-.flow-steps-grid { max-width: 1200px; width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
-.step-card { background: #fffcf7; border: 3px solid #13110F; border-radius: 20px; padding: 30px; display: flex; align-items: center; gap: 20px; box-shadow: 0 6px 0 #13110F; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.step-num { width: 50px; height: 50px; background: #258495; color: #EDD7A3; border: 3px solid #13110F; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: 800; flex-shrink: 0; }
-.step-card p { font-size: 16px; line-height: 1.5; color: #13110F; font-weight: 500; margin: 0; font-family: Georgia, serif; }
-.step-action-card { background: rgba(196, 65, 29, 0.15); border: 3px dashed #C4411D; }
-.step-action-card .btn-num { background: #C4411D; border-color: #13110F; }
-.order-form-container { max-width: 600px; width: 100%; background: #fffcf7; border: 4px solid #13110F; border-radius: 28px; padding: 50px 40px; box-shadow: 0 12px 0 #13110F; margin-top: 30px; }
-.order-form-container h3 { font-size: 32px; color: #13110F; text-transform: uppercase; text-align: center; margin: 0 0 35px 0; letter-spacing: 0.5px; }
-.form-group { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-.form-group label { font-size: 16px; font-weight: 700; color: #13110F; font-family: Georgia, serif; }
-.form-group input[type="text"], .form-group input[type="email"], .form-group textarea { width: 100%; padding: 14px 18px; border: 3px solid #13110F; border-radius: 14px; background: #fff; color: #13110F; font-size: 16px; font-family: Georgia, serif; font-weight: 500; transition: border-color 0.2s ease; }
-.form-group input:focus, .form-group textarea:focus { outline: none; border-color: #258495; }
-.file-group { margin-top: 10px; }
-.file-label { width: 100%; padding: 20px; border: 3px dashed #13110F; border-radius: 14px; background: rgba(148, 156, 45, 0.1); text-align: center; cursor: pointer; display: block; transition: background 0.2s ease; }
-.file-label span { font-size: 16px; font-weight: 700; color: #13110F; font-family: Georgia, serif; }
-.form-submit-btn { width: 100%; background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 16px; font-size: 18px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 16px; box-shadow: 0 5px 0 #13110F; transition: all 0.1s ease; margin-top: 10px; }
-.form-submit-btn:active { transform: translateY(5px); box-shadow: 0 0 0 #13110F; }
-.form-row-split { width: 100%; display: flex; gap: 20px; }
-.form-row-split .form-group { flex: 1; }
-.form-group select { width: 100%; padding: 14px 18px; border: 3px solid #13110F; border-radius: 14px; background: #fff; color: #13110F; font-size: 16px; font-family: Georgia, serif; font-weight: 500; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2313110F' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); background-repeat: no-repeat; background-position: right 18px center; background-size: 16px; }
-.form-group select:focus { outline: none; border-color: #258495; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 9: БЛОГ (БЭКСТЕЙДЖ ПРОИЗВОДСТВА С ВИДЕО) */
-/* ======================================================= */
-.vitrage-blog-half { width: 100%; height: 75vh; min-height: 400px; display: flex; align-items: stretch; background-color: #EDD7A3; border-top: 4px solid #13110F; border-bottom: 4px solid #13110F; overflow: hidden; }
-.blog-image-side { flex: 1; position: relative; overflow: hidden; border-right: 4px solid #13110F; background: #13110F; }
-.blog-image-side img { width: 100%; height: 100%; object-fit: contain; padding: 30px; filter: drop-shadow(0 8px 16px rgba(19, 17, 15, 0.3)) brightness(0.9) contrast(1.05); transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
-.blog-img-overlay { position: absolute; top: 25px; left: 25px; background: #13110F; color: #EDD7A3; border: 2px solid #EDD7A3; padding: 6px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 8px; letter-spacing: 0.5px; }
-.blog-text-side { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; background: #EDD7A3; position: relative; }
-.blog-content-wrap { max-width: 500px; display: flex; flex-direction: column; gap: 14px; }
-.blog-text-side h2 { font-size: 30px; color: #13110F; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; margin: 0; }
-.blog-text-side p { font-size: 15px; line-height: 1.6; color: #13110F; font-weight: 500; margin: 0; font-family: Georgia, serif; }
-.blog-video-grid-container { padding: 15px; background: #13110F; box-sizing: border-box; }
-.blog-video-grid { width: 100%; height: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
-.video-grid-box { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; position: relative; background: #000; }
-.video-grid-box video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-.blog-read-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #13110F; font-size: 14px; font-weight: 800; text-transform: uppercase; margin-top: 5px; transition: color 0.2s ease; width: fit-content; }
-.blog-read-link svg { transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); width: 20px; height: 20px; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 10: КРАФТОВЫЙ ФУТЕР И СОЦСЕТИ (FOOTER) */
-/* ======================================================= */
-.vitrage-footer { width: 100%; background-color: #221d18; border-top: 4px solid #13110F; padding: 60px 40px 20px 40px; display: flex; flex-direction: column; align-items: center; gap: 40px; }
-.footer-container { max-width: 1200px; width: 100%; display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
-.footer-brand { flex: 2; display: flex; flex-direction: column; gap: 15px; }
-.footer-logo { font-size: 24px; font-weight: 800; color: #fffcf7; text-transform: uppercase; letter-spacing: 0.5px; }
-.footer-brand p { font-size: 14px; line-height: 1.6; color: #fffcf7; opacity: 0.85; margin: 0; font-family: Georgia, serif; font-weight: 500; max-width: 450px; }
-.footer-socials { flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; text-align: right; }
-.vitrage-footer h4 { font-size: 18px; color: #fffcf7; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
-.footer-socials p { font-size: 14px; color: #fffcf7; margin: 0; font-family: Georgia, serif; opacity: 0.85; }
-.social-icons-div { display: flex; gap: 5px; }
-.social-icons a { width: 42px; height: 42px; background: #fffcf7; border: 3px solid #13110F; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-decoration: none; color: #13110F; font-size: 14px; font-weight: 800; box-shadow: 0 3px 0 #13110F; transition: all 0.1s ease; }
-.social-icons-long a { width: 84px; height: 42px; background: #fffcf7; border: 3px solid #13110F; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-decoration: none; color: #13110F; font-size: 14px; font-weight: 800; box-shadow: 0 3px 0 #13110F; transition: all 0.1s ease; }
-.footer-bottom { width: 100%; max-width: 1200px; border-top: 2px solid #EDD7A3; padding-top: 20px; text-align: center; }
-.footer-bottom p { font-size: 12px; color: #fffcf7; opacity: 0.6; margin: 0; font-family: Georgia, serif; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 11: ВСПЛЫВАЮЩИЕ ОКНА (MODAL И ВЫВЕСКА) */
-/* ======================================================= */
-.shop-signboard { max-width: 550px; width: 100%; margin: 70px auto 30px auto; padding: 50px 40px; background-image: url('pics/frame.png'); background-position: center center; background-repeat: no-repeat; background-size: contain; background-color: transparent; display: inline-flex; align-items: center; justify-content: center; position: relative; box-sizing: border-box; min-height: 250px; transform-origin: top center; animation: vintage-sign-sway 4s ease-in-out infinite alternate; }
-.shop-signboard h2 { background-color: #ece2c9; margin: 0; font-size: 30px; font-family: 'Copse', Georgia, serif; text-transform: uppercase; letter-spacing: 2px; color: #13110F; position: relative; z-index: 2; max-width: 75%; text-align: center; line-height: 1.3; }
-
-@keyframes vintage-sign-sway { 0% { transform: rotate(-1.2deg); } 100% { transform: rotate(1.2deg); } }
-@keyframes vintage-sign-hover-shake { 0% { transform: rotate(-2.5deg) scale(1.01); } 100% { transform: rotate(2.5deg) scale(1.01); } }
-@keyframes wigglePaw { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg) scale(1.15); } }
-
-.custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(19, 17, 15, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 99999; padding: 20px; box-sizing: border-box; }
-.custom-modal-box { background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; width: 100%; max-width: 500px; padding: 30px; box-shadow: 8px 8px 0 #13110F; position: relative; box-sizing: border-box; animation: modalShow 0.2s ease-out; }
-@keyframes modalShow { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.modal-close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 30px; cursor: pointer; color: #13110F; font-weight: bold; }
-.custom-modal-box h2 { margin: 0 0 10px 0; font-family: 'Copse', Georgia, serif; font-size: 22px; }
-.custom-modal-box p { margin: 0 0 20px 0; font-size: 15px; }
-.modal-form-group { margin-bottom: 15px; }
-.modal-form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-.modal-form-group input { width: 100%; padding: 10px 12px; border: 2px solid #13110F; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
-.modal-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.modal-submit-btn { background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 12px; font-size: 16px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 12px; width: 100%; box-shadow: 0 4px 0 #13110F; margin-top: 10px; transition: all 0.1s ease; }
-.modal-submit-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #13110F; }
-
-/* ======================================================= */
-/* СЕКЦИЯ 12: ЧИСТЫЙ АДАПТИВ ПОД СМАРТФОНЫ (БЕЗ ХОВЕРОВ!) */
-/* ======================================================= */
-@media (max-width: 768px) {
-    /* Настройки глобальные и шапка */
-    header { height: 100px; padding: 10px 15px; flex-direction: row; align-items: center; justify-content: space-between; }
-    header .icon a { transform: none; display: flex; align-items: center; }
-    header img { width: 40px; height: 40px; }
-    header .btns { width: auto; justify-content: flex-end; }
-    header .order-btn, header .order-btn button, header nav { display: none; }
-    header .lang { padding: 4px 8px; gap: 8px; display: flex; }
-    header .lang p { font-size: 14px; margin: 0; }
-    
-    /* Герои мозаика */
-    .mosaic-grid { flex-direction: column; }
-    .mosaic-item { border-right: none; border-bottom: 4px solid #13110F; }
-    .mosaic-item:last-child { border-bottom: none; }
-    .center-badge { width: 200px; height: 200px; }
-    .mosaic-overlay h1 { font-size: 32px; }
-    
-    /* Таймлайн и шаги */
-    .timeline-intro { font-size: 15px; padding: 0 10px; }
-    .timeline-header h2 { font-size: 32px; }
-    .timeline-item { flex-direction: column !important; height: auto; margin-top: 0 !important; padding-bottom: 15px; }
-    .item-img-box { max-width: 100%; width: 100%; }
-    .item-text-pure { max-width: 100%; width: 100%; padding: 10px 0; text-align: center; }
-    .steps-desktop-section { display: none; }
-    .timeline-glass-box { padding: 25px 20px; margin-top: 20px; border-radius: 16px; }
-    .mobile-gridik { display: block; }
-    .mobile-prezent h3 { padding-top: 10px; }
-    .pc-prezent { display: none; }
-    
-    /* Блок Outro */
-    .timeline-outro-block { margin-top: 60px; gap: 25px; }
-    .outro-text { font-size: 16px; }
-    .outro-images-grid { grid-template-columns: 1fr; gap: 25px; }
-    .outro-img-box { height: 280px; }
-    
-    /* Витрина Магазина */
-    .vitrage-shop { padding: 60px 20px; gap: 50px; }
-    .shop-grid { grid-template-columns: 1fr; gap: 30px; }
-    .shop-header h2 { font-size: 32px; }
-    .shop-section-title { font-size: 22px; }
-    .shop-section-title span { display: block; margin-left: 0; margin-top: 5px; }
-    
-    /* Форма заказа по фото */
-    .order-flow-section { padding: 80px 20px; gap: 40px; }
-    .flow-steps-grid { grid-template-columns: 1fr; gap: 20px; }
-    .order-form-container { padding: 30px 20px; h3 { font-size: 26px; } }
-    .flow-header h2 { font-size: 32px; }
-    .form-row-split { flex-direction: column; gap: 0; }
-    .custom-offer-gallery { grid-template-columns: 1fr; gap: 15px; }
-    .custom-gal-box { height: 400px; }
-    .custom-offer-meta { flex-direction: column; align-items: center; gap: 12px; }
-    .custom-badge { width: 100%; max-width: 260px; text-align: center; box-sizing: border-box; }
-    
-    /* Блог бэкстейдж */
-    .vitrage-blog-half { height: auto; flex-direction: column; }
-    .blog-image-side { height: 300px; border-right: none; border-bottom: 4px solid #13110F; }
-    .blog-video-grid-container { height: 400px; }
-    .blog-video-grid { gap: 8px; }
-    .blog-text-side { padding: 40px 20px; h2 { font-size: 26px; } }
-    
-    /* Футер сайта */
-    .vitrage-footer { padding: 40px 20px 20px 20px; }
-    .footer-container { flex-direction: column; gap: 30px; text-align: center; align-items: center; }
-    .footer-brand p { max-width: 100%; }
-    .footer-socials { align-items: center; text-align: center; }
-    .social-icons { justify-content: center; }
-    
-    /* Фигурные элементы и модалка */
-    .shop-signboard { margin: 55px auto 20px auto; min-height: 240px; padding: 30px 20px; h2 { font-size: 20px; letter-spacing: 1px; max-width: 80%; } }
-    .modal-form-row { grid-template-columns: 1fr; gap: 0; }
-}
-@media (min-width: 768px) { .mobile-prezent, .mobile-gridik { display: none; } }
-@media (max-width: 480px) { .modal-form-row { grid-template-columns: 1fr; gap: 0; } }
-
-/* ======================================================= */
-/* СЕКЦИЯ 13: ИЗОЛИРОВАННЫЕ ХОВЕРЫ (РАБОТАЮТ ТОЛЬКО НА ПК) */
-/* ======================================================= */
-@media (hover: hover) {
-    header .icon a:hover { color: #C4411D; transform: translateY(-1px); }
-    header img:hover { transform: scale(1.1) translateY(-1px); }
-    header nav a:hover { color: #C4411D; transform: translateY(-2px); }
-    header .lang p:hover { color: #C4411D; }
-    header .order-btn button:hover { background: #258495; color: #EDD7A3; transform: translateY(2px); box-shadow: 0 2px 0 #13110F; }
-    .mosaic-item:hover img { transform: scale(1.01); filter: brightness(0.4) contrast(1.1); }
-    .mosaic-btn:hover { background: #258495; transform: translateY(2px); box-shadow: 0 2px 0 #13110F; }
-    .showroom-gallery-grid .gallery-photo-item:hover { transform: translateY(-3px) scale(1.02); box-shadow: 7px 7px 0 #13110F; }
-    .btn-orange-header:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 #13110F; }
-    .timeline-item:hover .item-img-box img { transform: scale(1.04); filter: brightness(0.95) contrast(1.1); }
-    .outro-img-box:hover img { transform: scale(1.04); }
-    .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 0 #13110F; }
-    .product-card:hover .product-img-box img { transform: scale(1.05); }
-    .product-btn:hover { background: #258495; transform: translateY(1px); box-shadow: 0 2px 0 #13110F; }
-    .step-card:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #13110F; }
-    .file-label:hover { background: rgba(148, 156, 45, 0.2); }
-    .form-submit-btn:hover { background: #258495; transform: translateY(1px); box-shadow: 0 4px 0 #13110F; }
-    .vitrage-blog-half:hover .blog-image-side img { transform: scale(1.04) rotate(1deg); }
-    .blog-read-link:hover { color: #C4411D; }
-    .blog-read-link:hover svg { transform: translateX(6px); }
-    .social-icons a:hover { background: #258495; color: #EDD7A3; transform: translateY(1px); box-shadow: 0 2px 0 #13110F; }
-    .social-icons-long a:hover { background: #258495; color: #EDD7A3; transform: translateY(1px); box-shadow: 0 2px 0 #13110F; }
-    .video-grid-box:hover video { transform: scale(1.05); }
-    .custom-gal-box:hover img { transform: scale(1.05); }
-    .shop-signboard:hover { animation: vintage-sign-hover-shake 0.5s ease-in-out infinite alternate; }
-}
+</html>
