@@ -64,6 +64,7 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 .vitrage-timeline { width: 100%; padding: 40px; background-color: #EDD7A3; display: flex; flex-direction: column; align-items: center; }
 .timeline-header { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 60px; }
 .timeline-header h2 { font-size: 42px; color: #13110F; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+.timeline-header .timeline-paw { font-size: 40px; margin-top: 15px; animation: wigglePaw 3.5s ease-in-out infinite; }
 .paws-path { width: 100%; max-width: 500px; height: 70px; margin: 10px auto; position: relative; overflow: visible; }
 .paws-path img { width: 30px; }
 .paws-path div { font-size: 38px; opacity: 0; position: absolute; width: auto; height: auto; transform-origin: center bottom; }
@@ -72,6 +73,16 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 .paw-print-3 { left: 43%; top: 15px; --rot: 40deg; animation: walk 5s linear infinite 2s; }
 .paw-print-4 { left: 53%; top: 1px; --rot: 50deg; animation: walk 5s linear infinite 3s; }
 @keyframes walk { 0% { opacity: 0; } 4% { opacity: 0.7; } 50% { opacity: 0.7; } 51% { opacity: 0; } }
+
+.timeline-intro { max-width: 750px; font-size: 18px; line-height: 1.6; color: #13110F; opacity: 0.85; font-family: Georgia, serif; font-weight: 500; margin: 25px 0 0 0; text-align: center; }
+.timeline-grid { max-width: 1100px; width: 100%; display: flex; flex-direction: column; position: relative; }
+.timeline-item { width: 100%; display: flex; align-items: center; position: relative; }
+.item-img-box { flex: 1; height: 100%; max-width: 50%; overflow: hidden; border: 4px solid #13110F; border-radius: 20px; background: #13110F; box-shadow: 0 8px 0 #13110F; z-index: 2; }
+.item-img-box img { width: 100%; height: 500px; object-fit: cover; filter: brightness(0.85) contrast(1.1); transition: transform 0.6s ease; }
+.item-text-pure { flex: 1; max-width: 50%; padding: 0 50px; display: flex; flex-direction: column; gap: 12px; z-index: 3; pointer-events: none; }
+.item-text-pure h3 { font-size: 26px; color: #EDD7A3; text-transform: uppercase; letter-spacing: 0.5px; margin: 0; line-height: 1.3; font-family: Georgia, serif !important; }
+.item-text-pure p { font-size: 16px; line-height: 1.6; color: #EDD7A3; font-weight: 500; margin: 0; font-family: Georgia, serif !important; }
+.item-text-pure .item-price { font-weight: 700; color: #C4411D; font-size: 18px; margin-top: 5px; }
 
 .steps-desktop-section { width: 100%; }
 .steps-grid-wrapper { width: 100%; max-width: 1050px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 40px; box-sizing: border-box; }
@@ -117,6 +128,7 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 .product-badge { position: absolute; top: 15px; right: 15px; border: 2px solid #13110F; padding: 6px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 10px; box-shadow: 0 2px 0 #13110F; color: #fff; }
 .badge-ready { background: #949C2D; }
 .badge-no { background: #b42626; }
+.badge-custom { background: #258495; }
 .product-info { padding: 25px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
 .product-info h3 { font-size: 22px; color: #13110F; margin: 0; line-height: 1.3; font-family: Georgia, serif; }
 .product-desc { font-size: 14px; line-height: 1.6; color: #13110F; opacity: 0.9; margin: 0; flex-grow: 1; font-family: Georgia, serif; }
@@ -124,6 +136,7 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 .product-price { font-size: 22px; font-weight: 800; color: #C4411D; }
 .product-btn { background: #C4411D; color: #EDD7A3; border: 3px solid #13110F; padding: 8px 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 12px; box-shadow: 0 3px 0 #13110F; transition: all 0.1s ease; }
 .product-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #13110F; }
+.btn-custom { background: #258495; }
 .product-btn.btn-sold-out { background: #ccc !important; color: #666 !important; border-color: #666 !important; box-shadow: none !important; cursor: not-allowed !important; transform: none !important; }
 
 /* ======================================================= */
@@ -167,6 +180,7 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 /* ======================================================= */
 .vitrage-blog-half { width: 100%; height: 75vh; min-height: 400px; display: flex; align-items: stretch; background-color: #EDD7A3; border-top: 4px solid #13110F; border-bottom: 4px solid #13110F; overflow: hidden; }
 .blog-image-side { flex: 1; position: relative; overflow: hidden; border-right: 4px solid #13110F; background: #13110F; }
+.blog-image-side img { width: 100%; height: 100%; object-fit: contain; padding: 30px; filter: drop-shadow(0 8px 16px rgba(19, 17, 15, 0.3)) brightness(0.9) contrast(1.05); transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
 .blog-img-overlay { position: absolute; top: 25px; left: 25px; background: #13110F; color: #EDD7A3; border: 2px solid #EDD7A3; padding: 6px 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 8px; letter-spacing: 0.5px; }
 .blog-text-side { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; background: #EDD7A3; position: relative; }
 .blog-content-wrap { max-width: 500px; display: flex; flex-direction: column; gap: 14px; }
@@ -176,6 +190,8 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 .blog-video-grid { width: 100%; height: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
 .video-grid-box { width: 100%; height: 100%; border-radius: 12px; overflow: hidden; position: relative; background: #000; }
 .video-grid-box video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.blog-read-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #13110F; font-size: 14px; font-weight: 800; text-transform: uppercase; margin-top: 5px; transition: color 0.2s ease; width: fit-content; }
+.blog-read-link svg { transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); width: 20px; height: 20px; }
 
 /* ======================================================= */
 /* СЕКЦИЯ 10: КРАФТОВЫЙ ФУТЕР И СОЦСЕТИ (FOOTER) */
@@ -195,8 +211,15 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 .footer-bottom p { font-size: 12px; color: #fffcf7; opacity: 0.6; margin: 0; font-family: Georgia, serif; }
 
 /* ======================================================= */
-/* СЕКЦИЯ 11: ВСПЛЫВАЮЩИЕ ОКНА (MODAL) */
+/* СЕКЦИЯ 11: ВСПЛЫВАЮЩИЕ ОКНА (MODAL И ВЫВЕСКА) */
 /* ======================================================= */
+.shop-signboard { max-width: 550px; width: 100%; margin: 70px auto 30px auto; padding: 50px 40px; background-image: url('pics/frame.png'); background-position: center center; background-repeat: no-repeat; background-size: contain; background-color: transparent; display: inline-flex; align-items: center; justify-content: center; position: relative; box-sizing: border-box; min-height: 250px; transform-origin: top center; animation: vintage-sign-sway 4s ease-in-out infinite alternate; }
+.shop-signboard h2 { background-color: #ece2c9; margin: 0; font-size: 30px; font-family: 'Copse', Georgia, serif; text-transform: uppercase; letter-spacing: 2px; color: #13110F; position: relative; z-index: 2; max-width: 75%; text-align: center; line-height: 1.3; }
+
+@keyframes vintage-sign-sway { 0% { transform: rotate(-1.2deg); } 100% { transform: rotate(1.2deg); } }
+@keyframes vintage-sign-hover-shake { 0% { transform: rotate(-2.5deg) scale(1.01); } 100% { transform: rotate(2.5deg) scale(1.01); } }
+@keyframes wigglePaw { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(15deg) scale(1.15); } }
+
 .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(19, 17, 15, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 99999; padding: 20px; box-sizing: border-box; }
 .custom-modal-box { background: #EDD7A3; border: 4px solid #13110F; border-radius: 24px; width: 100%; max-width: 500px; padding: 30px; box-shadow: 8px 8px 0 #13110F; position: relative; box-sizing: border-box; animation: modalShow 0.2s ease-out; }
 @keyframes modalShow { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -238,6 +261,9 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
     .item-text-pure { max-width: 100%; width: 100%; padding: 10px 0; text-align: center; }
     .steps-desktop-section { display: none; }
     .timeline-glass-box { padding: 25px 20px; margin-top: 20px; border-radius: 16px; }
+    .mobile-gridik { display: block; }
+    .mobile-prezent h3 { padding-top: 10px; }
+    .pc-prezent { display: none; }
     
     /* Блок Outro */
     .timeline-outro-block { margin-top: 60px; gap: 25px; }
@@ -260,6 +286,8 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
     .form-row-split { flex-direction: column; gap: 0; }
     .custom-offer-gallery { grid-template-columns: 1fr; gap: 15px; }
     .custom-gal-box { height: 400px; }
+    .custom-offer-meta { flex-direction: column; align-items: center; gap: 12px; }
+    .custom-badge { width: 100%; max-width: 260px; text-align: center; box-sizing: border-box; }
     
     /* Блог бэкстейдж */
     .vitrage-blog-half { height: auto; flex-direction: column; }
@@ -278,8 +306,9 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
     /* Фигурные элементы и модалка */
     .shop-signboard { margin: 55px auto 20px auto; min-height: 240px; padding: 30px 20px; h2 { font-size: 20px; letter-spacing: 1px; max-width: 80%; } }
     .modal-form-row { grid-template-columns: 1fr; gap: 0; }
-    @media (max-width: 480px) { .modal-form-row { grid-template-columns: 1fr; gap: 0; } }
 }
+@media (min-width: 768px) { .mobile-prezent, .mobile-gridik { display: none; } }
+@media (max-width: 480px) { .modal-form-row { grid-template-columns: 1fr; gap: 0; } }
 
 /* ======================================================= */
 /* СЕКЦИЯ 13: ИЗОЛИРОВАННЫЕ ХОВЕРЫ (РАБОТАЮТ ТОЛЬКО НА ПК) */
@@ -294,6 +323,7 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
     .mosaic-btn:hover { background: #258495; transform: translateY(2px); box-shadow: 0 2px 0 #13110F; }
     .showroom-gallery-grid .gallery-photo-item:hover { transform: translateY(-3px) scale(1.02); box-shadow: 7px 7px 0 #13110F; }
     .btn-orange-header:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 #13110F; }
+    .timeline-item:hover .item-img-box img { transform: scale(1.04); filter: brightness(0.95) contrast(1.1); }
     .outro-img-box:hover img { transform: scale(1.04); }
     .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 0 #13110F; }
     .product-card:hover .product-img-box img { transform: scale(1.05); }
@@ -308,4 +338,5 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
     .social-icons-long a:hover { background: #258495; color: #EDD7A3; transform: translateY(1px); box-shadow: 0 2px 0 #13110F; }
     .video-grid-box:hover video { transform: scale(1.05); }
     .custom-gal-box:hover img { transform: scale(1.05); }
+    .shop-signboard:hover { animation: vintage-sign-hover-shake 0.5s ease-in-out infinite alternate; }
 }
