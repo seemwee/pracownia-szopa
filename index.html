@@ -45,8 +45,8 @@
 <body>
     <header>
             <div class="icon">
-                <a href="#start"><img src="pics/icon.png" alt=""></a>
-                <a href="#start">Pracownia Szopa</a>
+                <a href="javascript:void(0)"><img src="pics/icon.png" alt=""></a>
+                <a href="javascript:void(0)">Pracownia Szopa</a>
             </div>
         <div class="nav">
             <nav>
@@ -775,21 +775,27 @@
         // 4. TAJNE WEJŚCIE DO ADMINA
         let clickCount = 0;
         let clickTimer = null;
-        const logoLinks = document.querySelectorAll('header .icon a');
-
-        logoLinks.forEach(link => {
+        
+        document.querySelectorAll('header .icon a').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
 
+                // 1. Логика плавного подъема наверх при ПЕРВОМ же клике
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                // 2. Логика подсчета кликов для входа в админку
                 clickCount++;
                 clearTimeout(clickTimer);
-
+                
                 if (clickCount === 5) {
                     clickCount = 0;
                     window.location.href = 'admin.html';
                 } else {
-                    clickTimer = setTimeout(() => { clickCount = 0; }, 3000);
+                    clickTimer = setTimeout(() => { clickCount = 0; }, 2000); // Сброс счетчика, если пауза между кликами больше 2 секунд
                 }
             });
         });
