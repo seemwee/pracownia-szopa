@@ -55,8 +55,6 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
 .showroom-content-side .showroom-bg-brand { position: absolute; top: -55px; left: -15px; font-family: 'Copse', Georgia, serif; font-size: 85px; font-weight: 900; line-height: 1.1; color: #C4411D; opacity: 0.15; text-transform: uppercase; white-space: nowrap; z-index: 1; pointer-events: none; max-width: 100%; }
 .showroom-content-side .showroom-manifest-text { margin: 0; font-family: 'Copse', Georgia, serif; font-size: 20px; line-height: 1.6; color: #13110F; position: relative; z-index: 2; max-width: 100%; }
 .showroom-actions-wrapper { display: flex; position: relative; z-index: 2; }
-.btn-orange-header { display: inline-flex; align-items: center; justify-content: center; padding: 15px 35px; font-size: 16px; font-weight: bold; text-decoration: none; background-color: #C4411D; color: #FDF9F2; border: 3px solid #13110F; border-radius: 12px; box-shadow: 4px 4px 0 #13110F; box-sizing: border-box; transition: transform 0.1s ease, box-shadow 0.1s ease; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
-.btn-orange-header:active { transform: translateY(2px); box-shadow: 2px 2px 0 #13110F; }
 
 /* ======================================================= */
 /* СЕКЦИЯ 5: ЗИГЗАГ ДЛЯ ПК (STEPS DESKTOP)                 */
@@ -285,11 +283,16 @@ header .order-btn button:active { transform: translateY(4px); box-shadow: 0 0 0 
     .center-badge { width: 200px; height: 200px; }
     .mosaic-overlay h1 { font-size: 32px; }
     
+    /* ФИКС МОБИЛЬНЫХ КАРТОЧЕК ТАЙМЛАЙНА — БОЛЬШЕ НЕ СЖИМАЮТСЯ */
     .timeline-intro { font-size: 15px; padding: 0 10px; }
     .timeline-header h2 { font-size: 32px; }
-    .timeline-item { width: 100%; flex-direction: column !important; height: auto; margin-top: 0 !important; padding-bottom: 15px; }
-    .item-img-box { max-width: 100%; width: 90%; }
-    .item-text-pure { max-width: 100%; width: 100%; text-align: center; }
+    .timeline-item { width: 100%; flex-direction: column !important; height: auto; margin-top: 0 !important; padding: 0 15px 25px 15px; box-sizing: border-box; }
+    .item-img-box { max-width: 100%; width: 100%; border-radius: 24px; box-shadow: 0 6px 0 #13110F; }
+    .item-img-box img { width: 100%; height: 320px; object-fit: cover; }
+    .item-text-pure { max-width: 100%; width: 100%; padding: 25px 15px 10px 15px; text-align: center; box-sizing: border-box; }
+    .item-text-pure h3 { font-size: 24px; }
+    .item-text-pure p { font-size: 16px; line-height: 1.5; }
+    
     .steps-desktop-section { display: none; }
     .timeline-glass-box { padding: 25px 20px; margin-top: 20px; border-radius: 16px; }
     .mobile-gridik { display: block; }
